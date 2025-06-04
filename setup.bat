@@ -1,35 +1,47 @@
 @echo off
 setlocal EnableDelayedExpansion
 
-echo ===========================
-echo   Creando entorno virtual...
-echo ===========================
+echo ====================================
+echo Creando entorno virtual...
+echo ====================================
 python -m venv venv
 call venv\Scripts\activate
 
-echo ===========================
-echo  Instalando dependencias...
-echo ===========================
+echo ====================================
+echo Instalando dependencias...
+echo ====================================
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 
-echo ===========================
+echo ====================================
 echo Sincronizando ramas...
-echo ===========================
+echo ====================================
+git fetch --all
+
+:: Aseguramos que estamos en main y lo actualizamos
 git checkout main
 git pull origin main
-git checkout develop
-git pull origin develop
+
+:: Creamos develop si no existe localmente
+git branch --list develop
+IF %ERRORLEVEL% NEQ 0 (
+    git checkout -b develop origin/develop
+) ELSE (
+    git checkout develop
+    git pull origin develop
+)
+
+:: Fusionamos main en develop (por si hay cambios recientes)
 git merge main
 git push origin develop
 
-set /p nombre=👤 Ingresa tu nombre para crear tu rama personal (feature/tu-nombre): 
+:: Preguntamos el nombre del feature
+set /p nombre=👤 Ingresa tu nombre para crear tu rama personal (feature/tu-nombre):
 
 git checkout -b feature/%nombre%
 git push -u origin feature/%nombre%
 
-echo.
-echo ===========================
+echo ====================================
 echo Setup completo.
 echo Trabajando en feature/%nombre%
 pause
