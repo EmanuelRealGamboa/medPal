@@ -1,41 +1,35 @@
 @echo off
 setlocal EnableDelayedExpansion
 
-:: ==========================
-:: Configuración inicial
-:: ==========================
-
-:: ==========================
-:: Crear entorno virtual
-:: ==========================
-echo 🐍 Creando entorno virtual...
+echo ===========================
+echo   Creando entorno virtual...
+echo ===========================
 python -m venv venv
-
-:: Activar entorno virtual (Windows)
 call venv\Scripts\activate
 
-:: ==========================
-:: Instalar dependencias
-:: ==========================
-echo 📦 Instalando dependencias de backend...
+echo ===========================
+echo  Instalando dependencias...
+echo ===========================
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 
-:: ==========================
-:: Crear rama personal
-:: ==========================
-set /p nombre=👤 Ingresa tu nombre para crear tu rama personal (feature/tu-nombre): 
-
+echo ===========================
+echo Sincronizando ramas...
+echo ===========================
+git checkout main
+git pull origin main
 git checkout develop
 git pull origin develop
+git merge main
+git push origin develop
+
+set /p nombre=👤 Ingresa tu nombre para crear tu rama personal (feature/tu-nombre): 
+
 git checkout -b feature/%nombre%
 git push -u origin feature/%nombre%
 
-:: ==========================
-:: Fin del proceso
-:: ==========================
 echo.
-echo ✅ Setup completo.
-echo Ya puedes empezar a trabajar en tu rama feature/%nombre%
-
+echo ===========================
+echo Setup completo.
+echo Trabajando en feature/%nombre%
 pause
