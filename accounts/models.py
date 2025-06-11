@@ -24,8 +24,8 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, password, **extra_fields)
-
-
+    
+    
 #Modelo Usuario (Personalizado) ya que agregamos mas campos y no se esta usando el Default de Django
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -41,7 +41,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name', 'apellido_paterno', 'apellido_materno', 'phone']
+    REQUIRED_FIELDS = []
 
     def __str__(self):
         return self.email

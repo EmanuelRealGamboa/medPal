@@ -1,20 +1,27 @@
-# Django core
-Django==5.0.6
-
-# Django REST Framework
-djangorestframework==3.15.1
-
-# CORS (para permitir acceso desde el frontend)
-django-cors-headers==4.3.1
-
-# Pillow (si manejas imágenes, casi siempre es buena idea tenerlo)
-Pillow==10.3.0
-
-# Si en algún momento usas PostgreSQL (puedes dejarlo comentado si todavía no)
-# psycopg2-binary==2.9.9
-
-# (Opcional si usas JWT en el futuro)
-# djangorestframework-simplejwt==5.3.1
-
-# Asgi (manejo de ASGI que ya viene indirectamente con Django 5)
-asgiref==3.7.2
+asgiref==3.8.1
+attrs==25.3.0
+certifi==2025.4.26
+charset-normalizer==3.4.2
+coreschema==0.0.4
+Django==5.2.2
+django-cors-headers==4.7.0
+djangorestframework==3.16.0
+drf-spectacular==0.28.0
+idna==3.10
+inflection==0.5.1
+itypes==1.2.0
+Jinja2==3.1.6
+jsonschema==4.24.0
+jsonschema-specifications==2025.4.1
+MarkupSafe==3.0.2
+mysqlclient==2.2.7
+python-dotenv==1.1.0
+PyYAML==6.0.2
+referencing==0.36.2
+requests==2.32.4
+rpds-py==0.25.1
+setuptools==80.9.0
+sqlparse==0.5.3
+uritemplate==4.2.0
+urllib3==2.4.0
+wheel @ file:///opt/homebrew/Cellar/python%403.13/3.13.2/libexec/wheel-0.45.1-py3-none-any.whl#sha256=b9235939e2096903717cb6bfc132267f8a7e46deb2ec3ef9c5e234ea301795d0
