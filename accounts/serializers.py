@@ -4,6 +4,17 @@ from .models import User
 from django.core.mail import send_mail
 
 
+#Leeme
+
+"""Si estas Usando Django por primera vez, necesitas saber que Serializers
+es como un puente en entre Json y Python enviar y recibir formato de Json a python y de python a Json"""
+
+
+
+
+
+#SignUp Serializers(Json)
+
 class SignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
@@ -36,6 +47,7 @@ class SignupSerializer(serializers.ModelSerializer):
 
         return user
 
+#Verification Code Serializadores (Json)
 
 class VerifyCodeSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -54,6 +66,7 @@ class VerifyCodeSerializer(serializers.Serializer):
         user.verification_code = ''
         user.save()
 
+#Signin Serializers (Json)
 
 class SigninSerializer(serializers.Serializer):
     email = serializers.EmailField()

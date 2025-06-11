@@ -7,11 +7,17 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import logout
 from django.contrib.auth import get_user_model
 from django.conf import settings
-
-User = get_user_model()
-
 from django.core.mail import send_mail
 import random
+
+
+#Definimos que User sera nuestro modelo que hemos hecho en models.py (Modelo editado)
+User = get_user_model()
+
+
+
+
+
 
 class SignupView(APIView):
     def post(self, request):

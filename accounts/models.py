@@ -1,14 +1,13 @@
 from django.db import models
-
-
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-
 import random
 import string
 
-
+#Generador de codigo 
 def generate_verification_code():
     return ''.join(random.choices(string.digits, k=6))
+
+
 
 
 class UserManager(BaseUserManager):
@@ -27,7 +26,7 @@ class UserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
-# accounts/models.py
+#Modelo Usuario (Personalizado) ya que agregamos mas campos y no se esta usando el Default de Django
 
 class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=100)
