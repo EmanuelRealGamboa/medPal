@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'api',  
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -140,9 +140,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 
-# Configuracion para Codigo De Correo 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Para pruebas
-DEFAULT_FROM_EMAIL = 'ramses.devn@gmail.com'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ramses.devn@gmail.com'
+EMAIL_HOST_PASSWORD = 'cmfabltprahohbup'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 
 
 
@@ -153,4 +158,5 @@ REST_FRAMEWORK = {
     ],
 }
 
-AUTH_USER_MODEL = 'auth.User'  # O simplemente no lo definas para usar el modelo estándar
+##Modelo para que se Use el User personalizado
+AUTH_USER_MODEL = 'accounts.User'

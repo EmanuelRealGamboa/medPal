@@ -88,3 +88,14 @@ yatziri
 
 jason
 
+
+
+
+
+
+
+##Codigo Logout por termminal para tokens (Logout)
+curl -X POST http://127.0.0.1:8000/accounts/logout/ \
+     -H "Authorization: Token fe9370685335c3036425b044f2ca05d270c4e6f0" \
+     -H "Content-Type: application/json" \
+     -d "{}"

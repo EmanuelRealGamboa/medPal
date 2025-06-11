@@ -1,7 +1,11 @@
 # Python
 venv/
+env/
+
 __pycache__/
 *.pyc
+__init__.py
+__init__.py
 
 # Django
 db.sqlite3
