@@ -1,20 +1,17 @@
 # accounts/serializers.py
 from rest_framework import serializers
 from .models import User
-from django.core.mail import send_mail
 
 
-#Leeme
+# Leeme
+"""
+Si estás usando Django por primera vez, necesitas saber que Serializers
+es como un puente entre JSON y Python. Permite enviar y recibir datos en formato JSON
+y convertirlos a objetos de Python, y viceversa.
+"""
 
-"""Si estas Usando Django por primera vez, necesitas saber que Serializers
-es como un puente en entre Json y Python enviar y recibir formato de Json a python y de python a Json"""
 
-
-
-
-
-#SignUp Serializers(Json)
-
+# SignUp Serializer (para registro)
 class SignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
@@ -32,23 +29,13 @@ class SignupSerializer(serializers.ModelSerializer):
         validated_data.pop('password2')
         password = validated_data.pop('password')
         user = User(**validated_data)
-        user.set_password(password)
-        user.verification_code = user.verification_code or User.objects.make_random_password(length=6, allowed_chars='0123456789')
-        user.is_active = False
+        user.set_password(password)  # Encripta la contraseña
+        user.is_active = False  # Se activa cuando verifique el código
         user.save()
-
-        send_mail(
-            'Código de verificación',
-            f'Tu código es: {user.verification_code}',
-            'no-reply@tuapp.com',
-            [user.email],
-            fail_silently=False
-        )
-
         return user
 
-#Verification Code Serializadores (Json)
 
+# Verification Code Serializer (para verificar el código enviado por correo)
 class VerifyCodeSerializer(serializers.Serializer):
     email = serializers.EmailField()
     code = serializers.CharField(max_length=6)
@@ -66,8 +53,8 @@ class VerifyCodeSerializer(serializers.Serializer):
         user.verification_code = ''
         user.save()
 
-#Signin Serializers (Json)
 
+# Signin Serializer (para iniciar sesión)
 class SigninSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()

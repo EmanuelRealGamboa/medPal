@@ -47,10 +47,6 @@ class SignupView(APIView):
 
 
 
-
-
-
-
 class VerifyCodeView(APIView):
     def post(self, request):
         email = request.data.get('email')
@@ -67,6 +63,8 @@ class VerifyCodeView(APIView):
                 return Response({'error': 'Código incorrecto'}, status=status.HTTP_400_BAD_REQUEST)
         except User.DoesNotExist:
             return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+
 
 
 class SigninView(APIView):
