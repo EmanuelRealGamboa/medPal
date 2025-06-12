@@ -100,6 +100,9 @@ DATABASES = {
 }
 
 
+
+
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -152,7 +155,9 @@ EMAIL_HOST_PASSWORD = 'cmfabltprahohbup'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 #Cors Autenthications (React)
-CORS_ALLOWED_ORIGINS = []
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+]
 
 
 REST_FRAMEWORK = {
