@@ -156,10 +156,9 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 #Cors Autenthications (React)
 CORS_ALLOWED_ORIGINS = [
-<<<<<<< HEAD
-=======
+
     'http://localhost:5173',
->>>>>>> feature/Fatima
+
     
 ]
 
