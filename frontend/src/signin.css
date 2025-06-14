@@ -1,0 +1,76 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #3D8D7A, #A3D1C6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  background: #FBFFE4;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  color: #3D8D7A;
+  overflow: hidden;
+  width: 700px;
+  max-width: 100%;
+  display: flex;
+  transition: all 0.5s ease-in-out;
+}
+
+.form-container {
+  display: flex;
+  width: 100%;
+}
+
+.form-content, .side-panel {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.side-panel {
+  background-color: #3D8D7A;
+  color: #FBFFE4;
+  text-align: center;
+  transition: transform 0.5s ease-in-out;
+}
+
+.container.active .side-panel {
+  background-color: #3D8D7A;
+  color: #FBFFE4;
+}
+
+.container.active .form-content {
+  order: 2;
+}
+
+.form-content input {
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  
+}
+input{
+  background-color: #daeed0;
+}
+
+.form-content button, .side-panel button {
+  margin-top: 20px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background-color: #205649;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.form-content button:hover, .side-panel button:hover {
+  background-color: #329a8d;
+}
