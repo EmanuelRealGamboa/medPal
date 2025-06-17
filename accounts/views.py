@@ -1,4 +1,3 @@
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -54,15 +53,15 @@ class VerifyCodeView(APIView):
 
         try:
             user = User.objects.get(email=email)
-            if user.verification_code == code:
+            if str(user.verification_code) == str(code):  # <-- comparando correctamente
                 user.is_active = True
                 user.verification_code = ''
                 user.save()
-                return Response({'message': 'Cuenta verificada correctamente'})
+                return Response({'status': 'ok', 'message': 'Cuenta verificada correctamente'})
             else:
-                return Response({'error': 'Código incorrecto'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'status': 'error', 'message': 'Código incorrecto'}, status=status.HTTP_400_BAD_REQUEST)
         except User.DoesNotExist:
-            return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'status': 'error', 'message': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
 
 
 
@@ -82,3 +81,4 @@ class LogoutView(APIView):
         request.user.auth_token.delete()
         logout(request)
         return Response({"message": "Sesión cerrada."}, status=status.HTTP_200_OK)
+    

@@ -9,4 +9,5 @@ urlpatterns = [
     path('verify/', VerifyCodeView.as_view()),
     path('signin/', SigninView.as_view()),
     path('logout/', LogoutView.as_view()),
+    
 ]
