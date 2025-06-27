@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import RegexValidator
+from django.utils import timezone
 import random
 import string
 
@@ -56,6 +57,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)  # activado por defecto para login
     is_staff = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, blank=True)
+    
+    created_at = models.DateTimeField(default=timezone.now)
+
 
     objects = UserManager()
 
