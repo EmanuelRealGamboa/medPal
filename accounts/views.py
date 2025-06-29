@@ -8,7 +8,9 @@ from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.core.mail import send_mail
 import random
-
+from rest_framework import generics, permissions, status
+from .models import Perfil
+from .serializers import PerfilSerializer
 
 #Definimos que User sera nuestro modelo que hemos hecho en models.py (Modelo editado)
 User = get_user_model()
@@ -82,3 +84,48 @@ class LogoutView(APIView):
         logout(request)
         return Response({"message": "Sesión cerrada."}, status=status.HTTP_200_OK)
     
+
+
+class PerfilListCreateView(generics.ListCreateAPIView):
+    """
+    GET: lista todos los perfiles del jefe autenticado.
+    POST: crea un nuevo perfil asociado al jefe.
+    """
+    serializer_class = PerfilSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Perfil.objects.filter(jefe=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(jefe=self.request.user)
+
+
+class PerfilDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    GET: recupera un perfil en particular (si pertenece al jefe).
+    PUT/PATCH: actualiza los datos del perfil.
+    DELETE: borra el perfil.
+    """
+    serializer_class = PerfilSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Perfil.objects.filter(jefe=self.request.user)
+
+
+class PerfilDownloadView(generics.GenericAPIView):
+    """
+    GET: genera y sirve un archivo (p.ej. PDF) con la info del perfil.
+    """
+    serializer_class = PerfilSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, pk):
+        perfil = generics.get_object_or_404(Perfil, pk=pk, jefe=request.user)
+        # Aquí podrías generar un PDF o CSV dinámicamente.
+        # Por simplicidad, retornamos JSON con un campo 'download_url'.
+        return Response({
+            "download_url": f"/media/perfiles/{perfil.id}.pdf"
+        }) 
+

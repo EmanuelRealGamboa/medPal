@@ -2,10 +2,12 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 import random
 import string
+from django.contrib.auth.models import User
 
 # Generador de código de verificación de 6 dígitos
 def generate_verification_code():
     return ''.join(random.choices(string.digits, k=6))
+
 
 
 class UserManager(BaseUserManager):
@@ -53,3 +55,23 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+
+class Perfil(models.Model):
+    """
+    Representa un perfil agregado por un Jefe de Familia.
+    """
+    jefe = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='perfiles'
+    )
+    nombre = models.CharField(max_length=100)
+    fecha_nacimiento = models.DateField(null=True, blank=True)
+    relacion = models.CharField(
+        max_length=50,
+        help_text="p.ej. 'Hijo', 'Esposa', etc."
+    )
+
+    def __str__(self):
+        return f"{self.nombre} ({self.relacion})"

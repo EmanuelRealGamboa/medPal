@@ -1,6 +1,8 @@
 # accounts/serializers.py
 from rest_framework import serializers
 from .models import User
+from django.core.mail import send_mail
+from .models import Perfil
 
 
 # Leeme
@@ -68,3 +70,10 @@ class SigninSerializer(serializers.Serializer):
             raise serializers.ValidationError("Verifica tu correo electrónico antes de iniciar sesión.")
         data['user'] = user
         return data
+    
+
+
+class PerfilSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Perfil
+        fields = ['id', 'nombre', 'fecha_nacimiento', 'relacion']
