@@ -75,8 +75,19 @@ class SigninSerializer(serializers.Serializer):
 
 
 
+
+
+
+
+
 class RequestPasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField()
+
+
+
+
+
+
 
 class ResetPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
