@@ -1,3 +1,4 @@
+<<<<<<< HEAD:accounts/urls.py
 # accounts/urls.py
 from django.urls import path
 from .views import SignupView, VerifyCodeView, SigninView, LogoutView
@@ -19,3 +20,12 @@ urlpatterns = [
     path('perfiles/<int:pk>/', PerfilDetailView.as_view(), name='perfiles-detail'),
     path('perfiles/<int:pk>/download/', PerfilDownloadView.as_view(), name='perfil-download'),
 ]
+=======
+from django.urls import path
+from .views import RegisterAPIView, LoginAPIView
+
+urlpatterns = [
+    path('registro/', RegisterAPIView.as_view(), name='register'),
+    path('login/',    LoginAPIView.as_view(),    name='login'),
+]
+>>>>>>> f1f5572f3869c3041e015a1b72e566090f648a67:api/urls.py
