@@ -12,7 +12,11 @@ import random
 from rest_framework import generics, permissions, status
 from .models import Perfil
 from .serializers import PerfilSerializer
-
+from rest_framework import generics, permissions
+from .models import Reminder
+from .serializers import ProfileSerializer, ReminderSerializer
+from .models import PersonalData, MedicalHistory
+from .serializers import PersonalDataSerializer, MedicalHistorySerializer
 #Definimos que User sera nuestro modelo que hemos hecho en models.py (Modelo editado)
 User = get_user_model()
 
@@ -48,7 +52,78 @@ class SignupView(APIView):
 
 
 
+class ProfileRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    """
+    GET → devuelve datos del perfil del usuario autenticado.
+    PUT → actualiza datos (email, nombres, teléfono).
+    """
+    serializer_class    = ProfileSerializer
+    permission_classes  = [permissions.IsAuthenticated]
 
+    def get_object(self):
+        return self.request.user
+
+
+class ReminderListCreateAPIView(generics.ListCreateAPIView):
+    """
+    GET  → lista todos los recordatorios del usuario autenticado.
+    POST → crea un nuevo recordatorio.
+    """
+    serializer_class   = ReminderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # solo los del usuario actual
+        return Reminder.objects.filter(user=self.request.user).order_by('-remind_at')
+
+    def perform_create(self, serializer):
+        # asignar automáticamente al usuario
+        serializer.save(user=self.request.user)
+
+
+
+
+
+class PersonalDataRetrieveUpdateView(generics.RetrieveUpdateAPIView):
+    """
+    GET → ver datos personales
+    PUT/PATCH → actualizar datos personales
+    """
+    serializer_class   = PersonalDataSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        # crea el objeto si no existe
+        obj, _ = PersonalData.objects.get_or_create(user=self.request.user)
+        return obj
+
+
+class MedicalHistoryListCreateView(generics.ListCreateAPIView):
+    """
+    GET  → lista antecedentes médicos
+    POST → añadir un nuevo antecedente
+    """
+    serializer_class   = MedicalHistorySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return MedicalHistory.objects.filter(user=self.request.user).order_by('-diagnostico')
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class MedicalHistoryDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    GET    → ver un antecedente
+    PUT/PATCH → actualizar
+    DELETE → borrar
+    """
+    serializer_class   = MedicalHistorySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return MedicalHistory.objects.filter(user=self.request.user)
 
 
 

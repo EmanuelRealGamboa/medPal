@@ -1,10 +1,9 @@
-<<<<<<< HEAD:accounts/serializers.py
 # accounts/serializers.py
 from rest_framework import serializers
 from .models import User
 from django.core.mail import send_mail
 from .models import Perfil
-
+from .models import PersonalData, MedicalHistory
 #Leeme
 
 """Si estas Usando Django por primera vez, necesitas saber que Serializers
@@ -12,6 +11,18 @@ es como un puente en entre Json y Python enviar y recibir formato de Json a pyth
 
 
 
+
+class PersonalDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = PersonalData
+        fields = ['fecha_nacimiento', 'direccion', 'genero']
+
+
+class MedicalHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = MedicalHistory
+        fields = ['id', 'condicion', 'diagnostico', 'notas', 'creado']
+        read_only_fields = ['id', 'creado']
 
 
 #SignUp Serializers(Json)
@@ -89,50 +100,3 @@ class PerfilSerializer(serializers.ModelSerializer):
     class Meta:
         model = Perfil
         fields = ['id', 'nombre', 'fecha_nacimiento', 'relacion']
-=======
-from rest_framework import serializers
-from .models import CustomUser
-
-class RegisterSerializer(serializers.ModelSerializer):
-    password2 = serializers.CharField(write_only=True, min_length=8)
-
-    class Meta:
-        model = CustomUser
-        fields = [
-            'email', 'first_name', 'last_name_paterno', 'last_name_materno',
-            'phone', 'password', 'password2'
-        ]
-        extra_kwargs = {
-            'password': {'write_only': True, 'min_length': 8}
-        }
-
-    def validate(self, data):
-        if data['password'] != data.pop('password2'):
-            raise serializers.ValidationError("Las contraseñas no coinciden.")
-        return data
-
-    def create(self, validated_data):
-        # Se quita password2 y se crea usuario
-        return CustomUser.objects.create_user(
-            email=validated_data['email'],
-            first_name=validated_data['first_name'],
-            last_name_paterno=validated_data['last_name_paterno'],
-            last_name_materno=validated_data['last_name_materno'],
-            phone=validated_data['phone'],
-            password=validated_data['password']
-        )
-
-class LoginSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    password = serializers.CharField(write_only=True)
-
-    def validate(self, data):
-        from django.contrib.auth import authenticate
-        user = authenticate(username=data['email'], password=data['password'])
-        if not user:
-            raise serializers.ValidationError("Credenciales inválidas.")
-        if not user.is_active:
-            raise serializers.ValidationError("Cuenta desactivada.")
-        data['user'] = user
-        return data
->>>>>>> f1f5572f3869c3041e015a1b72e566090f648a67:api/serializers.py
