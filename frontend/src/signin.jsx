@@ -23,7 +23,7 @@ function Signin() {
       if (!response.ok) throw new Error('Error en el inicio de sesión');
       const data = await response.json();
       localStorage.setItem('token', data.token);
-      navigate('/index');
+      navigate('/perfiles');
     } catch (err) {
       alert(err.message);
     }

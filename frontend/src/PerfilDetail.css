@@ -1,0 +1,67 @@
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.perfil-detail {
+  min-height: 100vh;
+  background-color: #FBFFE4;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 1rem;
+  color: #3D8D7A;
+}
+
+.perfil-detail h2 {
+  color: #2B5C52;
+  margin-bottom: 2rem;
+}
+
+.perfil-detail .list-group {
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  background-color: #A3D1C6;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.perfil-detail .list-group-item {
+  background-color: transparent;
+  border: none;
+  font-size: 1.1rem;
+}
+
+.perfil-detail .list-group-item strong {
+  color: #2B5C52;
+}
+
+.perfil-detail .btn {
+  min-width: 120px;
+  font-weight: 500;
+  transition: transform 0.2s ease;
+}
+
+.perfil-detail .btn:hover {
+  transform: scale(1.05);
+}
+
+.perfil-detail .text-center {
+  text-align: center;
+}
+
+@media (max-width: 576px) {
+  .perfil-detail {
+    padding: 2rem 1rem;
+  }
+
+  .perfil-detail .list-group-item {
+    font-size: 1rem;
+  }
+
+  .perfil-detail .btn {
+    min-width: 100px;
+    margin: 0.3rem;
+  }
+}
