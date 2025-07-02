@@ -68,3 +68,34 @@ class SigninSerializer(serializers.Serializer):
             raise serializers.ValidationError("Verifica tu correo electrónico antes de iniciar sesión.")
         data['user'] = user
         return data
+    
+
+
+
+
+
+
+
+
+
+
+
+class RequestPasswordResetSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
+
+
+
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    code = serializers.CharField(max_length=6)
+    new_password = serializers.CharField()
+    new_password2 = serializers.CharField()
+
+    def validate(self, data):
+        if data['new_password'] != data['new_password2']:
+            raise serializers.ValidationError("Las contraseñas no coinciden.")
+        return data

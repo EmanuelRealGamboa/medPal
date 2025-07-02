@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.core.validators import RegexValidator
+from django.utils import timezone
 import random
 import string
 
@@ -35,16 +37,29 @@ class UserManager(BaseUserManager):
 
         return self.create_user(email, password, **extra_fields)
     
+only_letters = RegexValidator(
+    regex=r'^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$',
+    message='Este campo solo puede contener letras y espacios.'
     
+)  
+
+ten_digits_only = RegexValidator(
+    regex=r'^\d{10}$',
+    message='El número de teléfono debe contener exactamente 10 dígitos numéricos.'
+)
+
 class User(AbstractBaseUser, PermissionsMixin):
-    name = models.CharField(max_length=100)
-    apellido_paterno = models.CharField(max_length=100)
-    apellido_materno = models.CharField(max_length=100)
-    phone = models.CharField(max_length=20, unique=True)
+    name = models.CharField(max_length=100,validators=[only_letters])
+    apellido_paterno = models.CharField(max_length=100,validators=[only_letters])
+    apellido_materno = models.CharField(max_length=100,validators=[only_letters])
+    phone = models.CharField(max_length=10, validators=[ten_digits_only]) 
     email = models.EmailField(unique=True)
     is_active = models.BooleanField(default=True)  # activado por defecto para login
     is_staff = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, blank=True)
+    
+    created_at = models.DateTimeField(default=timezone.now)
+
 
     objects = UserManager()
 

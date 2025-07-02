@@ -1,4 +1,3 @@
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -54,15 +53,15 @@ class VerifyCodeView(APIView):
 
         try:
             user = User.objects.get(email=email)
-            if user.verification_code == code:
+            if str(user.verification_code) == str(code):  # <-- comparando correctamente
                 user.is_active = True
                 user.verification_code = ''
                 user.save()
-                return Response({'message': 'Cuenta verificada correctamente'})
+                return Response({'status': 'ok', 'message': 'Cuenta verificada correctamente'})
             else:
-                return Response({'error': 'Código incorrecto'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'status': 'error', 'message': 'Código incorrecto'}, status=status.HTTP_400_BAD_REQUEST)
         except User.DoesNotExist:
-            return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'status': 'error', 'message': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
 
 
 
@@ -82,3 +81,52 @@ class LogoutView(APIView):
         request.user.auth_token.delete()
         logout(request)
         return Response({"message": "Sesión cerrada."}, status=status.HTTP_200_OK)
+    
+
+
+
+class RequestPasswordResetView(APIView):
+    def post(self, request):
+        email = request.data.get("email")
+
+        try:
+            user = User.objects.get(email=email, is_active=True)
+            code = str(random.randint(100000, 999999))
+            user.verification_code = code
+            user.save()
+
+            send_mail(
+                subject='Código para cambiar tu contraseña',
+                message=f'Tu código de verificación es: {code}',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email],
+                fail_silently=False,
+            )
+
+            return Response({"message": "Código enviado al correo."}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({"error": "Usuario no encontrado o inactivo."}, status=status.HTTP_404_NOT_FOUND)
+        
+        
+        
+class ResetPasswordView(APIView):
+    def post(self, request):
+        email = request.data.get("email")
+        code = request.data.get("code")
+        new_password = request.data.get("new_password")
+        new_password2 = request.data.get("new_password2")
+
+        if new_password != new_password2:
+            return Response({"error": "Las contraseñas no coinciden."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(email=email)
+            if user.verification_code == code:
+                user.set_password(new_password)
+                user.verification_code = ''
+                user.save()
+                return Response({"message": "Contraseña actualizada con éxito."}, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Código incorrecto."}, status=status.HTTP_400_BAD_REQUEST)
+        except User.DoesNotExist:
+            return Response({"error": "Usuario no encontrado."}, status=status.HTTP_404_NOT_FOUND)
