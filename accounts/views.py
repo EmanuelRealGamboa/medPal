@@ -17,8 +17,6 @@ User = get_user_model()
 
 
 
-
-
 class SignupView(APIView):
     def post(self, request):
         serializer = SignupSerializer(data=request.data)
@@ -82,11 +80,21 @@ class SigninView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+
 class LogoutView(APIView):
     def post(self, request):
-        request.user.auth_token.delete()
-        logout(request)
-        return Response({"message": "Sesión cerrada."}, status=status.HTTP_200_OK)
+        try:
+            # Eliminar el token si existe
+            if hasattr(request.user, 'auth_token'):
+                request.user.auth_token.delete()
+            
+            # Cerrar sesión
+            logout(request)
+            
+            return Response({"message": "Sesión cerrada exitosamente."}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": "Error al cerrar sesión."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 
 
