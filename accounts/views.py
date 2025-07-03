@@ -99,8 +99,6 @@ class LogoutView(APIView):
             return Response({"error": "Error al cerrar sesión."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 
-
-<<<<<<< HEAD
 class PerfilListCreateView(generics.ListCreateAPIView):
     """
     GET: lista todos los perfiles del jefe autenticado.
@@ -143,8 +141,6 @@ class PerfilDownloadView(generics.GenericAPIView):
         return Response({
             "download_url": f"/media/perfiles/{perfil.id}.pdf"
         }) 
-
-=======
 
 
 
@@ -200,4 +196,4 @@ class ResetPasswordView(APIView):
                 return Response({"error": "Error al actualizar la contraseña."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
->>>>>>> 90ed2677ced350331c7d5af601b3c7b32038f676
+

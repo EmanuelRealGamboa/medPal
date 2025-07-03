@@ -73,12 +73,12 @@ class SigninSerializer(serializers.Serializer):
     
 
 
-<<<<<<< HEAD
+
 class PerfilSerializer(serializers.ModelSerializer):
     class Meta:
         model = Perfil
         fields = ['id', 'nombre', 'fecha_nacimiento', 'relacion']
-=======
+
 
 
 
@@ -133,4 +133,4 @@ class ResetPasswordSerializer(serializers.Serializer):
         user.set_password(self.validated_data['new_password'])
         user.clear_verification_code()  # Limpiar el código después de usarlo
         return user
->>>>>>> 90ed2677ced350331c7d5af601b3c7b32038f676
+

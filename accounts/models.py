@@ -72,7 +72,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
     
-<<<<<<< HEAD
+
 
 class Perfil(models.Model):
     """
@@ -92,7 +92,7 @@ class Perfil(models.Model):
 
     def __str__(self):
         return f"{self.nombre} ({self.relacion})"
-=======
+
     def is_verification_code_expired(self):
         """Verifica si el código de verificación ha expirado (5 minutos)"""
         if not self.verification_code_created_at:
@@ -106,4 +106,4 @@ class Perfil(models.Model):
         self.verification_code = ''
         self.verification_code_created_at = None
         self.save()
->>>>>>> 90ed2677ced350331c7d5af601b3c7b32038f676
+
