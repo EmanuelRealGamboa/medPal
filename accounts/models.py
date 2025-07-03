@@ -57,6 +57,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)  # activado por defecto para login
     is_staff = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, blank=True)
+    verification_code_created_at = models.DateTimeField(null=True, blank=True)
     
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -68,3 +69,17 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+    def is_verification_code_expired(self):
+        """Verifica si el código de verificación ha expirado (5 minutos)"""
+        if not self.verification_code_created_at:
+            return True
+        from datetime import timedelta
+        expiration_time = self.verification_code_created_at + timedelta(minutes=5)
+        return timezone.now() > expiration_time
+    
+    def clear_verification_code(self):
+        """Limpia el código de verificación y su timestamp"""
+        self.verification_code = ''
+        self.verification_code_created_at = None
+        self.save()

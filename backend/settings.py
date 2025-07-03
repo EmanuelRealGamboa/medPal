@@ -130,9 +130,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Mexico_City'
 
 USE_I18N = True
 
@@ -158,6 +158,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'ramses.devn@gmail.com'
 EMAIL_HOST_PASSWORD = 'cmfabltprahohbup'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+#PASSWORD_RESET_TIMEOUT=14400
 
 
 #Cors Autenthications (React)

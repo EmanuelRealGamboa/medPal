@@ -83,6 +83,13 @@ class SigninSerializer(serializers.Serializer):
 class RequestPasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
+    def validate_email(self, value):
+        try:
+            user = User.objects.get(email=value, is_active=True)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("No existe un usuario activo con este correo electrónico.")
+        return value
+
 
 
 
@@ -92,10 +99,29 @@ class RequestPasswordResetSerializer(serializers.Serializer):
 class ResetPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
     code = serializers.CharField(max_length=6)
-    new_password = serializers.CharField()
-    new_password2 = serializers.CharField()
+    new_password = serializers.CharField(min_length=8)
+    new_password2 = serializers.CharField(min_length=8)
 
     def validate(self, data):
         if data['new_password'] != data['new_password2']:
             raise serializers.ValidationError("Las contraseñas no coinciden.")
+        
+        # Validar que el usuario existe y el código es correcto
+        try:
+            user = User.objects.get(email=data['email'])
+            if not user.verification_code:
+                raise serializers.ValidationError("No hay código de verificación activo.")
+            if user.verification_code != data['code']:
+                raise serializers.ValidationError("Código de verificación incorrecto.")
+            if user.is_verification_code_expired():
+                raise serializers.ValidationError("El código de verificación ha expirado. Solicita uno nuevo.")
+        except User.DoesNotExist:
+            raise serializers.ValidationError("Usuario no encontrado.")
+        
         return data
+
+    def save(self):
+        user = User.objects.get(email=self.validated_data['email'])
+        user.set_password(self.validated_data['new_password'])
+        user.clear_verification_code()  # Limpiar el código después de usarlo
+        return user
