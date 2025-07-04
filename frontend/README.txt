@@ -1,0 +1,9 @@
+- GET/POST /vaccines/types/ - CRUD tipos de vacunas
+- GET/POST /vaccines/records/ - CRUD registros de vacunas
+- POST /vaccines/records/{id}/mark_applied/ - Marcar como aplicada
+- GET /vaccines/records/upcoming/ - Vacunas próximas
+- GET /vaccines/records/overdue/ - Vacunas vencidas
+- GET /vaccines/card/ - Cartilla completa
+- POST /vaccines/schedule/ - Generar cronograma
+- GET /vaccines/stats/ - Estadísticas
+- GET/POST /vaccines/alerts/ - Alertas

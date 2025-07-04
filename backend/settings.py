@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'accounts',
-    
+    'vaccines',
 ]
 #pip install django-material --break-system-packages
 MIDDLEWARE = [
