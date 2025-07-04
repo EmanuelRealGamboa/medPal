@@ -179,3 +179,6 @@ REST_FRAMEWORK = {
 
 ##Modelo para que se Use el User personalizado
 AUTH_USER_MODEL = 'accounts.User'
+
+# Clave de encriptación para códigos de verificación
+VERIFICATION_CODE_ENCRYPTION_KEY = 'your-32-byte-base64-encoded-key-here-change-in-production'
