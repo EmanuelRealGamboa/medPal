@@ -12,23 +12,28 @@ from .views import (
     PersonalDataRetrieveUpdateView,
     MedicalHistoryListCreateView,
     MedicalHistoryDetailView,
+    RequestPasswordResetView,
+    ResetPasswordView
 )
-{
 
-}
 urlpatterns = [
     # Autenticación
-    path('signup/',    SignupView.as_view(),            name='signup'),
-    path('verify/',    VerifyCodeView.as_view(),        name='verify-code'),
-    path('signin/',    SigninView.as_view(),            name='signin'),
-    path('logout/',    LogoutView.as_view(),            name='logout'),
+    path('signup/', SignupView.as_view(), name='signup'),
+    path('verify/', VerifyCodeView.as_view(), name='verify-code'),
+    path('signin/', SigninView.as_view(), name='signin'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('request-password-reset/', RequestPasswordResetView.as_view(), name='request-password-reset'),
+    path('reset-password/', ResetPasswordView.as_view(), name='reset-password'),
+
     # Perfiles (jefe de familia)
-    path('perfiles/',                 PerfilListCreateView.as_view(),   name='perfiles-list-create'),
-    path('perfiles/<int:pk>/',        PerfilDetailView.as_view(),       name='perfiles-detail'),
-    path('perfiles/<int:pk>/download/', PerfilDownloadView.as_view(),    name='perfil-download'),
-    # Datos personales (one‑to‑one)
-    path('personal-data/',            PersonalDataRetrieveUpdateView.as_view(), name='personal-data'),
-    # Antecedentes médicos aisksk
-    path('medical-history/',          MedicalHistoryListCreateView.as_view(),   name='medical-history-list-create'),
-    path('medical-history/<int:pk>/', MedicalHistoryDetailView.as_view(),       name='medical-history-detail'),
+    path('perfiles/', PerfilListCreateView.as_view(), name='perfiles-list-create'),
+    path('perfiles/<int:pk>/', PerfilDetailView.as_view(), name='perfiles-detail'),
+    path('perfiles/<int:pk>/download/', PerfilDownloadView.as_view(), name='perfil-download'),
+
+    # Datos personales (OneToOne)
+    path('personal-data/', PersonalDataRetrieveUpdateView.as_view(), name='personal-data'),
+
+    # Antecedentes médicos
+    path('medical-history/', MedicalHistoryListCreateView.as_view(), name='medical-history-list-create'),
+    path('medical-history/<int:pk>/', MedicalHistoryDetailView.as_view(), name='medical-history-detail'),
 ]

@@ -27,6 +27,17 @@ class MedicalHistorySerializer(serializers.ModelSerializer):
 
 #SignUp Serializers(Json)
 
+
+
+# Leeme
+"""
+Si estás usando Django por primera vez, necesitas saber que Serializers
+es como un puente entre JSON y Python. Permite enviar y recibir datos en formato JSON
+y convertirlos a objetos de Python, y viceversa.
+"""
+
+
+# SignUp Serializer (para registro)
 class SignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
@@ -44,23 +55,13 @@ class SignupSerializer(serializers.ModelSerializer):
         validated_data.pop('password2')
         password = validated_data.pop('password')
         user = User(**validated_data)
-        user.set_password(password)
-        user.verification_code = user.verification_code or User.objects.make_random_password(length=6, allowed_chars='0123456789')
-        user.is_active = False
+        user.set_password(password)  # Encripta la contraseña
+        user.is_active = False  # Se activa cuando verifique el código
         user.save()
-
-        send_mail(
-            'Código de verificación',
-            f'Tu código es: {user.verification_code}',
-            'no-reply@tuapp.com',
-            [user.email],
-            fail_silently=False
-        )
-
         return user
 
-#Verification Code Serializadores (Json)
 
+# Verification Code Serializer (para verificar el código enviado por correo)
 class VerifyCodeSerializer(serializers.Serializer):
     email = serializers.EmailField()
     code = serializers.CharField(max_length=6)
@@ -78,8 +79,8 @@ class VerifyCodeSerializer(serializers.Serializer):
         user.verification_code = ''
         user.save()
 
-#Signin Serializers (Json)
 
+# Signin Serializer (para iniciar sesión)
 class SigninSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
@@ -100,3 +101,57 @@ class PerfilSerializer(serializers.ModelSerializer):
     class Meta:
         model = Perfil
         fields = ['id', 'nombre', 'fecha_nacimiento', 'relacion']
+
+
+
+
+
+
+
+
+
+class RequestPasswordResetSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        try:
+            user = User.objects.get(email=value, is_active=True)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("No existe un usuario activo con este correo electrónico.")
+        return value
+
+
+
+
+
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    code = serializers.CharField(max_length=6)
+    new_password = serializers.CharField(min_length=8)
+    new_password2 = serializers.CharField(min_length=8)
+
+    def validate(self, data):
+        if data['new_password'] != data['new_password2']:
+            raise serializers.ValidationError("Las contraseñas no coinciden.")
+        
+        # Validar que el usuario existe y el código es correcto
+        try:
+            user = User.objects.get(email=data['email'])
+            if not user.verification_code:
+                raise serializers.ValidationError("No hay código de verificación activo.")
+            if user.verification_code != data['code']:
+                raise serializers.ValidationError("Código de verificación incorrecto.")
+            if user.is_verification_code_expired():
+                raise serializers.ValidationError("El código de verificación ha expirado. Solicita uno nuevo.")
+        except User.DoesNotExist:
+            raise serializers.ValidationError("Usuario no encontrado.")
+        
+        return data
+
+    def save(self):
+        user = User.objects.get(email=self.validated_data['email'])
+        user.set_password(self.validated_data['new_password'])
+        user.clear_verification_code()  # Limpiar el código después de usarlo
+        return user

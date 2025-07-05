@@ -32,6 +32,11 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'material',            
+    'material.frontend',    
+    'material.admin',
+    'colorfield',
+    'admin_interface',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,6 +48,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'django.contrib.staticfiles',
 ]
+<<<<<<< HEAD
 
 
 AUTH_USER_MODEL = 'api.CustomUser'
@@ -61,6 +67,9 @@ REST_FRAMEWORK = {
 
 
 
+=======
+#pip install django-material --break-system-packages
+>>>>>>> 90ed2677ced350331c7d5af601b3c7b32038f676
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -116,6 +125,9 @@ DATABASES = {
 }
 
 
+
+
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -138,9 +150,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Mexico_City'
 
 USE_I18N = True
 
@@ -166,11 +178,18 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'ramses.devn@gmail.com'
 EMAIL_HOST_PASSWORD = 'cmfabltprahohbup'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+#PASSWORD_RESET_TIMEOUT=14400
+
 
 #Cors Autenthications (React)
-CORS_ALLOWED_ORIGINS = []
+CORS_ALLOWED_ORIGINS = [
 
+    'http://localhost:5173',
 
+    
+]
+
+ 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',

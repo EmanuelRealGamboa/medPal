@@ -1,13 +1,13 @@
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import SignupSerializer, VerifyCodeSerializer, SigninSerializer
+from .serializers import SignupSerializer, VerifyCodeSerializer, SigninSerializer, RequestPasswordResetSerializer, ResetPasswordSerializer
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import logout
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.core.mail import send_mail
+from django.utils import timezone
 import random
 from rest_framework import generics, permissions, status
 from .models import Perfil
@@ -23,8 +23,6 @@ User = get_user_model()
 
 
 
-
-
 class SignupView(APIView):
     def post(self, request):
         serializer = SignupSerializer(data=request.data)
@@ -34,6 +32,8 @@ class SignupView(APIView):
 
             # Guardar datos sin crear cuenta aún
             user = serializer.save(verification_code=code, is_active=False)
+            user.verification_code_created_at = timezone.now()
+            user.save()
 
             # Enviar correo
             send_mail(
@@ -135,15 +135,20 @@ class VerifyCodeView(APIView):
 
         try:
             user = User.objects.get(email=email)
-            if user.verification_code == code:
+            if not user.verification_code:
+                return Response({'status': 'error', 'message': 'No hay código de verificación activo'}, status=status.HTTP_400_BAD_REQUEST)
+            if user.is_verification_code_expired():
+                return Response({'status': 'error', 'message': 'El código de verificación ha expirado. Solicita uno nuevo'}, status=status.HTTP_400_BAD_REQUEST)
+            if str(user.verification_code) == str(code):  # <-- comparando correctamente
                 user.is_active = True
-                user.verification_code = ''
-                user.save()
-                return Response({'message': 'Cuenta verificada correctamente'})
+                user.clear_verification_code()
+                return Response({'status': 'ok', 'message': 'Cuenta verificada correctamente'})
             else:
-                return Response({'error': 'Código incorrecto'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'status': 'error', 'message': 'Código incorrecto'}, status=status.HTTP_400_BAD_REQUEST)
         except User.DoesNotExist:
-            return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'status': 'error', 'message': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+
 
 
 class SigninView(APIView):
@@ -154,6 +159,8 @@ class SigninView(APIView):
             token, _ = Token.objects.get_or_create(user=user)
             return Response({"token": token.key})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 class LogoutView(APIView):
@@ -206,3 +213,72 @@ class PerfilDownloadView(generics.GenericAPIView):
         return Response({
             "download_url": f"/media/perfiles/{perfil.id}.pdf"
         })
+        try:
+            # Eliminar el token si existe
+            if hasattr(request.user, 'auth_token'):
+                request.user.auth_token.delete()
+            
+            # Cerrar sesión
+            logout(request)
+            
+            return Response({"message": "Sesión cerrada exitosamente."}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": "Error al cerrar sesión."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+
+
+
+
+
+class RequestPasswordResetView(APIView):
+    def post(self, request):
+        serializer = RequestPasswordResetSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            
+            try:
+                user = User.objects.get(email=email, is_active=True)
+                code = str(random.randint(100000, 999999))
+                user.verification_code = code
+                user.verification_code_created_at = timezone.now()
+                user.save()
+
+                send_mail(
+                    subject='Código para cambiar tu contraseña - MedPal',
+                    message=f'Hola {user.name},\n\nHas solicitado cambiar tu contraseña.\n\nTu código de verificación es: {code}\n\nEste código expirará en 5 minutos.\n\nSi no solicitaste este cambio, ignora este mensaje.\n\nSaludos,\nEquipo MedPal',
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    fail_silently=False,
+                )
+
+                return Response({"message": "Código enviado al correo electrónico."}, status=status.HTTP_200_OK)
+            except User.DoesNotExist:
+                return Response({"error": "Usuario no encontrado o inactivo."}, status=status.HTTP_404_NOT_FOUND)
+            except Exception as e:
+                return Response({"error": "Error al enviar el correo. Intenta nuevamente."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        
+        
+class ResetPasswordView(APIView):
+    def post(self, request):
+        serializer = ResetPasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                user = serializer.save()
+                
+                # Enviar confirmación por correo
+                send_mail(
+                    subject='Contraseña actualizada - MedPal',
+                    message=f'Hola {user.name},\n\nTu contraseña ha sido actualizada exitosamente.\n\nSi no realizaste este cambio, contacta inmediatamente a nuestro soporte.\n\nSaludos,\nEquipo MedPal',
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    fail_silently=True,  # No fallar si no se puede enviar la confirmación
+                )
+                
+                return Response({"message": "Contraseña actualizada con éxito."}, status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({"error": "Error al actualizar la contraseña."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
