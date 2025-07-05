@@ -12,7 +12,11 @@ import random
 from rest_framework import generics, permissions, status
 from .models import Perfil
 from .serializers import PerfilSerializer
-
+from rest_framework import generics, permissions
+from .models import Reminder
+from .serializers import ProfileSerializer, ReminderSerializer
+from .models import PersonalData, MedicalHistory
+from .serializers import PersonalDataSerializer, MedicalHistorySerializer
 #Definimos que User sera nuestro modelo que hemos hecho en models.py (Modelo editado)
 User = get_user_model()
 
@@ -45,6 +49,81 @@ class SignupView(APIView):
 
 
 
+
+
+
+class ProfileRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    """
+    GET → devuelve datos del perfil del usuario autenticado.
+    PUT → actualiza datos (email, nombres, teléfono).
+    """
+    serializer_class    = ProfileSerializer
+    permission_classes  = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+
+class ReminderListCreateAPIView(generics.ListCreateAPIView):
+    """
+    GET  → lista todos los recordatorios del usuario autenticado.
+    POST → crea un nuevo recordatorio.
+    """
+    serializer_class   = ReminderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # solo los del usuario actual
+        return Reminder.objects.filter(user=self.request.user).order_by('-remind_at')
+
+    def perform_create(self, serializer):
+        # asignar automáticamente al usuario
+        serializer.save(user=self.request.user)
+
+
+
+
+
+class PersonalDataRetrieveUpdateView(generics.RetrieveUpdateAPIView):
+    """
+    GET → ver datos personales
+    PUT/PATCH → actualizar datos personales
+    """
+    serializer_class   = PersonalDataSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        # crea el objeto si no existe
+        obj, _ = PersonalData.objects.get_or_create(user=self.request.user)
+        return obj
+
+
+class MedicalHistoryListCreateView(generics.ListCreateAPIView):
+    """
+    GET  → lista antecedentes médicos
+    POST → añadir un nuevo antecedente
+    """
+    serializer_class   = MedicalHistorySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return MedicalHistory.objects.filter(user=self.request.user).order_by('-diagnostico')
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class MedicalHistoryDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    GET    → ver un antecedente
+    PUT/PATCH → actualizar
+    DELETE → borrar
+    """
+    serializer_class   = MedicalHistorySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return MedicalHistory.objects.filter(user=self.request.user)
 
 
 
@@ -86,18 +165,11 @@ class SigninView(APIView):
 
 class LogoutView(APIView):
     def post(self, request):
-        try:
-            # Eliminar el token si existe
-            if hasattr(request.user, 'auth_token'):
-                request.user.auth_token.delete()
-            
-            # Cerrar sesión
-            logout(request)
-            
-            return Response({"message": "Sesión cerrada exitosamente."}, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"error": "Error al cerrar sesión."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        request.user.auth_token.delete()
+        logout(request)
+        return Response({"message": "Sesión cerrada."}, status=status.HTTP_200_OK)
     
+
 
 class PerfilListCreateView(generics.ListCreateAPIView):
     """
@@ -140,7 +212,21 @@ class PerfilDownloadView(generics.GenericAPIView):
         # Por simplicidad, retornamos JSON con un campo 'download_url'.
         return Response({
             "download_url": f"/media/perfiles/{perfil.id}.pdf"
-        }) 
+        })
+        try:
+            # Eliminar el token si existe
+            if hasattr(request.user, 'auth_token'):
+                request.user.auth_token.delete()
+            
+            # Cerrar sesión
+            logout(request)
+            
+            return Response({"message": "Sesión cerrada exitosamente."}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": "Error al cerrar sesión."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+
+
 
 
 
@@ -196,4 +282,3 @@ class ResetPasswordView(APIView):
                 return Response({"error": "Error al actualizar la contraseña."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-

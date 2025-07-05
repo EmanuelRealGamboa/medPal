@@ -3,6 +3,30 @@ from rest_framework import serializers
 from .models import User
 from django.core.mail import send_mail
 from .models import Perfil
+from .models import PersonalData, MedicalHistory
+#Leeme
+
+"""Si estas Usando Django por primera vez, necesitas saber que Serializers
+es como un puente en entre Json y Python enviar y recibir formato de Json a python y de python a Json"""
+
+
+
+
+class PersonalDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = PersonalData
+        fields = ['fecha_nacimiento', 'direccion', 'genero']
+
+
+class MedicalHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = MedicalHistory
+        fields = ['id', 'condicion', 'diagnostico', 'notas', 'creado']
+        read_only_fields = ['id', 'creado']
+
+
+#SignUp Serializers(Json)
+
 
 
 # Leeme
@@ -73,21 +97,10 @@ class SigninSerializer(serializers.Serializer):
     
 
 
-
 class PerfilSerializer(serializers.ModelSerializer):
     class Meta:
         model = Perfil
         fields = ['id', 'nombre', 'fecha_nacimiento', 'relacion']
-
-
-
-
-
-
-
-
-
-
 class RequestPasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
@@ -98,12 +111,7 @@ class RequestPasswordResetSerializer(serializers.Serializer):
             raise serializers.ValidationError("No existe un usuario activo con este correo electrónico.")
         return value
 
-
-
-
-
-
-
+    
 class ResetPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
     code = serializers.CharField(max_length=6)
@@ -133,4 +141,3 @@ class ResetPasswordSerializer(serializers.Serializer):
         user.set_password(self.validated_data['new_password'])
         user.clear_verification_code()  # Limpiar el código después de usarlo
         return user
-
