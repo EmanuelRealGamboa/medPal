@@ -1,0 +1,62 @@
+:root {
+  --color-primary: #3D8D7A;
+  --color-bg-form: #FBFFE4;
+  --color-input-bg: #DAEED0;
+  --color-text: #205649;
+  --color-button-bg: #063832;
+  --color-button-hover: #1b5d4e;
+  --radius: 16px;
+}
+
+body {
+  background: linear-gradient(to right, #144136, #3D8D7A, #A3D1C6);
+  font-family: 'Segoe UI', sans-serif;
+  color: var(--color-text);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.auth-wrapper {
+  display: flex;
+  max-width: 900px;
+  width: 100%;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+
+.auth-left, .auth-right {
+  padding: 40px 30px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth-left {
+  background-color: var(--color-bg-form);
+}
+
+.auth-right {
+  background-color: var(--color-primary);
+  color: white;
+  text-align: center;
+}
+
+.btn-custom {
+  background-color: var(--color-button-bg);
+  color: white;
+  border: none;
+}
+
+.btn-custom:hover {
+  background-color: var(--color-button-hover);
+}
+
+.form-control {
+  background-color: var(--color-input-bg);
+  border: none;
+}
