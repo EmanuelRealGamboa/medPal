@@ -11,6 +11,7 @@ from django.utils import timezone
 import random
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from .serializers import UserSerializer
 
 
 #Definimos que User sera nuestro modelo que hemos hecho en models.py (Modelo editado)
@@ -166,4 +167,21 @@ class ResetPasswordView(APIView):
             except Exception as e:
                 return Response({"error": "Error al actualizar la contraseña."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+    #views para la informacion de los usuarios 
+
+class UserListCreateAPIView(APIView):
+    def get(self, request):
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = UserSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

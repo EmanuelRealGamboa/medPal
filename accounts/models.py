@@ -48,11 +48,14 @@ ten_digits_only = RegexValidator(
     message='El número de teléfono debe contener exactamente 10 dígitos numéricos.'
 )
 
+
 class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=100,validators=[only_letters])
     apellido_paterno = models.CharField(max_length=100,validators=[only_letters])
     apellido_materno = models.CharField(max_length=100,validators=[only_letters])
-    phone = models.CharField(max_length=10, validators=[ten_digits_only]) 
+    phone = models.CharField(max_length=10, validators=[ten_digits_only], default="0000000000")
+    contactoEmergencia = models.CharField(max_length=10, validators=[ten_digits_only], default="0000000000")
+    photoUser = models.ImageField(upload_to="user_photos/", null=True, blank=True)
     email = models.EmailField(unique=True)
     is_active = models.BooleanField(default=True)  # activado por defecto para login
     is_staff = models.BooleanField(default=False)

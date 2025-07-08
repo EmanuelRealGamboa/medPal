@@ -10,11 +10,13 @@ class UserAdmin(BaseUserAdmin):
     
     # Campos que se usarán en el formulario de detalle
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
-        ('Información personal', {'fields': ('name', 'apellido_paterno', 'apellido_materno', 'phone')}),
-        ('Permisos', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
-        ('Verificación', {'fields': ('verification_code',)}),
-    )
+    (None, {'fields': ('email', 'password')}),
+    ('Información personal', {'fields': ('name', 'apellido_paterno', 'apellido_materno', 'phone', 'photoUser')}),
+    ('Contacto', {'fields': ('contactoEmergencia',)}),
+    ('Permisos', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+    ('Verificación', {'fields': ('verification_code', 'verification_code_created_at')}),
+    ('Fechas', {'fields': ('created_at',)}),
+)
 
     # Campos para crear un nuevo usuario desde el admin
     add_fieldsets = (

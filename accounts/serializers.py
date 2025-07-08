@@ -69,9 +69,21 @@ class SigninSerializer(serializers.Serializer):
         data['user'] = user
         return data
     
+# SERIALIZER PARA LA INFORMACION DE EL USUARIO 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'  # O especifica campos si quieres limitar
 
-
+    # Esto permite que se suban archivos correctamente en multipart/form-data
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        if instance.photoUser:
+            request = self.context.get('request')
+            if request is not None:
+                data['photoUser'] = request.build_absolute_uri(instance.photoUser.url)
+        return data
 
 
 

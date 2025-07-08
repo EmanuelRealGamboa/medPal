@@ -1,7 +1,7 @@
 # accounts/urls.py
 from django.urls import path
 from .views import SignupView, VerifyCodeView, SigninView, LogoutView
-from .views import RequestPasswordResetView, ResetPasswordView
+from .views import RequestPasswordResetView, ResetPasswordView,UserListCreateAPIView
 
 #Rutas para los Edpoints
 
@@ -12,4 +12,5 @@ urlpatterns = [
     path('logout/', LogoutView.as_view()),
     path('request-password-reset/', RequestPasswordResetView.as_view()),
     path('reset-password/', ResetPasswordView.as_view()),
+    path('users/', UserListCreateAPIView.as_view(), name='user-list-create')
 ]
