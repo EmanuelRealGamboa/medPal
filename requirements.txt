@@ -7,6 +7,7 @@ attrs==25.3.0
 certifi==2025.4.26
 charset-normalizer==3.4.2
 coreapi==2.3.3
+cryptography==43.0.3
 coreschema==0.0.4
 Django==5.2.2
 django-admin-interface==0.30.1

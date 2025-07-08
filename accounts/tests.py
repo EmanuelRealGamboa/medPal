@@ -34,7 +34,7 @@ class UserModelTest(TestCase):
         self.assertEqual(user.email, self.user_data['email'])
         self.assertTrue(user.check_password(self.user_data['password']))
         self.assertEqual(user.name, self.user_data['name'])
-        self.assertFalse(user.is_active)
+        self.assertTrue(user.is_active)
     
     def test_create_superuser(self):
         """Test creación de superusuario"""
@@ -53,23 +53,19 @@ class UserModelTest(TestCase):
         from .models import generate_verification_code
         user = User.objects.create_user(**self.user_data)
         code = generate_verification_code()
-        user.verification_code = code
-        user.verification_code_created_at = timezone.now()
-        user.save()
+        user.set_verification_code(code)
         
         self.assertEqual(len(code), 6)
         self.assertTrue(code.isdigit())
-        self.assertEqual(user.verification_code, code)
+        self.assertEqual(user.get_verification_code(), code)
         self.assertIsNotNone(user.verification_code_created_at)
     
     def test_verification_code_expiration(self):
         """Test expiración del código de verificación"""
         user = User.objects.create_user(**self.user_data)
-        user.verification_code = '123456'
         
         # Código recién creado - no expirado
-        user.verification_code_created_at = timezone.now()
-        user.save()
+        user.set_verification_code('123456')
         self.assertFalse(user.is_verification_code_expired())
         
         # Código expirado (6 minutos atrás)
@@ -78,7 +74,7 @@ class UserModelTest(TestCase):
         self.assertTrue(user.is_verification_code_expired())
         
         # Sin código
-        user.verification_code = None
+        user.verification_code = ''
         user.verification_code_created_at = None
         user.save()
         self.assertTrue(user.is_verification_code_expired())
@@ -86,9 +82,7 @@ class UserModelTest(TestCase):
     def test_clear_verification_code(self):
         """Test limpieza del código de verificación"""
         user = User.objects.create_user(**self.user_data)
-        user.verification_code = '123456'
-        user.verification_code_created_at = timezone.now()
-        user.save()
+        user.set_verification_code('123456')
         
         user.clear_verification_code()
         
@@ -111,6 +105,7 @@ class SignupSerializerTest(TestCase):
             'name': 'Juan',
             'apellido_paterno': 'Pérez',
             'apellido_materno': 'García',
+            'phone': '1234567890',
             'email': 'juan@test.com',
             'password': 'testpass123',
             'password2': 'testpass123'
@@ -124,8 +119,11 @@ class SignupSerializerTest(TestCase):
         user = serializer.save()
         self.assertEqual(user.email, self.valid_data['email'])
         self.assertEqual(user.name, self.valid_data['name'])
-        self.assertFalse(user.is_active)
-        self.assertNotEqual(user.verification_code, '')
+        self.assertTrue(user.is_active)
+        # Verificar que el código de verificación fue generado
+        decrypted_code = user.get_verification_code()
+        self.assertIsNotNone(decrypted_code)
+        self.assertEqual(len(decrypted_code), 6)
     
     def test_password_mismatch(self):
         """Test con contraseñas que no coinciden"""
@@ -134,7 +132,7 @@ class SignupSerializerTest(TestCase):
         
         serializer = SignupSerializer(data=data)
         self.assertFalse(serializer.is_valid())
-        self.assertIn('password', serializer.errors)
+        self.assertIn('non_field_errors', serializer.errors)
     
     def test_duplicate_email(self):
         """Test con email duplicado"""
@@ -172,9 +170,7 @@ class ResetPasswordSerializerTest(TestCase):
             apellido_paterno='User',
             phone='1234567890'
         )
-        self.user.verification_code = '123456'
-        self.user.verification_code_created_at = timezone.now()
-        self.user.save()
+        self.user.set_verification_code('123456')
         
         self.valid_data = {
             'email': 'test@example.com',
@@ -229,13 +225,11 @@ class ResetPasswordSerializerTest(TestCase):
         
         serializer = ResetPasswordSerializer(data=data)
         self.assertFalse(serializer.is_valid())
-        self.assertIn('new_password', serializer.errors)
+        self.assertIn('non_field_errors', serializer.errors)
     
     def test_no_verification_code(self):
         """Test sin código de verificación"""
-        self.user.verification_code = ''
-        self.user.verification_code_created_at = None
-        self.user.save()
+        self.user.clear_verification_code()
         
         serializer = ResetPasswordSerializer(data=self.valid_data)
         self.assertFalse(serializer.is_valid())
@@ -311,8 +305,11 @@ class AccountsAPITest(APITestCase):
         self.assertIn('message', response.data)
         
         user = User.objects.get(email=self.user_data['email'])
-        self.assertFalse(user.is_active)
-        self.assertIsNotNone(user.verification_code)
+        self.assertTrue(user.is_active)
+        # Verificar que el código de verificación fue generado
+        decrypted_code = user.get_verification_code()
+        self.assertIsNotNone(decrypted_code)
+        self.assertEqual(len(decrypted_code), 6)
     
     def test_signup_duplicate_email(self):
         """Test registro con email duplicado"""
@@ -345,7 +342,8 @@ class AccountsAPITest(APITestCase):
         self.assertIn('message', response.data)
         
         user.refresh_from_db()
-        self.assertIsNotNone(user.verification_code)
+        decrypted_code = user.get_verification_code()
+        self.assertIsNotNone(decrypted_code)
         self.assertIsNotNone(user.verification_code_created_at)
         
         # Verificar que se envió el email
@@ -367,9 +365,7 @@ class AccountsAPITest(APITestCase):
             apellido_paterno='User',
             phone='1234567890'
         )
-        user.verification_code = '123456'
-        user.verification_code_created_at = timezone.now()
-        user.save()
+        user.set_verification_code('123456')
         
         data = {
             'email': 'test@example.com',
@@ -394,9 +390,7 @@ class AccountsAPITest(APITestCase):
             apellido_paterno='User',
             phone='1234567890'
         )
-        user.verification_code = '123456'
-        user.verification_code_created_at = timezone.now()
-        user.save()
+        user.set_verification_code('123456')
         
         data = {
             'email': 'test@example.com',

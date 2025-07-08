@@ -9,6 +9,8 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.utils import timezone
 import random
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 
 #Definimos que User sera nuestro modelo que hemos hecho en models.py (Modelo editado)
@@ -81,8 +83,20 @@ class SigninView(APIView):
 
 
 
-
 class LogoutView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        try:
+            # Eliminar el token del usuario autenticado
+            request.user.auth_token.delete()
+            
+            return Response({"message": "Sesión cerrada exitosamente."}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": "Error al cerrar sesión."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+'''class LogoutView(APIView):
     def post(self, request):
         try:
             # Eliminar el token si existe
@@ -94,7 +108,7 @@ class LogoutView(APIView):
             
             return Response({"message": "Sesión cerrada exitosamente."}, status=status.HTTP_200_OK)
         except Exception as e:
-            return Response({"error": "Error al cerrar sesión."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"error": "Error al cerrar sesión."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)'''
     
 
 
