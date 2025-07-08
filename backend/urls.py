@@ -28,6 +28,8 @@ urlpatterns = [
     path('ophthalmology/', include('ophthalmology.urls')),
     path('antecedentesMedicos/', include('antecedentesMedicos.urls')),
     path('gineco/', include('gineco.urls')),
+    path('vaccines/', include('vaccines.urls')),   
+    path('api/estudios/', include('estudios.urls')),
 ]
 
 
