@@ -10,7 +10,7 @@ def validate_file_extension(value):
         raise ValidationError('Only .jpg, .jpeg, .png or .pdf files are allowed.')
 
 def validate_file_size(value):
-    limit = 2 * 1024 * 1024  # 2MB
+    limit = 2 * 1024 * 1024  
     if value.size > limit:
         raise ValidationError('File size must not exceed 2MB.')
 
@@ -21,8 +21,8 @@ class MedicalPrescription(models.Model):
     prescribing_doctor = models.CharField(max_length=150)
     specialty = models.CharField(max_length=100)
     
-    description = models.TextField(blank=True, null=True)  # ← Renombrado desde 'notes'
-    medications = models.TextField(blank=True, null=True)  # ← Nuevo campo
+    description = models.TextField(blank=True, null=True)  
+    medications = models.TextField(blank=True, null=True)  
     
     file = models.FileField(
         upload_to='prescriptions/',

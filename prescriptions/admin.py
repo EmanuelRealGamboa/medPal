@@ -7,7 +7,7 @@ class MedicalPrescriptionAdmin(admin.ModelAdmin):
     list_display = (
         'patient', 'issue_date', 'institution',
         'prescribing_doctor', 'specialty',
-        'medications',  # ⬅️ ¡Aquí lo agregamos!
+        'medications', 
         'view_file'
     )
     search_fields = ('patient__email', 'prescribing_doctor', 'institution')
