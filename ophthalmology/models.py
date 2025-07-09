@@ -9,7 +9,7 @@ def validate_file_extension(value):
         raise ValidationError('Only .jpg, .jpeg, .png or .pdf files are allowed.')
 
 def validate_file_size(value):
-    limit = 2 * 1024 * 1024  # 2MB
+    limit = 2 * 1024 * 1024  
     if value.size > limit:
         raise ValidationError('File size must not exceed 2MB.')
 
