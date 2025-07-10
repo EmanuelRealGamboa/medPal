@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './PersonalInfoForm.css';
 
+
+
 export default function PersonalInfoForm() {
+
+  const [photoPreview, setPhotoPreview] = useState(null);
+
   return (
     <div className="main-layout">
       <header className="custom-navbar d-flex justify-content-between align-items-center px-4 py-2">
@@ -23,8 +28,35 @@ export default function PersonalInfoForm() {
               {/* Foto de perfil a la izquierda */}
               <div className="col-md-4 mb-3">
                 <label className="form-label">Foto de Perfil</label>
-                <div className="photo-placeholder border rounded bg-light d-flex justify-content-center align-items-center">
+                <div className="photo-placeholder border rounded bg-light d-flex justify-content-center align-items-center flex-column">
+                  {photoPreview ? (
+                    <img
+                      src={photoPreview}
+                      alt="Vista previa"
+                      className="img-fluid rounded"
+                      style={{ maxHeight: '120px', objectFit: 'cover' }}
+                    />
+                  ) : (
+                    <i className="bi bi-person-circle fs-1 text-secondary"></i>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="form-control mt-2"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setPhotoPreview(reader.result);
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                  />
                 </div>
+
+
               </div>
 
               {/* Campos a la derecha */}
