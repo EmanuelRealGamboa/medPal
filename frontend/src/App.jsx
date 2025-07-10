@@ -1,37 +1,77 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useParams } from 'react-router-dom';
 import SignIn from './signin.jsx';
 import Signup from './signup.jsx';
 import Verificacion from './verificacion.jsx';
-import Index from './index.jsx'; 
+import PerfilList from './PerfilList.jsx';
+import PerfilForm from './PerfilForm.jsx';
+import PerfilDetail from './PerfilDetail.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
+import PersonalInfoForm from './PersonalInfoForm.jsx';
 
 export default function App() {
   return (
-   <Routes>
-  {/* Públicas */}
-  <Route path="/" element={<SignIn />} />
-  <Route path="/signup" element={<Signup />} />
+    <Routes>
+      {/* Rutas públicas */}
+      <Route path="/" element={<SignIn />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/personalinform" element={<PersonalInfoForm />} /> 
 
-  {/* Verificación protegida por correo temporal */}
-  <Route
-    path="/verificacion"
-    element={
-      <ProtectedRoute requiresVerificationData={true}>
-        <Verificacion />
-      </ProtectedRoute>
-    }
-  />
 
-  {/* Rutas protegidas por token */}
-  <Route
-    path="/index"
-    element={
-      <ProtectedRoute>
-        <Index />
-      </ProtectedRoute>
-    }
-  />
-</Routes>
+      {/* Verificación protegida */}
+      <Route
+        path="/verificacion"
+        element={
+          <ProtectedRoute requiresVerificationData={true}>
+            <Verificacion />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Perfiles protegidos */}
+      <Route
+        path="/perfiles"
+        element={
+          <ProtectedRoute>
+            <PerfilList />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/perfiles/nuevo"
+        element={
+          <ProtectedRoute>
+            <PerfilForm />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/perfiles/:id"
+        element={
+          <ProtectedRoute>
+            <PerfilDetailWrapper />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/perfiles/:id/editar"
+        element={
+          <ProtectedRoute>
+            <PerfilFormWrapper />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   );
+}
+
+// Wrappers para pasar ID por props
+function PerfilFormWrapper() {
+  const { id } = useParams();
+  return <PerfilForm perfilId={id} />;
+}
+
+function PerfilDetailWrapper() {
+  const { id } = useParams();
+  return <PerfilDetail perfilId={id} />;
 }

@@ -1,6 +1,10 @@
 # accounts/serializers.py
 from rest_framework import serializers
 from .models import User
+from rest_framework import serializers
+from .models import Perfil
+from rest_framework import serializers
+from .models import PersonalData
 
 
 # Leeme
@@ -137,3 +141,20 @@ class ResetPasswordSerializer(serializers.Serializer):
         user.set_password(self.validated_data['new_password'])
         user.clear_verification_code()  # Limpiar el código después de usarlo
         return user
+    
+
+
+
+class PerfilSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Perfil
+        fields = ['id', 'nombre', 'fecha_nacimiento', 'relacion']
+
+
+
+
+
+class PersonalDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = PersonalData
+        fields = ['fecha_nacimiento', 'direccion', 'genero']

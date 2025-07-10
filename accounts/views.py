@@ -12,6 +12,15 @@ import random
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer
+from rest_framework import generics, permissions
+from rest_framework.response import Response
+from .serializers import PerfilSerializer
+from .models import Perfil
+from django.shortcuts import get_object_or_404
+from rest_framework import generics, permissions
+from .serializers import PersonalDataSerializer
+from .models import PersonalData
+
 
 
 #Definimos que User sera nuestro modelo que hemos hecho en models.py (Modelo editado)
@@ -171,6 +180,7 @@ class ResetPasswordView(APIView):
     
 
 
+
     #views para la informacion de los usuarios 
 
 class UserListCreateAPIView(APIView):
@@ -185,3 +195,47 @@ class UserListCreateAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class PerfilListCreateView(generics.ListCreateAPIView):
+    serializer_class = PerfilSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Perfil.objects.filter(jefe=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(jefe=self.request.user)
+
+
+class PerfilDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = PerfilSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Perfil.objects.filter(jefe=self.request.user)
+
+
+class PerfilDownloadView(generics.GenericAPIView):
+    serializer_class = PerfilSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, pk):
+        perfil = get_object_or_404(Perfil, pk=pk, jefe=request.user)
+        return Response({
+            "download_url": f"/media/perfiles/{perfil.id}.pdf"
+        })
+    
+
+
+
+
+class PersonalDataRetrieveUpdateView(generics.RetrieveUpdateAPIView):
+    serializer_class = PersonalDataSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        obj, _ = PersonalData.objects.get_or_create(user=self.request.user)
+        return obj
+
