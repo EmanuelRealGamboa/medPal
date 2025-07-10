@@ -58,6 +58,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=100,validators=[only_letters])
     apellido_paterno = models.CharField(max_length=100,validators=[only_letters])
     apellido_materno = models.CharField(max_length=100,validators=[only_letters])
+    contactoEmergenciaNombre = models.CharField(max_length=100,default='Nombre del contacto',validators=[only_letters])
     phone = models.CharField(max_length=10, validators=[ten_digits_only], default="0000000000")
     contactoEmergencia = models.CharField(max_length=10, validators=[ten_digits_only], default="0000000000")
     photoUser = models.ImageField(upload_to="user_photos/", null=True, blank=True)
