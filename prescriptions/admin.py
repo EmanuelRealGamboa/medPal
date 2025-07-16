@@ -5,19 +5,19 @@ from django.utils.html import format_html
 @admin.register(MedicalPrescription)
 class MedicalPrescriptionAdmin(admin.ModelAdmin):
     list_display = (
-        'patient', 'issue_date', 'institution',
+        'patient_name', 'issue_date', 'institution',
         'prescribing_doctor', 'specialty',
         'medications', 
         'view_file'
     )
-    search_fields = ('patient__email', 'prescribing_doctor', 'institution')
+    search_fields = ('patient_name', 'prescribing_doctor', 'institution')
     list_filter = ('issue_date', 'specialty')
     readonly_fields = ('created_at', 'file_preview')
 
     fieldsets = (
         (None, {
             'fields': (
-                'patient', 'issue_date', 'institution',
+                'patient_name', 'issue_date', 'institution',
                 'prescribing_doctor', 'specialty', 'description', 'medications',
                 'file', 'file_preview', 'created_at',
             ),
