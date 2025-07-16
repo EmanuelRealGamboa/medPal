@@ -4,15 +4,15 @@ from django.utils.html import format_html
 
 @admin.register(OphthalmologyDiagnosis)
 class OphthalmologyDiagnosisAdmin(admin.ModelAdmin):
-    list_display = ('patient', 'exam_date', 'attention_type', 'view_document')
-    search_fields = ('patient__email', 'diagnosis')
+    list_display = ('patient_name', 'exam_date', 'attention_type', 'view_document')
+    search_fields = ('patient_name', 'diagnosis')
     list_filter = ('exam_date', 'attention_type')
     readonly_fields = ('created_at', 'document_preview')
 
     fieldsets = (
         (None, {
             'fields': (
-                'patient', 'exam_date', 'attention_type',
+                'patient_name', 'exam_date', 'attention_type',
                 'diagnosis', 'notes', 'document',
                 'document_preview', 'created_at',
             ),

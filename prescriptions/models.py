@@ -1,7 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from datetime import date, timedelta
-from accounts.models import User
 import os
 
 def validate_file_extension(value):
@@ -15,7 +14,9 @@ def validate_file_size(value):
         raise ValidationError('File size must not exceed 2MB.')
 
 class MedicalPrescription(models.Model):
-    patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='prescriptions')
+    
+    patient_name = models.CharField(max_length=150)  
+
     issue_date = models.DateField()
     institution = models.CharField(max_length=150)
     prescribing_doctor = models.CharField(max_length=150)
@@ -34,4 +35,4 @@ class MedicalPrescription(models.Model):
         return date.today() - self.issue_date <= timedelta(days=180)
 
     def __str__(self):
-        return f"{self.patient.email} - {self.issue_date}"
+        return f"{self.patient_name} - {self.issue_date}"

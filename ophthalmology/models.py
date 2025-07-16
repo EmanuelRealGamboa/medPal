@@ -1,5 +1,4 @@
 from django.db import models
-from accounts.models import User
 from django.core.exceptions import ValidationError
 import os
 
@@ -21,7 +20,9 @@ ATTENTION_TYPES = [
 ]
 
 class OphthalmologyDiagnosis(models.Model):
-    patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ophthalmology_diagnoses')
+    
+    patient_name = models.CharField(max_length=150) 
+    
     exam_date = models.DateField()
     attention_type = models.CharField(max_length=20, choices=ATTENTION_TYPES, blank=True, null=True)
     diagnosis = models.TextField(help_text="Detailed visual diagnosis")
@@ -33,4 +34,4 @@ class OphthalmologyDiagnosis(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.patient.email} - {self.exam_date}"
+        return f"{self.patient_name} - {self.exam_date}"
