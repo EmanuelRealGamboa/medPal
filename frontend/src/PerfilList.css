@@ -117,3 +117,35 @@ html, body {
   align-items: center;
   justify-content: center;
 }
+<<<<<<< HEAD
+=======
+
+.avatar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  margin-bottom: 0.5rem;
+}
+
+.avatar-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #fff;
+  padding: 4px;
+  border: 2px solid #ccc;
+  object-fit: cover;
+}
+
+.perfil-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.perfil-info {
+  margin-top: 0.5rem;
+  text-align: center;
+}
+>>>>>>> origin/dev

@@ -1,5 +1,9 @@
 .perfil-page {
+<<<<<<< HEAD
   background-color: #A3D1C6;
+=======
+
+>>>>>>> origin/dev
   min-height: 100vh;
   width: 100vw;
   padding: 0;
@@ -14,12 +18,22 @@
   border-radius: 0;
   box-shadow: none;
   width: 100%;
+<<<<<<< HEAD
   height: 100vh;
   padding: 2rem 3rem;
+=======
+  max-height: 90vh;
+  padding: 3rem 3rem 4rem;
+  margin: 2rem auto;
+>>>>>>> origin/dev
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+<<<<<<< HEAD
+=======
+  border-radius: 12px;
+>>>>>>> origin/dev
 }
 
 .perfil-form label {
@@ -73,4 +87,38 @@
   top: 1rem !important;    
   right: 1rem !important;  
   z-index: 1050;           
+<<<<<<< HEAD
 }
+=======
+}
+
+.btn.btn-secondary {
+  background-color: #3D8D7A;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 2rem;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.btn.btn-secondary:hover {
+  background-color: #30695c;
+}
+
+.btn.btn-eliminar {
+  background-color: #3D8D7A;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 2rem;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.btn.btn-eliminar:hover {
+  background-color: #30695c;
+}
+>>>>>>> origin/dev

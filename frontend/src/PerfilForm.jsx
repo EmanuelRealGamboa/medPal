@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+<<<<<<< HEAD
+=======
+import Swal from 'sweetalert2';
+>>>>>>> origin/dev
 import './PerfilForm.css';
 
 export default function PerfilForm({ perfilId }) {
@@ -62,6 +66,46 @@ export default function PerfilForm({ perfilId }) {
     }
   };
 
+<<<<<<< HEAD
+=======
+  const handleEliminar = async () => {
+    const resultado = await Swal.fire({
+      title: '¿Eliminar perfil?',
+      text: 'Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (!resultado.isConfirmed) return;
+
+    try {
+      await axios.delete(`http://127.0.0.1:8000/accounts/perfiles/${perfilId}/`, {
+        headers: { Authorization: `Token ${localStorage.getItem('token')}` }
+      });
+
+      Swal.fire({
+        title: 'Eliminado',
+        text: 'El perfil fue eliminado correctamente.',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false
+      });
+
+      setTimeout(() => navigate('/perfiles'), 1600);
+    } catch (err) {
+      Swal.fire({
+        title: 'Error',
+        text: 'No se pudo eliminar el perfil.',
+        icon: 'error'
+      });
+    }
+  };
+
+>>>>>>> origin/dev
   const handleCerrar = () => {
     navigate('/perfiles');
   };
@@ -70,6 +114,7 @@ export default function PerfilForm({ perfilId }) {
     <div className="perfil-page container-fluid">
       <div className="row justify-content-center">
         <div className="col-12 col-xl-8 position-relative">
+<<<<<<< HEAD
           <button
             type="button"
             className="btn-close btn-close-dark position-absolute top-0 end-0 m-3"
@@ -78,13 +123,29 @@ export default function PerfilForm({ perfilId }) {
           ></button>
 
           <div className="perfil-form">
+=======
+          <div className="perfil-form">
+            <div className="d-flex justify-content-end mb-2">
+              <button
+                type="button"
+                className="btn-close btn-close-dark"
+                aria-label="Cerrar"
+                onClick={handleCerrar}
+              ></button>
+            </div>
+
+>>>>>>> origin/dev
             <h2 className="text-center mb-4">{isEdit ? 'Editar Perfil' : 'Agregar Perfil'}</h2>
 
             {mensaje && <div className="alert alert-success text-center">{mensaje}</div>}
             {error && <div className="alert alert-danger text-center">{error}</div>}
 
             <form onSubmit={handleSubmit} className="row g-4">
+<<<<<<< HEAD
               <div className="col-md-6">
+=======
+              <div className="col-12">
+>>>>>>> origin/dev
                 <label className="form-label">
                   Nombre <span className="text-danger">*</span>
                 </label>
@@ -99,9 +160,13 @@ export default function PerfilForm({ perfilId }) {
               </div>
 
               <div className="col-md-6">
+<<<<<<< HEAD
                 <label className="form-label">
                   Fecha de nacimiento
                 </label>
+=======
+                <label className="form-label">Fecha de nacimiento</label>
+>>>>>>> origin/dev
                 <input
                   type="date"
                   name="fecha_nacimiento"
@@ -125,9 +190,32 @@ export default function PerfilForm({ perfilId }) {
                 />
               </div>
 
+<<<<<<< HEAD
               <div className="col-12 text-center">
                 <button type="submit" className="btn btn-primary px-5">
                   {isEdit ? 'Actualizar' : 'Guardar'}
+=======
+              <div className="col-12 d-flex justify-content-center gap-3">
+                {isEdit && (
+                  <button
+                    type="button"
+                    className="btn btn-eliminar"
+                    onClick={handleEliminar}
+                  >
+                    Eliminar
+                  </button>
+
+                )}
+                <button type="submit" className="btn btn-primary px-4">
+                  {isEdit ? 'Actualizar' : 'Agregar Perfil'}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary px-4"
+                  onClick={handleCerrar}
+                >
+                  Cancelar
+>>>>>>> origin/dev
                 </button>
               </div>
             </form>

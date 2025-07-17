@@ -42,14 +42,20 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
-    'api',
-    'django_extensions',
-    'django.contrib.staticfiles',
+    'accounts',
+    'vaccines',
+    'prescriptions',
+    'ophthalmology',
+    
+
+
 ]
 
-AUTH_USER_MODEL = 'api.CustomUser'
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -190,3 +196,15 @@ REST_FRAMEWORK = {
 
 ##Modelo para que se Use el User personalizado
 AUTH_USER_MODEL = 'accounts.User'
+
+# Clave de encriptación para códigos de verificación
+VERIFICATION_CODE_ENCRYPTION_KEY = 'your-32-byte-base64-encoded-key-here-change-in-production'
+
+
+import os
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+

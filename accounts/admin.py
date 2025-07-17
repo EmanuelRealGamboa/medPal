@@ -2,3 +2,35 @@ from django.contrib import admin
 
 # Register your models here.
 
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from .models import User
+from vaccines.models import VaccineAlert
+
+class UserAdmin(BaseUserAdmin):
+    # Campos que se mostrarán en la lista del admin
+    list_display = ('email', 'name', 'apellido_paterno', 'is_active', 'is_staff',)
+    list_filter = ('is_active', 'is_staff', 'is_superuser')
+    
+    # Campos que se usarán en el formulario de detalle
+    fieldsets = (
+    (None, {'fields': ('email', 'password')}),
+    ('Información personal', {'fields': ('name', 'apellido_paterno', 'apellido_materno', 'phone', 'photoUser')}),
+    ('Contacto', {'fields': ('contactoEmergencia',)}),
+    ('Permisos', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+    ('Verificación', {'fields': ('verification_code', 'verification_code_created_at')}),
+    ('Fechas', {'fields': ('created_at',)}),
+)
+
+  # Campos para crear un nuevo usuario desde el admin
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('email', 'name', 'apellido_paterno', 'apellido_materno', 'phone', 'password1', 'password2'),
+        }),
+    )
+
+    search_fields = ('email', 'name', 'apellido_paterno')
+    ordering = ('email',)
+    filter_horizontal = ('groups', 'user_permissions',)
+
+admin.site.register(User, UserAdmin)

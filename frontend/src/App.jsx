@@ -7,6 +7,7 @@ import PerfilList from './PerfilList.jsx';
 import PerfilForm from './PerfilForm.jsx';
 import PerfilDetail from './PerfilDetail.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
+import PersonalInfoForm from './PersonalInfoForm.jsx';
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
       {/* Rutas públicas */}
       <Route path="/" element={<SignIn />} />
       <Route path="/signup" element={<Signup />} />
+<<<<<<< HEAD
 
       {/* Verificación protegida */}
       <Route
@@ -25,6 +27,21 @@ export default function App() {
         }
       />
 
+=======
+      <Route path="/personalinform" element={<PersonalInfoForm />} /> 
+
+
+      {/* Verificación protegida */}
+      <Route
+        path="/verificacion"
+        element={
+          <ProtectedRoute requiresVerificationData={true}>
+            <Verificacion />
+          </ProtectedRoute>
+        }
+      />
+
+>>>>>>> origin/dev
       {/* Perfiles protegidos */}
       <Route
         path="/perfiles"
@@ -71,4 +88,8 @@ function PerfilFormWrapper() {
 function PerfilDetailWrapper() {
   const { id } = useParams();
   return <PerfilDetail perfilId={id} />;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/dev
