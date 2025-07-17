@@ -50,9 +50,13 @@ INSTALLED_APPS = [
     'vaccines',
     'prescriptions',
     'ophthalmology',
+    'cloudinary',
+    'cloudinary_storage',
     
 
 ]
+
+
 #pip install django-material --break-system-packages
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -90,9 +94,9 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 
 import os
+import cloudinary
 from dotenv import load_dotenv
 from pathlib import Path
-
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -108,8 +112,12 @@ DATABASES = {
     }
 }
 
-
-
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+}
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 # Password validation
@@ -188,10 +196,5 @@ AUTH_USER_MODEL = 'accounts.User'
 VERIFICATION_CODE_ENCRYPTION_KEY = 'your-32-byte-base64-encoded-key-here-change-in-production'
 
 
-import os
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-
-
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  
