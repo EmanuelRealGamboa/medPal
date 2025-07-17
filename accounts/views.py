@@ -77,13 +77,7 @@ class ReminderListCreateAPIView(generics.ListCreateAPIView):
     GET  → lista todos los recordatorios del usuario autenticado.
     POST → crea un nuevo recordatorio.
     """
-    serializer_class   = ReminderSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        # solo los del usuario actual
-        return Reminder.objects.filter(user=self.request.user).order_by('-remind_at')
-
+  
     def perform_create(self, serializer):
         # asignar automáticamente al usuario
         serializer.save(user=self.request.user)
