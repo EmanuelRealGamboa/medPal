@@ -33,7 +33,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'material',            
-    'material.frontend',    
+    'material.frontend',  
+    'antecedentesMedicos',  
     'material.admin',
     'colorfield',
     'admin_interface',
