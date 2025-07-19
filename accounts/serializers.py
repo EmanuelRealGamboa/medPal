@@ -1,38 +1,9 @@
-# accounts/serializers.py
 from rest_framework import serializers
 from .models import User
-from django.core.mail import send_mail
-from .models import Perfil
-from .models import PersonalData, MedicalHistory
-#Leeme
-
-"""Si estas Usando Django por primera vez, necesitas saber que Serializers
-es como un puente en entre Json y Python enviar y recibir formato de Json a python y de python a Json"""
-
-
-
-
-class PersonalDataSerializer(serializers.ModelSerializer):
-    class Meta:
-        model  = PersonalData
-        fields = ['fecha_nacimiento', 'direccion', 'genero']
-
-
-class MedicalHistorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model  = MedicalHistory
-        fields = ['id', 'condicion', 'diagnostico', 'notas', 'creado']
-        read_only_fields = ['id', 'creado']
-
-
-#SignUp Serializers(Json)
-
-
 from rest_framework import serializers
 from .models import Perfil
 from rest_framework import serializers
 from .models import PersonalData
-
 
 
 # Leeme
@@ -108,12 +79,6 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = '__all__'  # O especifica campos si quieres limitar
 
-
-class PerfilSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Perfil
-        fields = ['id', 'nombre', 'fecha_nacimiento', 'relacion']
-
     # Esto permite que se suban archivos correctamente en multipart/form-data
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -122,6 +87,10 @@ class PerfilSerializer(serializers.ModelSerializer):
             if request is not None:
                 data['photoUser'] = request.build_absolute_uri(instance.photoUser.url)
         return data
+
+
+
+
 
 
 
@@ -136,7 +105,12 @@ class RequestPasswordResetSerializer(serializers.Serializer):
             raise serializers.ValidationError("No existe un usuario activo con este correo electrónico.")
         return value
 
-    
+
+
+
+
+
+
 class ResetPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
     code = serializers.CharField(max_length=6)
@@ -166,7 +140,6 @@ class ResetPasswordSerializer(serializers.Serializer):
         user.set_password(self.validated_data['new_password'])
         user.clear_verification_code()  # Limpiar el código después de usarlo
         return user
-
     
 
 
@@ -184,4 +157,3 @@ class PersonalDataSerializer(serializers.ModelSerializer):
     class Meta:
         model  = PersonalData
         fields = ['fecha_nacimiento', 'direccion', 'genero']
-

@@ -9,11 +9,10 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.utils import timezone
 import random
-from .models import PersonalData, MedicalHistory
-from .serializers import PersonalDataSerializer, MedicalHistorySerializer
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer
+from rest_framework import generics, permissions
 from rest_framework.response import Response
 from .serializers import PerfilSerializer
 from .models import Perfil
@@ -21,7 +20,6 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions
 from .serializers import PersonalDataSerializer
 from .models import PersonalData
-
 
 
 
@@ -57,75 +55,6 @@ class SignupView(APIView):
 
 
 
-
-
-
-class ProfileRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
-    """
-    GET → devuelve datos del perfil del usuario autenticado.
-    PUT → actualiza datos (email, nombres, teléfono).
-    """
-    serializer_class    = PerfilSerializer
-    permission_classes  = [permissions.IsAuthenticated]
-
-    def get_object(self):
-        return self.request.user
-
-
-class ReminderListCreateAPIView(generics.ListCreateAPIView):
-    """
-    GET  → lista todos los recordatorios del usuario autenticado.
-    POST → crea un nuevo recordatorio.
-    """
-  
-    def perform_create(self, serializer):
-        # asignar automáticamente al usuario
-        serializer.save(user=self.request.user)
-
-
-
-
-
-class PersonalDataRetrieveUpdateView(generics.RetrieveUpdateAPIView):
-    """
-    GET → ver datos personales
-    PUT/PATCH → actualizar datos personales
-    """
-    serializer_class   = PersonalDataSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_object(self):
-        # crea el objeto si no existe
-        obj, _ = PersonalData.objects.get_or_create(user=self.request.user)
-        return obj
-
-
-class MedicalHistoryListCreateView(generics.ListCreateAPIView):
-    """
-    GET  → lista antecedentes médicos
-    POST → añadir un nuevo antecedente
-    """
-    serializer_class   = MedicalHistorySerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return MedicalHistory.objects.filter(user=self.request.user).order_by('-diagnostico')
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-
-class MedicalHistoryDetailView(generics.RetrieveUpdateDestroyAPIView):
-    """
-    GET    → ver un antecedente
-    PUT/PATCH → actualizar
-    DELETE → borrar
-    """
-    serializer_class   = MedicalHistorySerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return MedicalHistory.objects.filter(user=self.request.user)
 
 
 
@@ -179,54 +108,6 @@ class LogoutView(APIView):
 
 '''class LogoutView(APIView):
     def post(self, request):
-        request.user.auth_token.delete()
-        logout(request)
-        return Response({"message": "Sesión cerrada."}, status=status.HTTP_200_OK)
-    
-
-
-class PerfilListCreateView(generics.ListCreateAPIView):
-    """
-    GET: lista todos los perfiles del jefe autenticado.
-    POST: crea un nuevo perfil asociado al jefe.
-    """
-    serializer_class = PerfilSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return Perfil.objects.filter(jefe=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(jefe=self.request.user)
-
-
-class PerfilDetailView(generics.RetrieveUpdateDestroyAPIView):
-    """
-    GET: recupera un perfil en particular (si pertenece al jefe).
-    PUT/PATCH: actualiza los datos del perfil.
-    DELETE: borra el perfil.
-    """
-    serializer_class = PerfilSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return Perfil.objects.filter(jefe=self.request.user)
-
-
-class PerfilDownloadView(generics.GenericAPIView):
-    """
-    GET: genera y sirve un archivo (p.ej. PDF) con la info del perfil.
-    """
-    serializer_class = PerfilSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request, pk):
-        perfil = generics.get_object_or_404(Perfil, pk=pk, jefe=request.user)
-        # Aquí podrías generar un PDF o CSV dinámicamente.
-        # Por simplicidad, retornamos JSON con un campo 'download_url'.
-        return Response({
-            "download_url": f"/media/perfiles/{perfil.id}.pdf"
-        })
         try:
             # Eliminar el token si existe
             if hasattr(request.user, 'auth_token'):
@@ -348,8 +229,6 @@ class PerfilDownloadView(generics.GenericAPIView):
     
 
 
-
-
 class PersonalDataRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     serializer_class = PersonalDataSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -357,4 +236,3 @@ class PersonalDataRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         obj, _ = PersonalData.objects.get_or_create(user=self.request.user)
         return obj
-

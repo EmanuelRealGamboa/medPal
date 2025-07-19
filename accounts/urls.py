@@ -44,7 +44,5 @@ urlpatterns = [
     path('personal-data/', PersonalDataRetrieveUpdateView.as_view(), name='personal-data'),
 
 
-    # Antecedentes médicos
-    path('medical-history/', MedicalHistoryListCreateView.as_view(), name='medical-history-list-create'),
-    path('medical-history/<int:pk>/', MedicalHistoryDetailView.as_view(), name='medical-history-detail'),
+    
 ]
