@@ -107,8 +107,4 @@ export default function PerfilDetail({ perfilId }) {
       )}
     </div>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> origin/dev

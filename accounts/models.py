@@ -1,15 +1,17 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import RegexValidator
-from django.utils import timezone
 from django.conf import settings
-from datetime import timedelta
+from django.utils import timezone
 import random
 import string
+from datetime import timedelta
+
 
 # Generador de código de verificación de 6 dígitos
 def generate_verification_code():
     return ''.join(random.choices(string.digits, k=6))
+
 
 # Validadores
 only_letters = RegexValidator(
@@ -22,58 +24,8 @@ ten_digits_only = RegexValidator(
     message='El número de teléfono debe contener exactamente 10 dígitos numéricos.'
 )
 
-# -------------------------------
-# MODELOS
-# -------------------------------
 
-class Reminder(models.Model):
-    TYPE_CHOICES = (
-        ('cita', 'Cita médica'),
-        ('med', 'Medicamento'),
-    )
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reminders')
-    title = models.CharField(max_length=200)
-    remind_at = models.DateTimeField()
-    type = models.CharField(max_length=10, choices=TYPE_CHOICES)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f'{self.title} ({self.get_type_display()})'
-
-
-class MedicalHistory(models.Model):
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='medical_history'
-    )
-    condicion = models.CharField(max_length=200)
-    diagnostico = models.DateField()
-    notas = models.TextField(blank=True)
-    creado = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.condicion} ({self.user.email})"
-
-
-class PersonalData(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='personal_data'
-    )
-    fecha_nacimiento = models.DateField(null=True, blank=True)
-    direccion = models.CharField(max_length=255, blank=True)
-    genero = models.CharField(
-        max_length=10,
-        choices=(('M', 'Masculino'), ('F', 'Femenino'), ('O', 'Otro')),
-        blank=True
-    )
-
-    def __str__(self):
-        return f"Datos personales de {self.user.email}"
-
-
+# Manager personalizado para el modelo User
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -90,14 +42,15 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
 
-        if not extra_fields.get('is_staff'):
+        if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True.')
-        if not extra_fields.get('is_superuser'):
+        if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
         return self.create_user(email, password, **extra_fields)
 
 
+# Modelo personalizado de usuario
 class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=100, validators=[only_letters])
     apellido_paterno = models.CharField(max_length=100, validators=[only_letters])
@@ -121,6 +74,62 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
+# Datos personales
+class PersonalData(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='personal_data'
+    )
+    fecha_nacimiento = models.DateField(null=True, blank=True)
+    direccion = models.CharField(max_length=255, blank=True)
+    genero = models.CharField(
+        max_length=10,
+        choices=(('M', 'Masculino'), ('F', 'Femenino'), ('O', 'Otro')),
+        blank=True
+    )
+
+    def __str__(self):
+        return f"Datos personales de {self.user.email}"
+
+
+# Antecedentes médicos
+class MedicalHistory(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='medical_history'
+    )
+    condicion = models.CharField(max_length=200)
+    diagnostico = models.DateField()
+    notas = models.TextField(blank=True)
+    creado = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.condicion} ({self.user.email})"
+
+
+# Recordatorios de citas o medicamentos
+class Reminder(models.Model):
+    TYPE_CHOICES = (
+        ('cita', 'Cita médica'),
+        ('med', 'Medicamento'),
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='reminders'
+    )
+    title = models.CharField(max_length=200)
+    remind_at = models.DateTimeField()
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.title} ({self.get_type_display()})'
+
+
+# Perfiles de personas dependientes (hijos, padres, etc.)
 class Perfil(models.Model):
     jefe = models.ForeignKey(
         User,
@@ -133,7 +142,7 @@ class Perfil(models.Model):
         max_length=50,
         help_text="p.ej. 'Hijo', 'Esposa', etc."
     )
-    verification_code = models.CharField(max_length=6, blank=True, null=True)
+    verification_code = models.CharField(max_length=6, blank=True)
     verification_code_created_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):

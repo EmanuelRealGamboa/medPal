@@ -15,19 +15,6 @@ export default function App() {
       {/* Rutas públicas */}
       <Route path="/" element={<SignIn />} />
       <Route path="/signup" element={<Signup />} />
-<<<<<<< HEAD
-
-      {/* Verificación protegida */}
-      <Route
-        path="/verificacion"
-        element={
-          <ProtectedRoute requiresVerificationData={true}>
-            <Verificacion />
-          </ProtectedRoute>
-        }
-      />
-
-=======
       <Route path="/personalinform" element={<PersonalInfoForm />} /> 
 
 
@@ -41,7 +28,6 @@ export default function App() {
         }
       />
 
->>>>>>> origin/dev
       {/* Perfiles protegidos */}
       <Route
         path="/perfiles"
@@ -88,8 +74,4 @@ function PerfilFormWrapper() {
 function PerfilDetailWrapper() {
   const { id } = useParams();
   return <PerfilDetail perfilId={id} />;
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> origin/dev

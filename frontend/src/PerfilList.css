@@ -1,4 +1,4 @@
-html, body {
+hhtml, body {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -117,8 +117,6 @@ html, body {
   align-items: center;
   justify-content: center;
 }
-<<<<<<< HEAD
-=======
 
 .avatar-container {
   display: flex;
@@ -148,4 +146,3 @@ html, body {
   margin-top: 0.5rem;
   text-align: center;
 }
->>>>>>> origin/dev

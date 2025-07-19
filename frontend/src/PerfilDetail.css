@@ -51,11 +51,8 @@ body, html {
   text-align: center;
 }
 
-<<<<<<< HEAD
-=======
 
 
->>>>>>> origin/dev
 @media (max-width: 576px) {
   .perfil-detail {
     padding: 2rem 1rem;
@@ -69,8 +66,4 @@ body, html {
     min-width: 100px;
     margin: 0.3rem;
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> origin/dev

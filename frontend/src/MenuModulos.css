@@ -1,0 +1,38 @@
+.dashboard-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-navbar {
+  background-color: #a7d0c3;
+  height: 60px;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.logout-btn {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-weight: bold;
+}
+
+.section-card {
+  height: 120px;
+  border-radius: 10px;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  padding-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+.footer-bar {
+  height: 40px;
+  background-color: #a7d0c3;
+  margin-top: auto;
+}

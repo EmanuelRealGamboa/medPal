@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-<<<<<<< HEAD
-=======
 import Swal from 'sweetalert2';
->>>>>>> origin/dev
 import './PerfilForm.css';
 
 export default function PerfilForm({ perfilId }) {
@@ -66,8 +63,6 @@ export default function PerfilForm({ perfilId }) {
     }
   };
 
-<<<<<<< HEAD
-=======
   const handleEliminar = async () => {
     const resultado = await Swal.fire({
       title: '¿Eliminar perfil?',
@@ -105,7 +100,6 @@ export default function PerfilForm({ perfilId }) {
     }
   };
 
->>>>>>> origin/dev
   const handleCerrar = () => {
     navigate('/perfiles');
   };
@@ -114,16 +108,6 @@ export default function PerfilForm({ perfilId }) {
     <div className="perfil-page container-fluid">
       <div className="row justify-content-center">
         <div className="col-12 col-xl-8 position-relative">
-<<<<<<< HEAD
-          <button
-            type="button"
-            className="btn-close btn-close-dark position-absolute top-0 end-0 m-3"
-            aria-label="Cerrar"
-            onClick={handleCerrar}
-          ></button>
-
-          <div className="perfil-form">
-=======
           <div className="perfil-form">
             <div className="d-flex justify-content-end mb-2">
               <button
@@ -134,18 +118,13 @@ export default function PerfilForm({ perfilId }) {
               ></button>
             </div>
 
->>>>>>> origin/dev
             <h2 className="text-center mb-4">{isEdit ? 'Editar Perfil' : 'Agregar Perfil'}</h2>
 
             {mensaje && <div className="alert alert-success text-center">{mensaje}</div>}
             {error && <div className="alert alert-danger text-center">{error}</div>}
 
             <form onSubmit={handleSubmit} className="row g-4">
-<<<<<<< HEAD
-              <div className="col-md-6">
-=======
               <div className="col-12">
->>>>>>> origin/dev
                 <label className="form-label">
                   Nombre <span className="text-danger">*</span>
                 </label>
@@ -160,13 +139,7 @@ export default function PerfilForm({ perfilId }) {
               </div>
 
               <div className="col-md-6">
-<<<<<<< HEAD
-                <label className="form-label">
-                  Fecha de nacimiento
-                </label>
-=======
                 <label className="form-label">Fecha de nacimiento</label>
->>>>>>> origin/dev
                 <input
                   type="date"
                   name="fecha_nacimiento"
@@ -190,11 +163,6 @@ export default function PerfilForm({ perfilId }) {
                 />
               </div>
 
-<<<<<<< HEAD
-              <div className="col-12 text-center">
-                <button type="submit" className="btn btn-primary px-5">
-                  {isEdit ? 'Actualizar' : 'Guardar'}
-=======
               <div className="col-12 d-flex justify-content-center gap-3">
                 {isEdit && (
                   <button
@@ -215,7 +183,6 @@ export default function PerfilForm({ perfilId }) {
                   onClick={handleCerrar}
                 >
                   Cancelar
->>>>>>> origin/dev
                 </button>
               </div>
             </form>

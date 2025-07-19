@@ -29,8 +29,6 @@ export default function PerfilList() {
 
   const colores = ['#a3d2ca', '#f7d9d9', '#b5ead7', '#e4c1f9', '#caffbf'];
 
-<<<<<<< HEAD
-=======
   const calcularEdad = (fechaNacimiento) => {
     const hoy = new Date();
     const nacimiento = new Date(fechaNacimiento);
@@ -63,7 +61,6 @@ export default function PerfilList() {
     return `https://api.dicebear.com/7.x/${estilo}/svg?seed=${encodeURIComponent(semilla)}`;
   };
 
->>>>>>> origin/dev
   return (
     <div className="perfil-bg">
       {/* Navbar personalizada */}
@@ -79,17 +76,6 @@ export default function PerfilList() {
       {/* Contenido de perfiles */}
       <div className="perfil-container-horizontal">
         {perfiles.map((perfil, index) => (
-<<<<<<< HEAD
-          <Link
-            to={`/perfiles/${perfil.id}`}
-            key={perfil.id}
-            className="perfil-card"
-            style={{ backgroundColor: colores[index % colores.length] }}
-          >
-            <div className="perfil-nombre">{perfil.nombre}</div>
-            <div className="perfil-relacion">{perfil.relacion}</div>
-          </Link>
-=======
           <div key={perfil.id} className="perfil-wrapper">
             <Link
               to={`/perfiles/${perfil.id}`}
@@ -109,23 +95,16 @@ export default function PerfilList() {
               <div className="perfil-relacion">{perfil.relacion}</div>
             </div>
           </div>
->>>>>>> origin/dev
         ))}
         <Link to="/perfiles/nuevo" className="agregar-perfil">
           <span>+</span>
         </Link>
       </div>
 
-<<<<<<< HEAD
-      {/* Footer */}
-      <footer className="custom-footer text-center text-light py-2">
-        © 2025 MedPal 
-=======
 
       {/* Footer */}
       <footer className="custom-footer text-center text-light py-2">
         © 2025 MedPal
->>>>>>> origin/dev
       </footer>
     </div>
   );
