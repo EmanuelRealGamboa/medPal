@@ -16,8 +16,6 @@ from .views import (
     PerfilDetailView,
     PerfilDownloadView,
     PersonalDataRetrieveUpdateView,
-    MedicalHistoryListCreateView,
-    MedicalHistoryDetailView,
     RequestPasswordResetView,
     ResetPasswordView
 )

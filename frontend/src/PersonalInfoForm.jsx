@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './PersonalInfoForm.css';
 
-
-
 export default function PersonalInfoForm() {
-
   const [photoPreview, setPhotoPreview] = useState(null);
+  const navigate = useNavigate();
+  const { id: perfilId } = useParams();
+
+  const handleVolver = () => {
+    navigate(`/menu/${perfilId}`);
+  };
 
   return (
     <div className="main-layout">
@@ -14,8 +18,6 @@ export default function PersonalInfoForm() {
         <h4 className="text-light m-0">
           <i className="bi bi-person-circle me-2"></i>MedPal
         </h4>
-
-
       </header>
 
       <main className="form-section d-flex justify-content-center align-items-center">
@@ -25,7 +27,6 @@ export default function PersonalInfoForm() {
 
           <form>
             <div className="row mb-3">
-              {/* Foto de perfil a la izquierda */}
               <div className="col-md-4 mb-3">
                 <label className="form-label">Foto de Perfil</label>
                 <div className="photo-placeholder border rounded bg-light d-flex justify-content-center align-items-center flex-column">
@@ -55,11 +56,8 @@ export default function PersonalInfoForm() {
                     }}
                   />
                 </div>
-
-
               </div>
 
-              {/* Campos a la derecha */}
               <div className="col-md-8">
                 <div className="mb-3">
                   <label className="form-label">Nombre Completo</label>
@@ -81,7 +79,6 @@ export default function PersonalInfoForm() {
                     </select>
                   </div>
                 </div>
-
               </div>
             </div>
 
@@ -110,7 +107,11 @@ export default function PersonalInfoForm() {
               <button type="submit" className="btn btn-save px-4">
                 Guardar
               </button>
-              <button type="button" className="btn btn-secondary px-4">
+              <button
+                type="button"
+                className="btn btn-secondary px-4"
+                onClick={handleVolver}
+              >
                 Volver a módulos
               </button>
             </div>

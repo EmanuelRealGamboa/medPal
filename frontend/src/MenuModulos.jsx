@@ -1,25 +1,29 @@
 import React from "react";
-import "./Dashboard.css";
+import { Link } from "react-router-dom";
+import "./MenuModulos.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const sections = [
-  { label: "Datos personales", color: "#E74C3C" },
-  { label: "Antecedentes médicos", color: "#F39C12" },
-  { label: "Vacunas", color: "#F9E79F" },
-  { label: "Estudios", color: "#ABEBC6" },
-  { label: "Recetas", color: "#85C1E9" },
-  { label: "Historia gineco-obstétrica", color: "#D7BDE2" },
-  { label: "Seguimiento de enfermedades crónicas degenerativas", color: "#F5B7B1" },
+  { label: "Datos personales", color: "#E04040", path: "datos-personales" },
+  { label: "Antecedentes médicos", color: "#FF9455" },
+  { label: "Vacunas", color: "#FCE536" },
+  { label: "Estudios", color: "#ACEB8A" },
+  { label: "Recetas", color: "#71C4FF" },
+  { label: "Historia gineco-obstétrica", color: "#E091FB" },
+  { label: "Seguimiento de enfermedades crónicas degenerativas", color: "#FF7DB5" },
   { label: "Oftalmología", color: "#76EEC6" },
 ];
 
-const Dashboard = () => {
+const Modulos = ({ perfilId }) => {
   return (
     <div className="dashboard-container">
-      <nav className="navbar navbar-expand-lg navbar-light custom-navbar px-4">
+      {/* Navbar */}
+      <nav className="custom-navbar d-flex justify-content-between align-items-center px-4 py-2">
         <div className="navbar-brand d-flex align-items-center">
           <i className="bi bi-journal-medical fs-3 me-2"></i>
-          <span className="logo-text">Med<span className="text-primary">Pal</span></span>
+          <span className="logo-text">
+            Med<span className="text-primary">Pal</span>
+          </span>
         </div>
         <div className="ms-auto d-flex align-items-center">
           <button className="btn logout-btn me-2">Cerrar sesión</button>
@@ -27,24 +31,31 @@ const Dashboard = () => {
         </div>
       </nav>
 
-      <div className="container py-5">
-        <div className="row g-4 justify-content-center">
-          {sections.map((section, index) => (
-            <div key={index} className="col-6 col-md-3">
+      {/* Grid de módulos */}
+      <main className="section-grid">
+        {sections.map((section, index) => (
+          <div key={index} className="module-container">
+            {section.path ? (
+              <Link to={`/menu/${perfilId}/${section.path}`} className="link-reset" style={{ width: "100%" }}>
+                <div
+                  className="section-card"
+                  style={{ backgroundColor: section.color }}
+                />
+              </Link>
+            ) : (
               <div
-                className="section-card text-center text-dark fw-semibold"
+                className="section-card"
                 style={{ backgroundColor: section.color }}
-              >
-                {section.label}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+              />
+            )}
+            <div className="module-label">{section.label}</div>
+          </div>
+        ))}
+      </main>
 
-      <footer className="footer-bar"></footer>
+      <footer className="footer-bar">© 2025 MedPal</footer>
     </div>
   );
 };
 
-export default Dashboard;
+export default Modulos;

@@ -8,6 +8,7 @@ import PerfilForm from './PerfilForm.jsx';
 import PerfilDetail from './PerfilDetail.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import PersonalInfoForm from './PersonalInfoForm.jsx';
+import MenuModulos from './MenuModulos.jsx';
 
 export default function App() {
   return (
@@ -15,8 +16,6 @@ export default function App() {
       {/* Rutas públicas */}
       <Route path="/" element={<SignIn />} />
       <Route path="/signup" element={<Signup />} />
-      <Route path="/personalinform" element={<PersonalInfoForm />} /> 
-
 
       {/* Verificación protegida */}
       <Route
@@ -61,6 +60,22 @@ export default function App() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/menu/:id"
+        element={
+          <ProtectedRoute>
+            <MenuModulosWrapper />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/menu/:id/datos-personales"
+        element={
+          <ProtectedRoute>
+            <PersonalInfoFormWrapper />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }
@@ -74,4 +89,14 @@ function PerfilFormWrapper() {
 function PerfilDetailWrapper() {
   const { id } = useParams();
   return <PerfilDetail perfilId={id} />;
+}
+
+function MenuModulosWrapper() {
+  const { id } = useParams();
+  return <MenuModulos perfilId={id} />;
+}
+
+function PersonalInfoFormWrapper() {
+  const { id } = useParams();
+  return <PersonalInfoForm perfilId={id} />;
 }
