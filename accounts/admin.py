@@ -5,7 +5,11 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import User
 from vaccines.models import VaccineAlert
+from .models import PersonalData
 
+
+
+admin.site.register(PersonalData)
 class UserAdmin(BaseUserAdmin):
     # Campos que se mostrarán en la lista del admin
     list_display = ('email', 'name', 'apellido_paterno', 'is_active', 'is_staff',)

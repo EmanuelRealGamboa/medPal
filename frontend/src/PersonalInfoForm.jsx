@@ -35,29 +35,35 @@ export default function PersonalInfoForm() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const dataToSend = new FormData();
-    dataToSend.append('nombre', formData.nombre);
-    dataToSend.append('fecha_nacimiento', formData.fechaNacimiento);
-    dataToSend.append('genero', formData.genero);
-    dataToSend.append('grupoRH', formData.grupoRH);
-    dataToSend.append('contactoEmergencia', formData.contactoEmergencia);
-    if (formData.photoUser) {
-      dataToSend.append('photoUser', formData.photoUser);
-    }
+  const dataToSend = new FormData();
+  dataToSend.append('nombre', formData.nombre);
+  dataToSend.append('fecha_nacimiento', formData.fechaNacimiento);
+  dataToSend.append('genero', formData.genero);
+  dataToSend.append('grupoRH', formData.grupoRH);
+  dataToSend.append('contactoEmergencia', formData.contactoEmergencia);
 
-    const token = localStorage.getItem('token');
+  if (formData.photoUser) {
+    dataToSend.append('photoUser', formData.photoUser);
+  }
 
-    try {
-      await axios.post('http://127.0.0.1:8000/accounts/personal-data/', {
-        headers: { Authorization: `Token ${localStorage.getItem('token')}` },
-      });
-      navigate('/ver-datos-personales');
-    } catch (error) {
-      console.error('Error al guardar los datos:', error);
-    }
-  };
+  const token = localStorage.getItem('token'); // ✅ Se usa abajo
+
+  try {
+    await axios.post('http://127.0.0.1:8000/accounts/personal-data/', dataToSend, {
+      headers: {
+        Authorization: `Token ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    navigate('/ver-datos-personales');
+  } catch (error) {
+    console.error('Error al guardar los datos:', error);
+  }
+};
+
 
   return (
     <div className="main-layout">

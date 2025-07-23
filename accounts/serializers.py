@@ -134,6 +134,7 @@ class PersonalDataSerializer(serializers.ModelSerializer):
 # Serializer principal para Usuario, incluye datos personales anidados
 class UserSerializer(serializers.ModelSerializer):
     personal_data = PersonalDataSerializer(required=False)
+    photoUser = serializers.ImageField(required=False, allow_null=True)
 
     class Meta:
         model = User
