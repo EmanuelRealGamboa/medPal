@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "./MenuModulos.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -14,7 +14,16 @@ const sections = [
   { label: "Oftalmología", color: "#76EEC6" },
 ];
 
-const MenuModulos = ({ perfilId }) => {
+const MenuModulos = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/signin"); // redirige si no hay sesión activa
+    }
+  }, [navigate]);
+
   return (
     <div className="dashboard-container">
       {/* Navbar */}
@@ -26,7 +35,15 @@ const MenuModulos = ({ perfilId }) => {
           </span>
         </div>
         <div className="ms-auto d-flex align-items-center">
-          <button className="btn logout-btn me-2">Cerrar sesión</button>
+          <button
+            className="btn logout-btn me-2"
+            onClick={() => {
+              localStorage.removeItem("token");
+              navigate("/signin");
+            }}
+          >
+            Cerrar sesión
+          </button>
           <i className="bi bi-person-circle fs-4"></i>
         </div>
       </nav>

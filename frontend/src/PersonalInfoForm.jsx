@@ -51,10 +51,7 @@ export default function PersonalInfoForm() {
 
     try {
       await axios.post('http://127.0.0.1:8000/accounts/personal-data/', {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Token ${token}`,
-        },
+        headers: { Authorization: `Token ${localStorage.getItem('token')}` },
       });
       navigate('/ver-datos-personales');
     } catch (error) {
