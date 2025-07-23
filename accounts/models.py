@@ -109,13 +109,20 @@ class PersonalData(models.Model):
         choices=(('M','Masculino'),('F','Femenino'),('O','Otro')),
         blank=True
     )
+    grupoRH = models.CharField(
+        max_length=3,
+        choices=[
+            ('O+', 'O+'), ('O-', 'O-'),
+            ('A+', 'A+'), ('A-', 'A-'),
+            ('B+', 'B+'), ('B-', 'B-'),
+            ('AB+', 'AB+'), ('AB-', 'AB-')
+        ],
+        blank=True
+    )
 
-    def _str_(self):
+    def __str__(self):
         return f"Datos personales de {self.user.email}"
     
-
-
-
 
 class Perfil(models.Model):
     """
@@ -150,10 +157,24 @@ class Perfil(models.Model):
         self.save()
 
 
+class Perfil(models.Model):
+    """
+    Representa un perfil agregado por un Jefe de Familia.
+    """
+    jefe = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='perfiles'
+    )
+    nombre = models.CharField(max_length=100)
+    fecha_nacimiento = models.DateField(null=True, blank=True)
+    relacion = models.CharField(
+        max_length=50,
+        help_text="p.ej. 'Hijo', 'Esposa', etc."
+    )
+
     def _str_(self):
         return f"{self.nombre} ({self.relacion})"
-    
-    
     def is_verification_code_expired(self):
         """Verifica si el código de verificación ha expirado (5 minutos)"""
         if not self.verification_code_created_at:

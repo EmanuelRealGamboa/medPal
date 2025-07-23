@@ -1,4 +1,7 @@
+# accounts/serializers.py
+from rest_framework import serializers
 from .models import User
+from rest_framework import serializers
 from .models import Perfil
 from rest_framework import serializers
 from .models import PersonalData
@@ -12,7 +15,7 @@ y convertirlos a objetos de Python, y viceversa.
 """
 
 
-# SignUp Serializer (para registro)
+# Serializer para registro (Signup)
 class SignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
@@ -30,13 +33,13 @@ class SignupSerializer(serializers.ModelSerializer):
         validated_data.pop('password2')
         password = validated_data.pop('password')
         user = User(**validated_data)
-        user.set_password(password)  # Encripta la contraseña
-        user.is_active = False  # Se activa cuando verifique el código
+        user.set_password(password)  # Encriptar contraseña
+        user.is_active = False  # Se activa tras verificación
         user.save()
         return user
 
 
-# Verification Code Serializer (para verificar el código enviado por correo)
+# Serializer para verificación de código enviado por email
 class VerifyCodeSerializer(serializers.Serializer):
     email = serializers.EmailField()
     code = serializers.CharField(max_length=6)
@@ -55,7 +58,7 @@ class VerifyCodeSerializer(serializers.Serializer):
         user.save()
 
 
-# Signin Serializer (para iniciar sesión)
+# Serializer para inicio de sesión
 class SigninSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
@@ -69,30 +72,9 @@ class SigninSerializer(serializers.Serializer):
             raise serializers.ValidationError("Verifica tu correo electrónico antes de iniciar sesión.")
         data['user'] = user
         return data
-    
-# SERIALIZER PARA LA INFORMACION DE EL USUARIO 
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = '__all__'  # O especifica campos si quieres limitar
-
-    # Esto permite que se suban archivos correctamente en multipart/form-data
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        if instance.photoUser:
-            request = self.context.get('request')
-            if request is not None:
-                data['photoUser'] = request.build_absolute_uri(instance.photoUser.url)
-        return data
 
 
-
-
-
-
-
-
+# Serializer para solicitud de cambio de contraseña
 class RequestPasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
@@ -104,11 +86,7 @@ class RequestPasswordResetSerializer(serializers.Serializer):
         return value
 
 
-
-
-
-
-
+# Serializer para resetear contraseña
 class ResetPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
     code = serializers.CharField(max_length=6)
@@ -118,8 +96,7 @@ class ResetPasswordSerializer(serializers.Serializer):
     def validate(self, data):
         if data['new_password'] != data['new_password2']:
             raise serializers.ValidationError("Las contraseñas no coinciden.")
-        
-        # Validar que el usuario existe y el código es correcto
+
         try:
             user = User.objects.get(email=data['email'])
             if not user.verification_code:
@@ -130,28 +107,62 @@ class ResetPasswordSerializer(serializers.Serializer):
                 raise serializers.ValidationError("El código de verificación ha expirado. Solicita uno nuevo.")
         except User.DoesNotExist:
             raise serializers.ValidationError("Usuario no encontrado.")
-        
         return data
 
     def save(self):
         user = User.objects.get(email=self.validated_data['email'])
         user.set_password(self.validated_data['new_password'])
-        user.clear_verification_code()  # Limpiar el código después de usarlo
+        user.clear_verification_code()
+        user.save()
         return user
-    
 
 
-
+# Serializer para Perfil
 class PerfilSerializer(serializers.ModelSerializer):
     class Meta:
         model = Perfil
         fields = ['id', 'nombre', 'fecha_nacimiento', 'relacion']
 
 
-
-
-
+# Serializer para datos personales relacionados a un usuario
 class PersonalDataSerializer(serializers.ModelSerializer):
     class Meta:
-        model  = PersonalData
-        fields = ['fecha_nacimiento', 'direccion', 'genero']
+        model = PersonalData
+        fields = ['fecha_nacimiento', 'direccion', 'genero', 'grupoRH']
+
+
+# Serializer principal para Usuario, incluye datos personales anidados
+class UserSerializer(serializers.ModelSerializer):
+    personal_data = PersonalDataSerializer(required=False)
+
+    class Meta:
+        model = User
+        fields = [
+            'id', 'name', 'apellido_paterno', 'apellido_materno',
+            'phone', 'contactoEmergencia', 'photoUser', 'email',
+            'personal_data',
+        ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = self.context.get('request')
+        if instance.photoUser and request:
+            data['photoUser'] = request.build_absolute_uri(instance.photoUser.url)
+        return data
+
+    def update(self, instance, validated_data):
+        personal_data_data = validated_data.pop('personal_data', None)
+
+        # Actualizar campos del usuario
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        # Actualizar o crear datos personales relacionados
+        if personal_data_data:
+            personal_data, created = PersonalData.objects.get_or_create(user=instance)
+            for attr, value in personal_data_data.items():
+                setattr(personal_data, attr, value)
+            personal_data.save()
+
+        return instance

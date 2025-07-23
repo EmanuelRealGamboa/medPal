@@ -4,7 +4,7 @@ import "./MenuModulos.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const sections = [
-  { label: "Datos personales", color: "#E04040", path: "datos-personales" },
+  { label: "Datos personales", color: "#E04040", path: "/menu/datos-personales/agregar" },
   { label: "Antecedentes médicos", color: "#FF9455" },
   { label: "Vacunas", color: "#FCE536" },
   { label: "Estudios", color: "#ACEB8A" },
@@ -14,7 +14,7 @@ const sections = [
   { label: "Oftalmología", color: "#76EEC6" },
 ];
 
-const Modulos = ({ perfilId }) => {
+const MenuModulos = ({ perfilId }) => {
   return (
     <div className="dashboard-container">
       {/* Navbar */}
@@ -36,7 +36,11 @@ const Modulos = ({ perfilId }) => {
         {sections.map((section, index) => (
           <div key={index} className="module-container">
             {section.path ? (
-              <Link to={`/menu/${perfilId}/${section.path}`} className="link-reset" style={{ width: "100%" }}>
+              <Link
+                to={section.path}
+                className="link-reset"
+                style={{ width: "100%" }}
+              >
                 <div
                   className="section-card"
                   style={{ backgroundColor: section.color }}
@@ -51,6 +55,13 @@ const Modulos = ({ perfilId }) => {
             <div className="module-label">{section.label}</div>
           </div>
         ))}
+
+        {/* Botón regresar a perfil */}
+        <div className="back-button-container px-4 mt-3">
+          <Link to="/perfiles" className="btn btn-secondary">
+            ← Regresar a perfil
+          </Link>
+        </div>
       </main>
 
       <footer className="footer-bar">© 2025 MedPal</footer>
@@ -58,4 +69,4 @@ const Modulos = ({ perfilId }) => {
   );
 };
 
-export default Modulos;
+export default MenuModulos;

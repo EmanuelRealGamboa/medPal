@@ -4,8 +4,6 @@
 from django.urls import path
 from .views import SignupView, VerifyCodeView, SigninView, LogoutView
 from .views import RequestPasswordResetView, ResetPasswordView,UserListCreateAPIView
-
-
 from django.urls import path
 from .views import (
     SignupView,
@@ -15,7 +13,7 @@ from .views import (
     PerfilListCreateView,
     PerfilDetailView,
     PerfilDownloadView,
-    PersonalDataRetrieveUpdateView,
+    PersonalDataView,
     RequestPasswordResetView,
     ResetPasswordView
 )
@@ -39,7 +37,7 @@ urlpatterns = [
     path('perfiles/<int:pk>/download/', PerfilDownloadView.as_view(), name='perfil-download'),
 
     # Datos personales (OneToOne)
-    path('personal-data/', PersonalDataRetrieveUpdateView.as_view(), name='personal-data'),
+    path('personal-data/', PersonalDataView.as_view(), name='personal-data'),
 
 
     

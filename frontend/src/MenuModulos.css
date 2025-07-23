@@ -1,9 +1,11 @@
+/* Contenedor general del dashboard */
 .dashboard-container {
   display: flex;
   flex-direction: column;
-  height: 100vh; /* altura total de la ventana */
+  height: 100vh;
 }
 
+/* Barra superior personalizada */
 .custom-navbar {
   flex: 0 0 auto;
   height: 60px;
@@ -16,6 +18,7 @@
   z-index: 10;
 }
 
+/* Botón cerrar sesión */
 .logout-btn {
   background-color: transparent;
   border: none;
@@ -24,18 +27,29 @@
   cursor: pointer;
 }
 
+/* Contenedor del botón "Regresar a perfil" alineado a la derecha */
+.back-button-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 24px 0 24px;
+}
+
+/* Grid principal de los módulos */
 main.section-grid {
   flex: 1 1 auto;
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: center;
   align-content: flex-start;
   gap: 16px;
-  padding: 20px;
+  padding: 80px 20px 20px 20px; /* ← aquí agregamos espacio arriba */
   overflow-y: auto;
   background-color: white;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
+/* Contenedor de cada módulo */
 .module-container {
   flex: 1 0 22%;
   max-width: 22%;
@@ -51,6 +65,7 @@ main.section-grid {
   transform: scale(1.05);
 }
 
+/* Tarjeta de color del módulo */
 .section-card {
   width: 100%;
   aspect-ratio: 1 / 1;
@@ -58,6 +73,7 @@ main.section-grid {
   box-shadow: 0 3px 8px rgb(0 0 0 / 0.15);
 }
 
+/* Texto debajo del módulo */
 .module-label {
   margin-top: 8px;
   font-weight: 600;
@@ -66,6 +82,7 @@ main.section-grid {
   user-select: none;
 }
 
+/* Barra inferior del footer */
 .footer-bar {
   flex: 0 0 auto;
   height: 40px;
@@ -75,4 +92,10 @@ main.section-grid {
   font-size: 14px;
   color: #666;
   box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
+}
+
+/* Opcional: resetea el estilo del link si quieres que no se vea azul/subrayado */
+.link-reset {
+  text-decoration: none;
+  color: inherit;
 }

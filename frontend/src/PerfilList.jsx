@@ -89,11 +89,11 @@ export default function PerfilList() {
                 />
               </div>
 
-              {/* Icono de menú en esquina superior derecha */}
+              {/* Icono de menú */}
               <div
                 className="menu-icon"
                 onClick={(e) => {
-                  e.stopPropagation();
+                  e.stopPropagation(); // Previene que se dispare el onClick del contenedor
                   setOpenMenu(openMenu === perfil.id ? null : perfil.id);
                 }}
               >
@@ -102,8 +102,18 @@ export default function PerfilList() {
 
               {/* Menú contextual */}
               {openMenu === perfil.id && (
-                <div className="context-menu">
-                  <button onClick={() => navigate(`/perfiles/${perfil.id}`)}>Editar perfil</button>
+                <div
+                  className="context-menu"
+                  onClick={(e) => e.stopPropagation()} // También lo previene dentro del menú
+                >
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation(); // Previene navegación al menú
+                      navigate(`/perfiles/${perfil.id}`);
+                    }}
+                  >
+                    Editar perfil
+                  </button>
                 </div>
               )}
             </div>
