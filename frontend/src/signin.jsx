@@ -1,3 +1,4 @@
+// Signin.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './signin.css';
@@ -66,6 +67,8 @@ function Signin() {
           </div>
 
           <button type="submit" className="btn btn-custom w-100">Iniciar Sesión</button>
+
+         
         </form>
       </div>
       <div className="auth-right">

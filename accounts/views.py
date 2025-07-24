@@ -230,12 +230,50 @@ class PerfilDownloadView(generics.GenericAPIView):
 
 
 
-
-class PersonalDataRetrieveUpdateView(generics.RetrieveUpdateAPIView):
-    serializer_class = PersonalDataSerializer
+class PersonalDataView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def get_object(self):
-        obj, _ = PersonalData.objects.get_or_create(user=self.request.user)
-        return obj
+    def get(self, request):
+        try:
+            personal_data = PersonalData.objects.get(user=request.user)
+            serializer = PersonalDataSerializer(personal_data)
+            return Response(serializer.data)
+        except PersonalData.DoesNotExist:
+            return Response({"message": "No hay datos personales aún."}, status=status.HTTP_404_NOT_FOUND)
 
+    def post(self, request):
+        if PersonalData.objects.filter(user=request.user).exists():
+            return Response(
+                {"message": "Ya tienes datos personales guardados. Usa PUT para actualizar."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        serializer = PersonalDataSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request):
+        try:
+            personal_data = PersonalData.objects.get(user=request.user)
+        except PersonalData.DoesNotExist:
+            return Response({"message": "Datos personales no encontrados."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = PersonalDataSerializer(personal_data, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request):
+        try:
+            personal_data = PersonalData.objects.get(user=request.user)
+        except PersonalData.DoesNotExist:
+            return Response({"message": "Datos personales no encontrados."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = PersonalDataSerializer(personal_data, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
