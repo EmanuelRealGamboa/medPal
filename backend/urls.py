@@ -27,6 +27,7 @@ urlpatterns = [
     path('prescriptions/', include('prescriptions.urls')),  
     path('ophthalmology/', include('ophthalmology.urls')),
     path('antecedentesMedicos/', include('antecedentesMedicos.urls')),
+    path('gineco/', include('gineco.urls')),
 ]
 
 
