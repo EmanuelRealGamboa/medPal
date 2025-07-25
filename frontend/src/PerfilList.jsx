@@ -5,6 +5,7 @@ import './PerfilList.css';
 
 export default function PerfilList() {
   const [perfiles, setPerfiles] = useState([]);
+  const [openMenu, setOpenMenu] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -63,7 +64,6 @@ export default function PerfilList() {
 
   return (
     <div className="perfil-bg">
-      {/* Navbar personalizada */}
       <nav className="custom-navbar d-flex justify-content-between align-items-center px-4 py-2">
         <h4 className="text-light m-0">
           <i className="bi bi-person-circle me-2"></i>MedPal
@@ -73,14 +73,13 @@ export default function PerfilList() {
         </button>
       </nav>
 
-      {/* Contenido de perfiles */}
       <div className="perfil-container-horizontal">
         {perfiles.map((perfil, index) => (
-          <div key={perfil.id} className="perfil-wrapper">
-            <Link
-              to={`/perfiles/${perfil.id}`}
+          <div key={perfil.id} className="perfil-wrapper position-relative">
+            <div
               className="perfil-card"
-              style={{ backgroundColor: colores[index % colores.length] }}
+              style={{ backgroundColor: colores[index % colores.length], cursor: 'pointer', position: 'relative' }}
+              onClick={() => navigate(`/menu/${perfil.id}`)}
             >
               <div className="avatar-container">
                 <img
@@ -89,20 +88,48 @@ export default function PerfilList() {
                   className="avatar-img"
                 />
               </div>
-            </Link>
+
+              {/* Icono de menú */}
+              <div
+                className="menu-icon"
+                onClick={(e) => {
+                  e.stopPropagation(); // Previene que se dispare el onClick del contenedor
+                  setOpenMenu(openMenu === perfil.id ? null : perfil.id);
+                }}
+              >
+                &#8942;
+              </div>
+
+              {/* Menú contextual */}
+              {openMenu === perfil.id && (
+                <div
+                  className="context-menu"
+                  onClick={(e) => e.stopPropagation()} // También lo previene dentro del menú
+                >
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation(); // Previene navegación al menú
+                      navigate(`/perfiles/${perfil.id}`);
+                    }}
+                  >
+                    Editar perfil
+                  </button>
+                </div>
+              )}
+            </div>
+
             <div className="perfil-info">
               <div className="perfil-nombre">{perfil.nombre}</div>
               <div className="perfil-relacion">{perfil.relacion}</div>
             </div>
           </div>
         ))}
+
         <Link to="/perfiles/nuevo" className="agregar-perfil">
           <span>+</span>
         </Link>
       </div>
 
-
-      {/* Footer */}
       <footer className="custom-footer text-center text-light py-2">
         © 2025 MedPal
       </footer>

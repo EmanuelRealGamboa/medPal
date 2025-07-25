@@ -26,11 +26,14 @@ urlpatterns = [
     path('vaccines/', include('vaccines.urls')),  
     path('prescriptions/', include('prescriptions.urls')),  
     path('ophthalmology/', include('ophthalmology.urls')),
+    path('antecedentesMedicos/', include('antecedentesMedicos.urls')),
+    path('gineco/', include('gineco.urls')),
 ]
 
 
 # Servir archivos media en desarrollo
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 
 

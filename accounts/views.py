@@ -23,6 +23,8 @@ from .models import PersonalData
 
 
 
+
+
 #Definimos que User sera nuestro modelo que hemos hecho en models.py (Modelo editado)
 User = get_user_model()
 
@@ -231,11 +233,45 @@ class PerfilDownloadView(generics.GenericAPIView):
 
 
 
-class PersonalDataRetrieveUpdateView(generics.RetrieveUpdateAPIView):
-    serializer_class = PersonalDataSerializer
+class PersonalDataView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def get_object(self):
-        obj, _ = PersonalData.objects.get_or_create(user=self.request.user)
-        return obj
+    def get(self, request):
+        try:
+            # Obtener el usuario autenticado
+            user = request.user
+            serializer = UserSerializer(user, context={'request': request})
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"message": f"Error al obtener datos: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
+    def post(self, request):
+        user = request.user
+        print("🔐 Usuario autenticado:", user)
+
+        # Validar si ya existen datos personales para este usuario
+        if PersonalData.objects.filter(user=user).exists():
+            return Response(
+                {"message": "Ya tienes datos personales guardados. Usa PUT para actualizar."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Serializar el usuario con los datos que llegan del form
+        serializer = UserSerializer(user, data=request.data, partial=True, context={'request': request})
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request):
+        user = request.user
+        try:
+            serializer = UserSerializer(user, data=request.data, partial=True, context={'request': request})
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"message": f"Error al actualizar: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)

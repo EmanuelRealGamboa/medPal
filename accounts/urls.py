@@ -1,9 +1,10 @@
 # accounts/urls.py
 
+
 from django.urls import path
 from .views import SignupView, VerifyCodeView, SigninView, LogoutView
 from .views import RequestPasswordResetView, ResetPasswordView,UserListCreateAPIView
-
+from django.urls import path
 from .views import (
     SignupView,
     VerifyCodeView,
@@ -12,13 +13,10 @@ from .views import (
     PerfilListCreateView,
     PerfilDetailView,
     PerfilDownloadView,
-    PersonalDataRetrieveUpdateView,
+    PersonalDataView,
     RequestPasswordResetView,
     ResetPasswordView
 )
-
-
-#Rutas para los Edpoints
 
 
 urlpatterns = [
@@ -33,13 +31,14 @@ urlpatterns = [
     path('users/', UserListCreateAPIView.as_view(), name='user-list-create'),
 
 # Perfiles (jefe de familia)
+
     path('perfiles/', PerfilListCreateView.as_view(), name='perfiles-list-create'),
     path('perfiles/<int:pk>/', PerfilDetailView.as_view(), name='perfiles-detail'),
     path('perfiles/<int:pk>/download/', PerfilDownloadView.as_view(), name='perfil-download'),
 
     # Datos personales (OneToOne)
-    path('personal-data/', PersonalDataRetrieveUpdateView.as_view(), name='personal-data'),
+    path('personal-data/', PersonalDataView.as_view(), name='personal-data'),
 
 
+    
 ]
-

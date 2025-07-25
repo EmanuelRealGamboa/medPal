@@ -9,6 +9,7 @@ from django.utils import timezone
 from datetime import timedelta  
 
 
+
 # Generador de código de verificación de 6 dígitos
 def generate_verification_code():
     return ''.join(random.choices(string.digits, k=6))
@@ -109,13 +110,20 @@ class PersonalData(models.Model):
         choices=(('M','Masculino'),('F','Femenino'),('O','Otro')),
         blank=True
     )
+    grupoRH = models.CharField(
+        max_length=3,
+        choices=[
+            ('O+', 'O+'), ('O-', 'O-'),
+            ('A+', 'A+'), ('A-', 'A-'),
+            ('B+', 'B+'), ('B-', 'B-'),
+            ('AB+', 'AB+'), ('AB-', 'AB-')
+        ],
+        blank=True
+    )
 
-    def _str_(self):
+    def __str__(self):
         return f"Datos personales de {self.user.email}"
     
-
-
-
 
 class Perfil(models.Model):
     """

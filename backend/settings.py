@@ -33,7 +33,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'material',            
-    'material.frontend',    
+    'material.frontend',  
+    'antecedentesMedicos',  
     'material.admin',
     'colorfield',
     'admin_interface',
@@ -50,10 +51,26 @@ INSTALLED_APPS = [
     'vaccines',
     'prescriptions',
     'ophthalmology',
+    'cloudinary',
+    'cloudinary_storage',
+    'gineco',
     
-
 ]
+
+
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
 #pip install django-material --break-system-packages
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -90,9 +107,9 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 
 import os
+import cloudinary
 from dotenv import load_dotenv
 from pathlib import Path
-
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -103,13 +120,17 @@ DATABASES = {
         'NAME': os.getenv('DB_NAME', ''),
         'USER': os.getenv('DB_USER', ''),
         'PASSWORD': os.getenv('DB_PASSWORD', ''),
-        'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': os.getenv('DB_PORT', '3306'),
+        'HOST': os.getenv('DB_HOST', ''),
+        'PORT': os.getenv('DB_PORT', ''),
     }
 }
 
-
-
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+}
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 # Password validation
@@ -188,10 +209,7 @@ AUTH_USER_MODEL = 'accounts.User'
 VERIFICATION_CODE_ENCRYPTION_KEY = 'your-32-byte-base64-encoded-key-here-change-in-production'
 
 
-import os
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  
 
 

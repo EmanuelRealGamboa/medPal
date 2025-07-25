@@ -1,0 +1,169 @@
+.main-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Navbar fija arriba */
+.custom-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: #a7d0c3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  z-index: 1000;
+}
+
+.custom-navbar h4 {
+  color: #204e40;
+  font-weight: 700;
+  margin: 0;
+}
+
+.form-section {
+  flex: 1;
+  padding: 100px 20px 60px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.form-card {
+  background-color: #f9fdfb;
+  border-radius: 15px;
+  padding: 30px 40px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  width: 100%;
+  max-width: 600px;
+  color: #204e40;
+}
+
+/* Foto de perfil placeholder */
+.photo-placeholder {
+  width: 120px;
+  height: 120px;
+  border: 2px dashed #307060;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e0f0e9;
+  flex-direction: column;
+}
+
+.photo-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.photo-placeholder i {
+  font-size: 3rem;
+  color: #307060;
+}
+
+/* Inputs y selects */
+.form-label {
+  font-weight: 600;
+  color: #307060;
+}
+
+.form-control,
+.form-select {
+  background-color: #f0f9f5;
+  border: 1.5px solid #a7d0c3;
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #204e40;
+  font-weight: 500;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #204e40;
+  outline: none;
+  box-shadow: 0 0 6px #a7d0c3;
+}
+
+/* Botones */
+.btn-save {
+  background-color: #307060;
+  color: white;
+  font-weight: 700;
+  border: none;
+  padding: 10px 32px;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-save:hover {
+  background-color: #204e40;
+}
+
+.btn-secondary {
+  background-color: #b03030;
+  color: white;
+  font-weight: 700;
+  border: none;
+  padding: 10px 32px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #7a2020;
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  color: #204e40;
+  cursor: pointer;
+}
+
+/* Mensajes */
+.alert-info {
+  background-color: #d0f0d9;
+  color: #204e40;
+  font-weight: 600;
+  text-align: center;
+  border-radius: 6px;
+  padding: 10px;
+  margin-top: 15px;
+}
+
+/* Footer fijo */
+.footer-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 35px;
+  background-color: #a7d0c3;
+  color: #204e40;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+  user-select: none;
+  z-index: 1000;
+}

@@ -4,8 +4,13 @@ import './signup.css';
 
 function Signup() {
   const [formData, setFormData] = useState({
-    name: '', apellido_paterno: '', apellido_materno: '',
-    phone: '', email: '', password: '', password2: ''
+    name: '',
+    apellido_paterno: '',
+    apellido_materno: '',
+    phone: '',
+    email: '',
+    password: '',
+    password2: ''
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -36,12 +41,23 @@ function Signup() {
         body: JSON.stringify(formData)
       });
 
+      const errorData = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Error en el registro');
+        // Prioriza errores de contraseña
+        if (errorData.password) {
+          throw new Error(errorData.password.join(' '));
+        }
+
+        // Si hay otros errores por campo
+        const firstField = Object.keys(errorData)[0];
+        const message = Array.isArray(errorData[firstField])
+          ? errorData[firstField].join(' ')
+          : errorData[firstField];
+
+        throw new Error(message || 'Error en el registro');
       }
 
-      // ✅ Guardamos correo temporal para verificación
       localStorage.setItem('correo_verificacion', formData.email);
 
       setMensaje('¡Registro exitoso!');
@@ -67,11 +83,51 @@ function Signup() {
       <div className="auth-left">
         <h2 className="mb-3">Registrarse</h2>
         <form onSubmit={handleSubmit}>
-          <input type="text" name="name" placeholder="Nombre" className="form-control mb-2" value={formData.name} onChange={handleChange} required />
-          <input type="text" name="apellido_paterno" placeholder="Apellido Paterno" className="form-control mb-2" value={formData.apellido_paterno} onChange={handleChange} required />
-          <input type="text" name="apellido_materno" placeholder="Apellido Materno" className="form-control mb-2" value={formData.apellido_materno} onChange={handleChange} required />
-          <input type="tel" name="phone" placeholder="Teléfono" className="form-control mb-2" value={formData.phone} onChange={handleChange} required />
-          <input type="email" name="email" placeholder="Correo" className="form-control mb-2" value={formData.email} onChange={handleChange} required />
+          <input
+            type="text"
+            name="name"
+            placeholder="Nombre"
+            className="form-control mb-2"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="text"
+            name="apellido_paterno"
+            placeholder="Apellido Paterno"
+            className="form-control mb-2"
+            value={formData.apellido_paterno}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="text"
+            name="apellido_materno"
+            placeholder="Apellido Materno"
+            className="form-control mb-2"
+            value={formData.apellido_materno}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="tel"
+            name="phone"
+            placeholder="Teléfono"
+            className="form-control mb-2"
+            value={formData.phone}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Correo"
+            className="form-control mb-2"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
 
           {/* Contraseña */}
           <div className="input-group mb-2">
@@ -83,9 +139,9 @@ function Signup() {
               value={formData.password}
               onChange={handleChange}
               required
-              onCopy={(e) => e.preventDefault()}
-              onPaste={(e) => e.preventDefault()}
-              onCut={(e) => e.preventDefault()}
+              onCopy={e => e.preventDefault()}
+              onPaste={e => e.preventDefault()}
+              onCut={e => e.preventDefault()}
             />
             <button
               type="button"
@@ -107,9 +163,9 @@ function Signup() {
               value={formData.password2}
               onChange={handleChange}
               required
-              onCopy={(e) => e.preventDefault()}
-              onPaste={(e) => e.preventDefault()}
-              onCut={(e) => e.preventDefault()}
+              onCopy={e => e.preventDefault()}
+              onPaste={e => e.preventDefault()}
+              onCut={e => e.preventDefault()}
             />
             <button
               type="button"

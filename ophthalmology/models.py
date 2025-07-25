@@ -1,7 +1,8 @@
 from django.db import models
-from accounts.models import User
 from django.core.exceptions import ValidationError
+from cloudinary_storage.storage import MediaCloudinaryStorage
 import os
+
 
 def validate_file_extension(value):
     ext = os.path.splitext(value.name)[1].lower()
@@ -13,6 +14,7 @@ def validate_file_size(value):
     if value.size > limit:
         raise ValidationError('File size must not exceed 2MB.')
 
+
 ATTENTION_TYPES = [
     ('routine', 'Routine Check-up'),
     ('followup', 'Chronic Condition Follow-up'),
@@ -21,16 +23,20 @@ ATTENTION_TYPES = [
 ]
 
 class OphthalmologyDiagnosis(models.Model):
-    patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ophthalmology_diagnoses')
+    patient_name = models.CharField(max_length=100)
     exam_date = models.DateField()
     attention_type = models.CharField(max_length=20, choices=ATTENTION_TYPES, blank=True, null=True)
     diagnosis = models.TextField(help_text="Detailed visual diagnosis")
     notes = models.TextField(blank=True, null=True)
+
+   
     document = models.FileField(
-        upload_to='ophthalmology/',
+        storage=MediaCloudinaryStorage(), 
+        upload_to='medpal/ophthalmology/',  
         validators=[validate_file_extension, validate_file_size]
     )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.patient.email} - {self.exam_date}"
+        return f"{self.patient_name} - {self.exam_date}"

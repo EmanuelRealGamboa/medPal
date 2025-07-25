@@ -102,3 +102,28 @@ curl -X POST http://127.0.0.1:8000/accounts/logout/ \
 
 # Importar tema personalizado del admin interface
 python manage.py loaddata themes.json
+
+
+
+## ☁️ Cloudinary – Almacenamiento de Archivos en la Nube
+
+Este proyecto utiliza **Cloudinary** para subir y almacenar archivos como:
+
+- 📄 Documentos PDF  
+- 🖼️ Imágenes (.jpg, .jpeg, .png)  
+- 🎥 Videos (si se habilita)
+
+Cloudinary permite guardar estos archivos directamente en la nube, evitando ocupar espacio en tu computadora o servidor local.
+
+---
+
+### 🔧 ¿Qué tengo que hacer?
+
+✅ **NO necesitas crear cuenta ni configurar nada extra.**  
+Ya se creó una cuenta Cloudinary oficial para el equipo de **MedPal**.
+
+Solo debes:
+
+1. Crear un archivo `.env` en la raíz del proyecto (si no lo tienes).
+
+2. Copiar y pegar las siguientes variables en example.env a tu archivo .env y si no tienes el dicho formato se debe de crear
