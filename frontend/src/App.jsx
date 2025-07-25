@@ -8,6 +8,10 @@ import PerfilForm from './PerfilForm.jsx';
 import PerfilDetail from './PerfilDetail.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import PersonalInfoForm from './PersonalInfoForm.jsx';
+import Ophthalmology from './Ophthalmology.jsx';
+
+
+
 
 export default function App() {
   return (
@@ -15,8 +19,10 @@ export default function App() {
       {/* Rutas públicas */}
       <Route path="/" element={<SignIn />} />
       <Route path="/signup" element={<Signup />} />
-      <Route path="/personalinform" element={<PersonalInfoForm />} /> 
+      <Route path="/personalinform" element={<PersonalInfoForm />} />
 
+      {/* Nueva ruta para diagnóstico oftalmológico */}
+      <Route path="/ophthalmology" element={<Ophthalmology />} />
 
       {/* Verificación protegida */}
       <Route

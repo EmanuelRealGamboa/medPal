@@ -1,5 +1,6 @@
 /* Full layout setup */
-body, html {
+body,
+html {
   margin: 0;
   padding: 0;
   height: 100%;
@@ -27,7 +28,7 @@ body, html {
   justify-content: space-between;
   align-items: center;
   color: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Main section */
@@ -39,21 +40,29 @@ body, html {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  padding-top: 80px;
+  /* Altura de navbar + separación */
+  padding-bottom: 3rem;
 }
 
-.custom-width {
-  width: 150%;
-  max-width: 100vw; 
-}
 /* Card */
 .form-card {
-  background-color: #f8fbe5;
+  background-color: #fff;
   border-radius: 12px;
   position: relative;
   padding: 2rem 3rem;
-  margin-top: 6rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-top: 0;
+  margin-bottom: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   min-height: 400px;
+  width: 100%;
+  max-width: 900px;
+}
+
+/* Personal width class */
+.custom-width {
+  width: 100%;
+  max-width: 900px;
 }
 
 .nowrap-label {
@@ -71,9 +80,36 @@ body, html {
   color: black;
 }
 
-/* Placeholder for profile picture */
+.photo-placeholder {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  width: auto;
+  max-width: 120px;
+  /* límite de ancho */
+  padding: 0.5rem 0;
+  background-color: transparent;
+  border: none;
+}
+
+.photo-placeholder img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.photo-placeholder input[type="file"] {
+  font-size: 0.8rem;
+  padding: 0.2rem;
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
 
 
+/* Extra space */
 .extra-space-left {
   margin-left: 1.5rem;
 }
@@ -82,39 +118,122 @@ body, html {
   min-width: 150px;
 }
 
-/* Custom save button */
-.btn-save {
-  background-color: #2b6d61;
-  color: white;
-  border-radius: 8px;
+
+/* Asegura que el botón de logout no se expanda en pantallas pequeñas */
+.custom-navbar .btn {
+  white-space: nowrap;
+  padding: 0.4rem 1rem;
+  font-size: 0.95rem;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.btn-save:hover {
-  background-color: #245c51;
+/* Evita que el navbar se colapse en pantallas chicas */
+.custom-navbar {
+  flex-wrap: nowrap;
 }
 
-h3 {
-  color: #2b6d61;
-  font-weight: bold;
+
+
+
+/* ========== MEDIA QUERIES ========== */
+
+/* Tablets y pantallas medianas */
+@media (max-width: 992px) {
+  .form-card {
+    padding: 1.5rem 2rem;
+    margin-top: 0; 
+  }
+
+  .form-section {
+    padding-top: 100px; 
+    padding-bottom: 3rem;
+  }
 }
 
-/* Custom save button */
-.btn.btn-save {
-  background-color: #2b6d61 !important;
-  color: white !important;
-  border-radius: 8px;
-  border: none;
-  padding: 0.25rem 1.2rem; /* Menor altura y buen ancho */
-  font-size: 1rem;         /* Tamaño de texto legible */
-  line-height: 1.2;        /* Compacta la altura */
+/* Pantallas pequeñas (móviles) */
+@media (max-width: 768px) {
+  .form-section {
+    min-height: auto;
+    padding-top: auto; /* espacio para navbar */
+    padding-bottom: auto; /* espacio para footer */
+  }
+
+  .form-card {
+    margin-top: 5rem;
+    margin-bottom: 4rem;
+    padding: 1.5rem;
+  }
+
+  .photo-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem auto;
+    text-align: center;
+  }
+
+  .form-card h3 {
+    font-size: 1.5rem;
+  }
+
+  .close-btn {
+    font-size: 1.2rem;
+    top: 10px;
+    right: 15px;
+  }
 }
 
-.btn.btn-save:hover {
-  background-color: #245c51 !important;
+/* Estilos responsivos para pantallas chicas */
+@media (max-width: 576px) {
+
+  .custom-navbar {
+    padding: 0.5rem 1rem;
+  }
+
+  .custom-navbar h4 {
+    font-size: 1rem;
+  }
+
+  .custom-navbar .btn {
+    font-size: 0.85rem;
+    padding: 0.3rem 0.75rem;
+    max-width: 110px;
+  }
 }
 
-.photo-placeholder input[type="file"] {
-  font-size: 0.8rem;
-  padding: 0.2rem;
-  width: 100%;
+/* Teléfonos muy pequeños */
+@media (max-width: 480px) {
+  .form-section {
+    padding: 1rem;
+    min-height: auto;
+    padding-top: auto; /* espacio para navbar */
+    padding-bottom: auto; /* espacio para footer */
+  }
+
+  .form-card {
+    padding: 1rem;
+  }
+
+  .btn {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .d-flex.justify-content-center.gap-3 {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .photo-placeholder {
+    margin-bottom: 1rem;
+  }
+
+  .form-label {
+    text-align: center;
+    width: 100%;
+    display: block;
+  }
 }
