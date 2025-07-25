@@ -1,26 +1,27 @@
 import React, { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import "./MenuModulos.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const sections = [
-  { label: "Datos personales", color: "#E04040", path: "/menu/datos-personales/agregar" },
-  { label: "Antecedentes médicos", color: "#FF9455" },
-  { label: "Vacunas", color: "#FCE536" },
-  { label: "Estudios", color: "#ACEB8A" },
-  { label: "Recetas", color: "#71C4FF" },
-  { label: "Historia gineco-obstétrica", color: "#E091FB" },
-  { label: "Seguimiento de enfermedades crónicas degenerativas", color: "#FF7DB5" },
-  { label: "Oftalmología", color: "#76EEC6" },
-];
-
 const MenuModulos = () => {
   const navigate = useNavigate();
+  const { id: perfilId } = useParams(); // <- obtenemos el id del perfil desde la URL
+
+  const sections = [
+    { label: "Datos personales", color: "#E04040", path: `/menu/${perfilId}/datos-personales` },
+    { label: "Antecedentes médicos", color: "#FF9455" },
+    { label: "Vacunas", color: "#FCE536" },
+    { label: "Estudios", color: "#ACEB8A" },
+    { label: "Recetas", color: "#71C4FF" },
+    { label: "Historia gineco-obstétrica", color: "#E091FB" },
+    { label: "Seguimiento de enfermedades crónicas degenerativas", color: "#FF7DB5" },
+    { label: "Oftalmología", color: "#76EEC6" },
+  ];
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      navigate("/signin"); // redirige si no hay sesión activa
+      navigate("/signin");
     }
   }, [navigate]);
 

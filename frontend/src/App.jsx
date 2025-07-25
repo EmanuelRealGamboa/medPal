@@ -74,9 +74,9 @@ export default function App() {
         }
       />
 
-      {/* Datos personales - rutas anidadas para view, add, edit */}
+      {/* Datos personales por perfil */}
       <Route
-        path="/menu/datos-personales"
+        path="/menu/:id/datos-personales"
         element={
           <ProtectedRoute>
             <PersonalInfoViewWrapper />
@@ -84,7 +84,7 @@ export default function App() {
         }
       />
       <Route
-        path="/menu/datos-personales/agregar"
+        path="/menu/:id/datos-personales/agregar"
         element={
           <ProtectedRoute>
             <PersonalInfoFormWrapper />
@@ -92,7 +92,7 @@ export default function App() {
         }
       />
       <Route
-        path="/menu/datos-personales/editar"
+        path="/menu/:id/datos-personales/editar"
         element={
           <ProtectedRoute>
             <PersonalInfoEditWrapper />
@@ -106,25 +106,33 @@ export default function App() {
   );
 }
 
-// Wrappers para pasar parámetros si se necesitan
+// Wrappers para extraer parámetros de URL y pasarlos como props
 function PerfilFormWrapper() {
   const { id } = useParams();
   return <PerfilForm perfilId={id} />;
 }
+
 function PerfilDetailWrapper() {
   const { id } = useParams();
   return <PerfilDetail perfilId={id} />;
 }
+
 function MenuModulosWrapper() {
   const { id } = useParams();
   return <MenuModulos perfilId={id} />;
 }
+
 function PersonalInfoViewWrapper() {
-  return <PersonalInfoView />;
+  const { id } = useParams();
+  return <PersonalInfoView perfilId={id} />;
 }
+
 function PersonalInfoFormWrapper() {
-  return <PersonalInfoForm />;
+  const { id } = useParams();
+  return <PersonalInfoForm perfilId={id} />;
 }
+
 function PersonalInfoEditWrapper() {
-  return <PersonalInfoEdit />;
+  const { id } = useParams();
+  return <PersonalInfoEdit perfilId={id} />;
 }

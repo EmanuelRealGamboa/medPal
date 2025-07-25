@@ -4,7 +4,7 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './PersonalInfoForm.css';
 
-export default function PersonalInfoForm() {
+export default function PersonalInfoForm({ perfilId }) {
   const [formData, setFormData] = useState({
     nombre: '',
     fechaNacimiento: '',
@@ -13,6 +13,7 @@ export default function PersonalInfoForm() {
     contactoEmergencia: '',
     photoUser: null,
   });
+
   const [photoPreview, setPhotoPreview] = useState(null);
   const navigate = useNavigate();
 
@@ -35,35 +36,35 @@ export default function PersonalInfoForm() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const dataToSend = new FormData();
-  dataToSend.append('nombre', formData.nombre);
-  dataToSend.append('fecha_nacimiento', formData.fechaNacimiento);
-  dataToSend.append('genero', formData.genero);
-  dataToSend.append('grupoRH', formData.grupoRH);
-  dataToSend.append('contactoEmergencia', formData.contactoEmergencia);
+    const dataToSend = new FormData();
+    dataToSend.append('nombre', formData.nombre);
+    dataToSend.append('fecha_nacimiento', formData.fechaNacimiento);
+    dataToSend.append('genero', formData.genero);
+    dataToSend.append('grupoRH', formData.grupoRH);
+    dataToSend.append('contactoEmergencia', formData.contactoEmergencia);
 
-  if (formData.photoUser) {
-    dataToSend.append('photoUser', formData.photoUser);
-  }
+    if (formData.photoUser) {
+      dataToSend.append('photoUser', formData.photoUser);
+    }
 
-  const token = localStorage.getItem('token'); // ✅ Se usa abajo
+    const token = localStorage.getItem('token');
 
-  try {
-    await axios.post('http://127.0.0.1:8000/accounts/personal-data/', dataToSend, {
-      headers: {
-        Authorization: `Token ${token}`,
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    try {
+      await axios.post('http://127.0.0.1:8000/accounts/personal-data/', dataToSend, {
+        headers: {
+          Authorization: `Token ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
-    navigate('/ver-datos-personales');
-  } catch (error) {
-    console.error('Error al guardar los datos:', error);
-  }
-};
-
+      // ✅ Redirigir a la vista de datos personales con el perfilId
+      navigate(`/menu/${perfilId}/datos-personales`);
+    } catch (error) {
+      console.error('Error al guardar los datos:', error);
+    }
+  };
 
   return (
     <div className="main-layout">
@@ -182,7 +183,7 @@ export default function PersonalInfoForm() {
               <button
                 type="button"
                 className="btn btn-secondary px-4"
-                onClick={() => navigate('/modulos')}
+                onClick={() => navigate(`/menu/${perfilId}`)}
               >
                 Volver a módulos
               </button>
