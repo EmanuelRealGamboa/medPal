@@ -53,9 +53,8 @@ INSTALLED_APPS = [
     'ophthalmology',
     'cloudinary',
     'cloudinary_storage',
+    'gineco',
     
-
-
 ]
 
 
@@ -121,8 +120,8 @@ DATABASES = {
         'NAME': os.getenv('DB_NAME', ''),
         'USER': os.getenv('DB_USER', ''),
         'PASSWORD': os.getenv('DB_PASSWORD', ''),
-        'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': os.getenv('DB_PORT', '3306'),
+        'HOST': os.getenv('DB_HOST', ''),
+        'PORT': os.getenv('DB_PORT', ''),
     }
 }
 
@@ -212,3 +211,5 @@ VERIFICATION_CODE_ENCRYPTION_KEY = 'your-32-byte-base64-encoded-key-here-change-
 
 # MEDIA_URL = '/media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  
+
+

@@ -9,6 +9,7 @@ from django.utils import timezone
 from datetime import timedelta  
 
 
+
 # Generador de código de verificación de 6 dígitos
 def generate_verification_code():
     return ''.join(random.choices(string.digits, k=6))
