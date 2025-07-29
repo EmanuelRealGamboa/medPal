@@ -1,0 +1,242 @@
+.prescription-bg {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #FFFFFF;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.custom-navbar {
+  background-color: #3D8D7A;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+}
+
+.custom-navbar h4 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.custom-navbar button {
+  background-color: transparent;
+  border: 1px solid white;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 1rem;
+  transition: all 0.2s;
+}
+
+.custom-navbar button:hover {
+  background-color: rgb(255, 255, 255);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+.prescription-container {
+  flex: 1;
+  padding: 2rem;
+  max-width: 1600px;
+  margin: 0 auto;
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.filter-section {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.filter-section label {
+  font-weight: 500;
+  color: #2a4d69;
+}
+
+.filter-section select {
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  min-width: 200px;
+}
+
+.prescription-count {
+  margin-left: auto;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.prescription-grid-container {
+  overflow-y: auto;
+  max-height: calc(100vh - 250px);
+  padding: 1rem 0;
+}
+
+.prescription-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 1.5rem;
+  padding: 0.5rem;
+}
+
+.prescription-card {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-left: 4px solid #3D8D7A;
+  transition: transform 0.2s;
+}
+
+.card-header h5,
+.field-label,
+.specialty-badge,
+.filter-section label {
+  font-weight: 600;
+  font-family: 'Segoe UI Semibold', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.prescription-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.card-header {
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #eee;
+}
+
+.card-header h5 {
+  margin: 0 0 0.5rem 0;
+  color: #2a4d69;
+  font-size: 1.1rem;
+}
+
+.specialty-badge {
+  display: inline-block;
+  background-color: #e8f5e9;
+  color: #327062;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.card-body p {
+  margin: 0.5rem 0;
+  color: #555;
+}
+
+.medications-list {
+  margin-top: 1rem;
+}
+
+.medications-list span {
+  display: block;
+  padding: 0.25rem 0;
+  color: #333;
+}
+
+.document-link a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #2a4d69;
+  text-decoration: none;
+  margin-top: 1rem;
+}
+
+.document-link a:hover {
+  text-decoration: underline;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.card-footer button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: 1px solid currentColor;
+  cursor: pointer;
+  font-size: 0.9rem;
+  background-color: transparent;
+  transition: all 0.2s ease; 
+}
+
+
+.card-footer .btn-outline-secondary:hover {
+  background-color: #6c757d; 
+  color: #FFFFFF;
+  border-color: #6c757d;
+}
+
+.card-footer .btn-outline-danger:hover {
+  background-color: #dc3545; 
+  color: #FFFFFF;
+  border-color: #dc3545;
+}
+
+.loading-state, .error-state, .empty-state {
+  text-align: center;
+  padding: 3rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.spinner {
+  width: 3rem;
+  height: 3rem;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3D8D7A;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.empty-state button {
+  background-color: #3D8D7A;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+@media (max-width: 1200px) {
+  .prescription-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .prescription-grid {
+    grid-template-columns: 1fr; 
+  }
+}

@@ -8,6 +8,8 @@ import PerfilForm from './PerfilForm.jsx';
 import PerfilDetail from './PerfilDetail.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import PersonalInfoForm from './PersonalInfoForm.jsx';
+import PrescriptionForm from './PrescriptionForm.jsx';
+import PrescriptionList from './PrescriptionsList.jsx';
 
 export default function App() {
   return (
@@ -15,8 +17,7 @@ export default function App() {
       {/* Rutas públicas */}
       <Route path="/" element={<SignIn />} />
       <Route path="/signup" element={<Signup />} />
-      <Route path="/personalinform" element={<PersonalInfoForm />} /> 
-
+      <Route path="/personalinform" element={<PersonalInfoForm />} />
 
       {/* Verificación protegida */}
       <Route
@@ -61,6 +62,33 @@ export default function App() {
           </ProtectedRoute>
         }
       />
+
+      <Route
+        path="/prescriptions"
+        element={
+          <ProtectedRoute>
+            <PrescriptionList />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/prescriptions/nuevo"
+        element={
+          <ProtectedRoute>
+            <PrescriptionForm />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/prescriptions/editar/:id"
+        element={
+          <ProtectedRoute>
+            <PrescriptionFormWrapper />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }
@@ -74,4 +102,9 @@ function PerfilFormWrapper() {
 function PerfilDetailWrapper() {
   const { id } = useParams();
   return <PerfilDetail perfilId={id} />;
+}
+
+function PrescriptionFormWrapper() {
+  const { id } = useParams();
+  return <PrescriptionForm />;
 }
