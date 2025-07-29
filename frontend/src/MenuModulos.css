@@ -14,7 +14,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 10;
 }
 
@@ -42,7 +42,8 @@ main.section-grid {
   justify-content: center;
   align-content: flex-start;
   gap: 16px;
-  padding: 80px 20px 20px 20px; /* ← aquí agregamos espacio arriba */
+  padding: 80px 20px 20px 20px;
+  /* ← aquí agregamos espacio arriba */
   overflow-y: auto;
   background-color: white;
   max-width: 1200px;
@@ -71,6 +72,7 @@ main.section-grid {
   aspect-ratio: 1 / 1;
   border-radius: 12px;
   box-shadow: 0 3px 8px rgb(0 0 0 / 0.15);
+  display: flex;
 }
 
 /* Texto debajo del módulo */
@@ -91,11 +93,27 @@ main.section-grid {
   padding: 10px 0;
   font-size: 14px;
   color: #666;
-  box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Opcional: resetea el estilo del link si quieres que no se vea azul/subrayado */
 .link-reset {
   text-decoration: none;
   color: inherit;
+}
+
+.section-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--module-color);
+  border-radius: 12px;
+}
+
+.module-icon {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  display: block;
+  margin: 0;
 }

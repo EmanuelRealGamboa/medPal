@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import './Ophthalmology.css';
+import { useNavigate, useParams } from 'react-router-dom';
+import './OphthalmologyForm.css';
 
 const Ophthalmology = () => {
   const [patients, setPatients] = useState([]);
@@ -15,14 +16,23 @@ const Ophthalmology = () => {
 
   const [errors, setErrors] = useState({});
   const [previewFileName, setPreviewFileName] = useState('');
+  const navigate = useNavigate();
+  const { perfilId } = useParams();
+
+
 
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/patients/'); // ← Cambia esta URL si tu endpoint es diferente
+        const response = await fetch('http://127.0.0.1:8000/ophthalmology/diagnoses/');
         if (!response.ok) throw new Error('Error fetching patients');
         const data = await response.json();
         setPatients(data);
+
+        // Autoasignar ID del paciente
+        if (data.length > 0) {
+          setFormData((prev) => ({ ...prev, patient: data[0].id }));
+        }
       } catch (error) {
         console.error('Error loading patients:', error);
       } finally {
@@ -32,6 +42,7 @@ const Ophthalmology = () => {
 
     fetchPatients();
   }, []);
+
 
 
   const attentionTypes = [
@@ -149,21 +160,18 @@ const Ophthalmology = () => {
               {/* Columna izquierda */}
               <div className="col-md-6">
                 <div className="form-group mb-3">
-                  <label htmlFor="patient">Patient:</label>
-                  <select
+                  <label htmlFor="patient">Nombre completo:</label>
+                  <input
+                    type="text"
                     name="patient"
                     value={formData.patient}
                     onChange={handleChange}
                     required
                     className="form-control"
-                  >
-                    <option value="">Select a patient</option>
-                    {patients.map((p) => (
-                      <option key={p.id} value={p.id}>{p.email}</option>
-                    ))}
-                  </select>
+                  />
                   {errors.patient && <p className="form-error">{errors.patient}</p>}
                 </div>
+
 
                 <div className="form-group mb-3">
                   <label htmlFor="exam_date">Exam Date:</label>
@@ -237,8 +245,16 @@ const Ophthalmology = () => {
             </div>
 
             <div className="d-flex justify-content-end gap-3 mt-4">
-              <button type="button" className="btn-modulo">Volver a módulos</button>
-              <button type="submit" className="btn-save">Guardar</button>
+              <button
+                type="button"
+                className="btn-save"
+                onClick={() => navigate(`/menu/${perfilId}`)}
+              >
+                Volver a módulos
+              </button>
+              <button type="submit" className="btn-save">
+                Guardar
+              </button>
             </div>
           </form>
 

@@ -8,11 +8,11 @@ import PerfilForm from './PerfilForm.jsx';
 import PerfilDetail from './PerfilDetail.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import MenuModulos from './MenuModulos.jsx';
-
 import PersonalInfoView from './PersonalInfoView.jsx';
 import PersonalInfoForm from './PersonalInfoForm.jsx';
-import Ophthalmology from './Ophthalmology.jsx';
 import PersonalInfoEdit from './EditPersonalInfo.jsx';
+import OphthalmologyView from './OphthalmologyView.jsx';
+import OphthalmologyForm from './OphthalmologyForm.jsx';
 
 
 export default function App() {
@@ -23,8 +23,6 @@ export default function App() {
       <Route path="/signup" element={<Signup />} />
       <Route path="/personalinform" element={<PersonalInfoForm />} />
 
-      {/* Nueva ruta para diagnóstico oftalmológico */}
-      <Route path="/ophthalmology" element={<Ophthalmology />} />
 
 
       {/* Verificación protegida */}
@@ -107,6 +105,12 @@ export default function App() {
         }
       />
 
+      {/* Diagnóstico oftalmológico por perfil */}
+      <Route path="/menu/:perfilId/oftalmologia" element={<OphthalmologyView />} />
+      <Route path="/menu/:perfilId/oftalmologia/agregar" element={<OphthalmologyForm />} />
+      <Route path="/menu/:perfilId/oftalmologia/editar/:diagnosticoId" element={<OphthalmologyForm editMode />} />
+
+
       {/* Ruta fallback */}
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
@@ -143,3 +147,10 @@ function PersonalInfoEditWrapper() {
   const { id } = useParams();
   return <PersonalInfoEdit perfilId={id} />;
 }
+
+// Nuevos wrappers para oftalmología
+function OphthalmologyViewWrapper() {
+  const { id } = useParams();
+  return <OphthalmologyView perfilId={id} />;
+}
+
