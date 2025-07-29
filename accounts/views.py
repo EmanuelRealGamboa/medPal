@@ -25,6 +25,8 @@ from .models import PersonalData
 
 
 
+
+
 #Definimos que User sera nuestro modelo que hemos hecho en models.py (Modelo editado)
 User = get_user_model()
 
@@ -234,32 +236,43 @@ class PerfilDownloadView(generics.GenericAPIView):
 
 
 
+
 class PersonalDataView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         try:
-            personal_data = PersonalData.objects.get(user=request.user)
-            serializer = PersonalDataSerializer(personal_data)
-            return Response(serializer.data)
-        except PersonalData.DoesNotExist:
-            return Response({"message": "No hay datos personales aún."}, status=status.HTTP_404_NOT_FOUND)
+            # Obtener el usuario autenticado
+            user = request.user
+            serializer = UserSerializer(user, context={'request': request})
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"message": f"Error al obtener datos: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request):
-        if PersonalData.objects.filter(user=request.user).exists():
+        user = request.user
+        print("🔐 Usuario autenticado:", user)
+
+        # Validar si ya existen datos personales para este usuario
+        if PersonalData.objects.filter(user=user).exists():
             return Response(
                 {"message": "Ya tienes datos personales guardados. Usa PUT para actualizar."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        serializer = PersonalDataSerializer(data=request.data)
+        # Serializar el usuario con los datos que llegan del form
+        serializer = UserSerializer(user, data=request.data, partial=True, context={'request': request})
+
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request):
+        user = request.user
         try:
+
             personal_data = PersonalData.objects.get(user=request.user)
         except PersonalData.DoesNotExist:
             return Response({"message": "Datos personales no encontrados."}, status=status.HTTP_404_NOT_FOUND)
@@ -289,3 +302,6 @@ class PersonalDataRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         obj, _ = PersonalData.objects.get_or_create(user=self.request.user)
         return obj
+
+           
+

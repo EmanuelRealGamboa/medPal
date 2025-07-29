@@ -5,7 +5,7 @@ from rest_framework import serializers
 from .models import Perfil
 from rest_framework import serializers
 from .models import PersonalData
-
+from datetime import date
 
 # Leeme
 """
@@ -139,10 +139,28 @@ class PersonalDataSerializer(serializers.ModelSerializer):
         model = PersonalData
         fields = ['fecha_nacimiento', 'direccion', 'genero', 'grupoRH']
 
+    def validate_fecha_nacimiento(self, value):
+        if value > date.today():
+            raise serializers.ValidationError("La fecha de nacimiento no puede ser en el futuro.")
+        return value
+
+    def validate_genero(self, value):
+        opciones_validas = ['Masculino', 'Femenino', 'Otro']
+        if value not in opciones_validas:
+            raise serializers.ValidationError(f"Género debe ser uno de: {', '.join(opciones_validas)}.")
+        return value
+
+    def validate_grupoRH(self, value):
+        grupos_validos = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
+        if value not in grupos_validos:
+            raise serializers.ValidationError(f"Grupo RH debe ser uno de: {', '.join(grupos_validos)}.")
+        return value
+
 
 # Serializer principal para Usuario, incluye datos personales anidados
 class UserSerializer(serializers.ModelSerializer):
     personal_data = PersonalDataSerializer(required=False)
+    photoUser = serializers.ImageField(required=False, allow_null=True)
 
     class Meta:
         model = User
@@ -170,9 +188,9 @@ class UserSerializer(serializers.ModelSerializer):
         # Actualizar o crear datos personales relacionados
         if personal_data_data:
             personal_data, created = PersonalData.objects.get_or_create(user=instance)
-            for attr, value in personal_data_data.items():
-                setattr(personal_data, attr, value)
-            personal_data.save()
+            personal_serializer = PersonalDataSerializer(personal_data, data=personal_data_data, partial=True)
+            personal_serializer.is_valid(raise_exception=True)
+            personal_serializer.save()
 
         return instance
 

@@ -1,26 +1,27 @@
 import React, { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import "./MenuModulos.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const sections = [
-  { label: "Datos personales", color: "#E04040", path: "/menu/datos-personales/agregar" },
-  { label: "Antecedentes médicos", color: "#FF9455" },
-  { label: "Vacunas", color: "#FCE536" },
-  { label: "Estudios", color: "#ACEB8A" },
-  { label: "Recetas", color: "#71C4FF" },
-  { label: "Historia gineco-obstétrica", color: "#E091FB" },
-  { label: "Seguimiento de enfermedades crónicas degenerativas", color: "#FF7DB5" },
-  { label: "Oftalmología", color: "#76EEC6" },
-];
-
 const MenuModulos = () => {
   const navigate = useNavigate();
+  const { id: perfilId } = useParams(); // <- obtenemos el id del perfil desde la URL
+
+  const sections = [
+    { label: "Datos personales", color: "#E04040", icon: "/icons/personales.png", path: `/menu/${perfilId}/datos-personales` },
+    { label: "Antecedentes médicos", color: "#FF9455", icon: "/icons/antecedentes.png" },
+    { label: "Vacunas", color: "#FCE536", icon: "/icons/vacunas.png" },
+    { label: "Estudios", color: "#ACEB8A", icon: "/icons/estudios.png" },
+    { label: "Recetas", color: "#71C4FF", icon: "/icons/recetas.png" },
+    { label: "Historia gineco-obstétrica", color: "#E091FB", icon: "/icons/gineco.png" },
+    { label: "Seguimiento de enfermedades crónicas degenerativas", color: "#FF7DB5", icon: "/icons/enfermedades.png" },
+    { label: "Oftalmología", color: "#76EEC6", icon: "/icons/oftalmologia.png", path: `/menu/${perfilId}/oftalmologia` },
+  ];
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      navigate("/signin"); // redirige si no hay sesión activa
+      navigate("/signin");
     }
   }, [navigate]);
 
@@ -53,21 +54,15 @@ const MenuModulos = () => {
         {sections.map((section, index) => (
           <div key={index} className="module-container">
             {section.path ? (
-              <Link
-                to={section.path}
-                className="link-reset"
-                style={{ width: "100%" }}
-              >
-                <div
-                  className="section-card"
-                  style={{ backgroundColor: section.color }}
-                />
+              <Link to={section.path} className="link-reset" style={{ width: "100%" }}>
+                <div className="section-card" style={{ backgroundColor: section.color }}>
+                  <img src={section.icon} alt={section.label} className="module-icon" />
+                </div>
               </Link>
             ) : (
-              <div
-                className="section-card"
-                style={{ backgroundColor: section.color }}
-              />
+              <div className="section-card" style={{ backgroundColor: section.color }}>
+                <img src={section.icon} alt={section.label} className="module-icon" />
+              </div>
             )}
             <div className="module-label">{section.label}</div>
           </div>

@@ -13,10 +13,12 @@ import PerfilDetail from './PerfilDetail.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 
 import MenuModulos from './MenuModulos.jsx';
-
 import PersonalInfoView from './PersonalInfoView.jsx';
 import PersonalInfoForm from './PersonalInfoForm.jsx';
 import PersonalInfoEdit from './EditPersonalInfo.jsx';
+import OphthalmologyView from './OphthalmologyView.jsx';
+import OphthalmologyForm from './OphthalmologyForm.jsx';
+
 
 import PersonalInfoForm from './PersonalInfoForm.jsx';
 
@@ -27,6 +29,9 @@ export default function App() {
       {/* Rutas públicas */}
       <Route path="/" element={<SignIn />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/personalinform" element={<PersonalInfoForm />} />
+
+
 
 
       {/* Verificación protegida */}
@@ -99,9 +104,9 @@ export default function App() {
         }
       />
 
-      {/* Datos personales - rutas anidadas para view, add, edit */}
+      {/* Datos personales por perfil */}
       <Route
-        path="/menu/datos-personales"
+        path="/menu/:id/datos-personales"
         element={
           <ProtectedRoute>
             <PersonalInfoViewWrapper />
@@ -109,7 +114,7 @@ export default function App() {
         }
       />
       <Route
-        path="/menu/datos-personales/agregar"
+        path="/menu/:id/datos-personales/agregar"
         element={
           <ProtectedRoute>
             <PersonalInfoFormWrapper />
@@ -117,13 +122,19 @@ export default function App() {
         }
       />
       <Route
-        path="/menu/datos-personales/editar"
+        path="/menu/:id/datos-personales/editar"
         element={
           <ProtectedRoute>
             <PersonalInfoEditWrapper />
           </ProtectedRoute>
         }
       />
+
+      {/* Diagnóstico oftalmológico por perfil */}
+      <Route path="/menu/:perfilId/oftalmologia" element={<OphthalmologyView />} />
+      <Route path="/menu/:perfilId/oftalmologia/agregar" element={<OphthalmologyForm />} />
+      <Route path="/menu/:perfilId/oftalmologia/editar/:diagnosticoId" element={<OphthalmologyForm editMode />} />
+
 
       {/* Ruta fallback */}
       <Route path="*" element={<Navigate to="/" />} />
@@ -133,9 +144,13 @@ export default function App() {
 }
 
 
+
 // Wrappers para pasar parámetros si se necesitan
 
 // Wrappers para pasar ID por props
+
+
+// Wrappers para extraer parámetros de URL y pasarlos como props
 
 function PerfilFormWrapper() {
   const { id } = useParams();
@@ -146,22 +161,37 @@ function PerfilDetailWrapper() {
   const { id } = useParams();
   return <PerfilDetail perfilId={id} />;
 }
+
 function MenuModulosWrapper() {
   const { id } = useParams();
   return <MenuModulos perfilId={id} />;
 }
+
 function PersonalInfoViewWrapper() {
-  return <PersonalInfoView />;
+  const { id } = useParams();
+  return <PersonalInfoView perfilId={id} />;
 }
+
 function PersonalInfoFormWrapper() {
-  return <PersonalInfoForm />;
+  const { id } = useParams();
+  return <PersonalInfoForm perfilId={id} />;
 }
+
 function PersonalInfoEditWrapper() {
-  return <PersonalInfoEdit />;
+  const { id } = useParams();
+  return <PersonalInfoEdit perfilId={id} />;
 }
+
 
 function PerfilDetailWrapper() {
   const { id } = useParams();
   return <PerfilDetail perfilId={id} />;
+}
+
+// Nuevos wrappers para oftalmología
+function OphthalmologyViewWrapper() {
+  const { id } = useParams();
+  return <OphthalmologyView perfilId={id} />;
+
 }
 

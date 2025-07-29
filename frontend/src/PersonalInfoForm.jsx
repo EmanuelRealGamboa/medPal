@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './PersonalInfoForm.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-export default function PersonalInfoForm() {
+export default function PersonalInfoForm({ perfilId }) {
   const [formData, setFormData] = useState({
     nombre: '',
     fechaNacimiento: '',
@@ -13,6 +15,7 @@ export default function PersonalInfoForm() {
     contactoEmergencia: '',
     photoUser: null,
   });
+
   const [photoPreview, setPhotoPreview] = useState(null);
   const navigate = useNavigate();
 
@@ -43,6 +46,7 @@ export default function PersonalInfoForm() {
     dataToSend.append('genero', formData.genero);
     dataToSend.append('grupoRH', formData.grupoRH);
     dataToSend.append('contactoEmergencia', formData.contactoEmergencia);
+
     if (formData.photoUser) {
       dataToSend.append('photoUser', formData.photoUser);
     }
@@ -50,30 +54,49 @@ export default function PersonalInfoForm() {
     const token = localStorage.getItem('token');
 
     try {
-      await axios.post('http://127.0.0.1:8000/accounts/personal-data/', {
-        headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+      await axios.post('http://127.0.0.1:8000/accounts/personal-data/', dataToSend, {
+        headers: {
+          Authorization: `Token ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
       });
-      navigate('/ver-datos-personales');
+
+      toast.success('Datos guardados correctamente');
+      setTimeout(() => {
+        navigate(`/menu/${perfilId}/datos-personales`);
+      }, 2000);
     } catch (error) {
       console.error('Error al guardar los datos:', error);
+      toast.error('Ocurrió un error al guardar los datos');
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/');
   };
 
   return (
     <div className="main-layout">
-      <header className="custom-navbar d-flex justify-content-between align-items-center px-4 py-2">
+      {/* Navbar personalizada con logout */}
+      <nav className="custom-navbar d-flex justify-content-between align-items-center px-4 py-2">
         <h4 className="text-light m-0">
           <i className="bi bi-person-circle me-2"></i>MedPal
         </h4>
-      </header>
+        <button onClick={handleLogout} className="btn btn-outline-light">
+          Logout
+        </button>
+      </nav>
 
-      <main className="form-section d-flex justify-content-center align-items-center">
+      {/* Contenido del formulario */}
+      <main className="form-section d-flex justify-content-center align-items-center py-4">
         <div className="form-card p-4 rounded shadow-sm custom-width">
           <button className="close-btn">&times;</button>
           <h3 className="text-center mb-4">Datos personales</h3>
 
           <form onSubmit={handleSubmit}>
             <div className="row mb-3">
+              {/* Foto de perfil */}
               <div className="col-md-4 mb-3">
                 <label className="form-label">Foto de Perfil</label>
                 <div className="photo-placeholder border rounded bg-light d-flex justify-content-center align-items-center flex-column">
@@ -96,6 +119,7 @@ export default function PersonalInfoForm() {
                 </div>
               </div>
 
+              {/* Datos personales */}
               <div className="col-md-8">
                 <div className="mb-3">
                   <label className="form-label">Nombre Completo</label>
@@ -169,21 +193,30 @@ export default function PersonalInfoForm() {
               </div>
             </div>
 
-            <div className="d-flex justify-content-center gap-3 mt-4">
-              <button type="submit" className="btn btn-save px-4">
-                Guardar
-              </button>
+            {/* Botones */}
+            <div className="d-flex justify-content-end gap-3 mt-4">
               <button
                 type="button"
-                className="btn btn-secondary px-4"
-                onClick={() => navigate('/modulos')}
+                className="btn-save"
+                onClick={() => navigate(`/menu/${perfilId}`)}
               >
                 Volver a módulos
+              </button>
+              <button type="submit" className="btn-save">
+                Guardar
               </button>
             </div>
           </form>
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="custom-footer text-center text-light py-2">
+        © 2025 MedPal
+      </footer>
+
+      {/* Contenedor de notificaciones */}
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
     </div>
   );
 }
