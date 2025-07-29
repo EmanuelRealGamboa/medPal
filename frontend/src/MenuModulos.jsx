@@ -5,11 +5,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 const MenuModulos = () => {
   const navigate = useNavigate();
-  const { id: perfilId } = useParams(); // <- obtenemos el id del perfil desde la URL
+  const { id: perfilId } = useParams(); // obtenemos el id del perfil desde la URL
 
   const sections = [
     { label: "Datos personales", color: "#E04040", path: `/menu/${perfilId}/datos-personales` },
-    { label: "Antecedentes médicos", color: "#FF9455" },
+    { label: "Antecedentes médicos", color: "#FF9455", path: `/menu/${perfilId}/antecedentes-medicos` },
     { label: "Vacunas", color: "#FCE536" },
     { label: "Estudios", color: "#ACEB8A" },
     { label: "Recetas", color: "#71C4FF" },

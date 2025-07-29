@@ -8,10 +8,11 @@ import PerfilForm from './PerfilForm.jsx';
 import PerfilDetail from './PerfilDetail.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import MenuModulos from './MenuModulos.jsx';
-
 import PersonalInfoView from './PersonalInfoView.jsx';
 import PersonalInfoForm from './PersonalInfoForm.jsx';
 import PersonalInfoEdit from './EditPersonalInfo.jsx';
+import ResumenAntecedentes from './ResumenAntecedentes.jsx';
+
 
 export default function App() {
   return (
@@ -99,6 +100,15 @@ export default function App() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/menu/:id/antecedentes-medicos"
+        element={
+          <ProtectedRoute>
+            <ResumenAntecedentesWrapper />
+          </ProtectedRoute>
+        }
+      />
+      
 
       {/* Ruta fallback */}
       <Route path="*" element={<Navigate to="/" />} />
@@ -135,4 +145,9 @@ function PersonalInfoFormWrapper() {
 function PersonalInfoEditWrapper() {
   const { id } = useParams();
   return <PersonalInfoEdit perfilId={id} />;
+}
+
+function ResumenAntecedentesWrapper() {
+  const { id } = useParams();
+  return <ResumenAntecedentes perfilId={id} />;
 }
