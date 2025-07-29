@@ -11,7 +11,9 @@ from django.utils import timezone
 import random
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+
 from .serializers import UserSerializer
+
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from .serializers import PerfilSerializer
@@ -181,6 +183,7 @@ class ResetPasswordView(APIView):
 
 
 
+
     #views para la informacion de los usuarios 
 
 class UserListCreateAPIView(APIView):
@@ -195,6 +198,7 @@ class UserListCreateAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
@@ -277,3 +281,11 @@ class PersonalDataView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PersonalDataRetrieveUpdateView(generics.RetrieveUpdateAPIView):
+    serializer_class = PersonalDataSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        obj, _ = PersonalData.objects.get_or_create(user=self.request.user)
+        return obj

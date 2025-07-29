@@ -111,6 +111,7 @@ class PersonalData(models.Model):
         choices=(('M','Masculino'),('F','Femenino'),('O','Otro')),
         blank=True
     )
+
     grupoRH = models.CharField(
         max_length=3,
         choices=[
@@ -125,6 +126,16 @@ class PersonalData(models.Model):
     def __str__(self):
         return f"Datos personales de {self.user.email}"
     
+
+
+
+    def _str_(self):
+        return f"Datos personales de {self.user.email}"
+    
+
+
+
+
 
 class Perfil(models.Model):
     """

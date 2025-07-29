@@ -1,5 +1,9 @@
 import React from 'react';
+
 import { Routes, Route, useParams, Navigate } from 'react-router-dom';
+
+import { Routes, Route, useParams } from 'react-router-dom';
+
 import SignIn from './signin.jsx';
 import Signup from './signup.jsx';
 import Verificacion from './verificacion.jsx';
@@ -7,11 +11,15 @@ import PerfilList from './PerfilList.jsx';
 import PerfilForm from './PerfilForm.jsx';
 import PerfilDetail from './PerfilDetail.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
+
 import MenuModulos from './MenuModulos.jsx';
 
 import PersonalInfoView from './PersonalInfoView.jsx';
 import PersonalInfoForm from './PersonalInfoForm.jsx';
 import PersonalInfoEdit from './EditPersonalInfo.jsx';
+
+import PersonalInfoForm from './PersonalInfoForm.jsx';
+
 
 export default function App() {
   return (
@@ -19,6 +27,7 @@ export default function App() {
       {/* Rutas públicas */}
       <Route path="/" element={<SignIn />} />
       <Route path="/signup" element={<Signup />} />
+
 
       {/* Verificación protegida */}
       <Route
@@ -29,6 +38,21 @@ export default function App() {
           </ProtectedRoute>
         }
       />
+
+
+      <Route path="/personalinform" element={<PersonalInfoForm />} /> 
+
+
+      {/* Verificación protegida */}
+      <Route
+        path="/verificacion"
+        element={
+          <ProtectedRoute requiresVerificationData={true}>
+            <Verificacion />
+          </ProtectedRoute>
+        }
+      />
+
 
       {/* Perfiles protegidos */}
       <Route
@@ -63,6 +87,7 @@ export default function App() {
           </ProtectedRoute>
         }
       />
+
 
       {/* Menú de módulos */}
       <Route
@@ -102,15 +127,21 @@ export default function App() {
 
       {/* Ruta fallback */}
       <Route path="*" element={<Navigate to="/" />} />
+
     </Routes>
   );
 }
 
+
 // Wrappers para pasar parámetros si se necesitan
+
+// Wrappers para pasar ID por props
+
 function PerfilFormWrapper() {
   const { id } = useParams();
   return <PerfilForm perfilId={id} />;
 }
+
 function PerfilDetailWrapper() {
   const { id } = useParams();
   return <PerfilDetail perfilId={id} />;
@@ -128,3 +159,9 @@ function PersonalInfoFormWrapper() {
 function PersonalInfoEditWrapper() {
   return <PersonalInfoEdit />;
 }
+
+function PerfilDetailWrapper() {
+  const { id } = useParams();
+  return <PerfilDetail perfilId={id} />;
+}
+
