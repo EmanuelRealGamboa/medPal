@@ -1,10 +1,14 @@
 # accounts/urls.py
 
 
+
 from django.urls import path
 from .views import SignupView, VerifyCodeView, SigninView, LogoutView
 from .views import RequestPasswordResetView, ResetPasswordView,UserListCreateAPIView
 from django.urls import path
+
+from django.urls import path
+
 from .views import (
     SignupView,
     VerifyCodeView,
@@ -13,10 +17,15 @@ from .views import (
     PerfilListCreateView,
     PerfilDetailView,
     PerfilDownloadView,
+
     PersonalDataView,
+
+    PersonalDataRetrieveUpdateView,
+
     RequestPasswordResetView,
     ResetPasswordView
 )
+
 
 
 urlpatterns = [
@@ -28,7 +37,12 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('request-password-reset/', RequestPasswordResetView.as_view(), name='request-password-reset'),
     path('reset-password/', ResetPasswordView.as_view(), name='reset-password'),
+
     path('users/', UserListCreateAPIView.as_view(), name='user-list-create'),
+
+# Perfiles (jefe de familia)
+
+
 
 # Perfiles (jefe de familia)
 
@@ -37,8 +51,14 @@ urlpatterns = [
     path('perfiles/<int:pk>/download/', PerfilDownloadView.as_view(), name='perfil-download'),
 
     # Datos personales (OneToOne)
+
     path('personal-data/', PersonalDataView.as_view(), name='personal-data'),
 
 
     
+
+    path('personal-data/', PersonalDataRetrieveUpdateView.as_view(), name='personal-data'),
+
+
+
 ]

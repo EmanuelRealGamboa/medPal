@@ -112,16 +112,25 @@ class ResetPasswordSerializer(serializers.Serializer):
     def save(self):
         user = User.objects.get(email=self.validated_data['email'])
         user.set_password(self.validated_data['new_password'])
+
         user.clear_verification_code()
         user.save()
         return user
 
 
 # Serializer para Perfil
+        user.clear_verification_code()  # Limpiar el código después de usarlo
+        return user
+    
+
+
+
+
 class PerfilSerializer(serializers.ModelSerializer):
     class Meta:
         model = Perfil
         fields = ['id', 'nombre', 'fecha_nacimiento', 'relacion']
+
 
 
 # Serializer para datos personales relacionados a un usuario
@@ -184,3 +193,12 @@ class UserSerializer(serializers.ModelSerializer):
             personal_serializer.save()
 
         return instance
+
+
+
+
+class PersonalDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = PersonalData
+        fields = ['fecha_nacimiento', 'direccion', 'genero']
+

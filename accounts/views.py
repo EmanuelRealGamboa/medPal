@@ -11,7 +11,9 @@ from django.utils import timezone
 import random
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+
 from .serializers import UserSerializer
+
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from .serializers import PerfilSerializer
@@ -183,6 +185,7 @@ class ResetPasswordView(APIView):
 
 
 
+
     #views para la informacion de los usuarios 
 
 class UserListCreateAPIView(APIView):
@@ -197,6 +200,7 @@ class UserListCreateAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
@@ -268,10 +272,36 @@ class PersonalDataView(APIView):
     def put(self, request):
         user = request.user
         try:
-            serializer = UserSerializer(user, data=request.data, partial=True, context={'request': request})
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            return Response({"message": f"Error al actualizar: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+            personal_data = PersonalData.objects.get(user=request.user)
+        except PersonalData.DoesNotExist:
+            return Response({"message": "Datos personales no encontrados."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = PersonalDataSerializer(personal_data, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request):
+        try:
+            personal_data = PersonalData.objects.get(user=request.user)
+        except PersonalData.DoesNotExist:
+            return Response({"message": "Datos personales no encontrados."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = PersonalDataSerializer(personal_data, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PersonalDataRetrieveUpdateView(generics.RetrieveUpdateAPIView):
+    serializer_class = PersonalDataSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        obj, _ = PersonalData.objects.get_or_create(user=self.request.user)
+        return obj
+
+           
+
