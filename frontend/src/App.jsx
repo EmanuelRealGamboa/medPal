@@ -1,5 +1,9 @@
 import React from 'react';
+
 import { Routes, Route, useParams, Navigate } from 'react-router-dom';
+
+import { Routes, Route, useParams } from 'react-router-dom';
+
 import SignIn from './signin.jsx';
 import Signup from './signup.jsx';
 import Verificacion from './verificacion.jsx';
@@ -7,12 +11,16 @@ import PerfilList from './PerfilList.jsx';
 import PerfilForm from './PerfilForm.jsx';
 import PerfilDetail from './PerfilDetail.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
+
 import MenuModulos from './MenuModulos.jsx';
 import PersonalInfoView from './PersonalInfoView.jsx';
 import PersonalInfoForm from './PersonalInfoForm.jsx';
 import PersonalInfoEdit from './EditPersonalInfo.jsx';
 import OphthalmologyView from './OphthalmologyView.jsx';
 import OphthalmologyForm from './OphthalmologyForm.jsx';
+
+
+import PersonalInfoForm from './PersonalInfoForm.jsx';
 
 
 export default function App() {
@@ -25,6 +33,7 @@ export default function App() {
 
 
 
+
       {/* Verificación protegida */}
       <Route
         path="/verificacion"
@@ -34,6 +43,21 @@ export default function App() {
           </ProtectedRoute>
         }
       />
+
+
+      <Route path="/personalinform" element={<PersonalInfoForm />} /> 
+
+
+      {/* Verificación protegida */}
+      <Route
+        path="/verificacion"
+        element={
+          <ProtectedRoute requiresVerificationData={true}>
+            <Verificacion />
+          </ProtectedRoute>
+        }
+      />
+
 
       {/* Perfiles protegidos */}
       <Route
@@ -68,6 +92,7 @@ export default function App() {
           </ProtectedRoute>
         }
       />
+
 
       {/* Menú de módulos */}
       <Route
@@ -113,11 +138,20 @@ export default function App() {
 
       {/* Ruta fallback */}
       <Route path="*" element={<Navigate to="/" />} />
+
     </Routes>
   );
 }
 
+
+
+// Wrappers para pasar parámetros si se necesitan
+
+// Wrappers para pasar ID por props
+
+
 // Wrappers para extraer parámetros de URL y pasarlos como props
+
 function PerfilFormWrapper() {
   const { id } = useParams();
   return <PerfilForm perfilId={id} />;
@@ -148,9 +182,16 @@ function PersonalInfoEditWrapper() {
   return <PersonalInfoEdit perfilId={id} />;
 }
 
+
+function PerfilDetailWrapper() {
+  const { id } = useParams();
+  return <PerfilDetail perfilId={id} />;
+}
+
 // Nuevos wrappers para oftalmología
 function OphthalmologyViewWrapper() {
   const { id } = useParams();
   return <OphthalmologyView perfilId={id} />;
+
 }
 
