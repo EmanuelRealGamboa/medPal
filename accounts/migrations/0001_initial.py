@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
                 ('contactoEmergencia', models.CharField(default='0000000000', max_length=10, validators=[django.core.validators.RegexValidator(message='El número de teléfono debe contener exactamente 10 dígitos numéricos.', regex='^\\d{10}$')])),
                 ('photoUser', models.ImageField(blank=True, null=True, upload_to='user_photos/')),
 
-                ('phone', models.CharField(max_length=10, validators=[django.core.validators.RegexValidator(message='El número de teléfono debe contener exactamente 10 dígitos numéricos.', regex='^\\d{10}$')])),
+        
                 ('email', models.EmailField(max_length=254, unique=True)),
                 ('is_active', models.BooleanField(default=True)),
                 ('is_staff', models.BooleanField(default=False)),
