@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useParams } from 'react-router-dom';
 
 import SignIn from './signin.jsx';
 import Signup from './signup.jsx';
@@ -24,8 +24,24 @@ import EditarEliminarAlergia from './EditarEliminarAlergia.jsx';
 import EditarEliminarIntolerancias from './EditarEliminarIntolerancias.jsx';
 import EditDeletePersonalesNoPatologicos from './EditDeletePersonalesNoPatologicos.jsx';
 import EditarEliminarHeredoFamiliares from './EditDeleteHeredoFamiliares.jsx';
+import PrescriptionForm from './PrescriptionForm.jsx';
+import PrescriptionList from './PrescriptionsList.jsx';
 
+// Wrappers para pasar ID como prop si el componente no usa useParams()
+function PerfilFormWrapper() {
+  const { perfilId } = useParams();
+  return <PerfilForm perfilId={perfilId} />;
+}
 
+function PerfilDetailWrapper() {
+  const { perfilId } = useParams();
+  return <PerfilDetail perfilId={perfilId} />;
+}
+
+function PrescriptionFormWrapper() {
+  const { id } = useParams();
+  return <PrescriptionForm prescriptionId={id} />;
+}
 
 export default function App() {
   return (
@@ -33,6 +49,7 @@ export default function App() {
       {/* Rutas públicas */}
       <Route path="/" element={<SignIn />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/personalinform" element={<PersonalInfoForm />} />
 
       {/* Verificación protegida */}
       <Route
@@ -47,8 +64,8 @@ export default function App() {
       {/* Perfiles protegidos */}
       <Route path="/perfiles" element={<ProtectedRoute><PerfilList /></ProtectedRoute>} />
       <Route path="/perfiles/nuevo" element={<ProtectedRoute><PerfilForm /></ProtectedRoute>} />
-      <Route path="/perfiles/:perfilId" element={<ProtectedRoute><PerfilDetail /></ProtectedRoute>} />
-      <Route path="/perfiles/:perfilId/editar" element={<ProtectedRoute><PerfilForm /></ProtectedRoute>} />
+      <Route path="/perfiles/:perfilId" element={<ProtectedRoute><PerfilDetailWrapper /></ProtectedRoute>} />
+      <Route path="/perfiles/:perfilId/editar" element={<ProtectedRoute><PerfilFormWrapper /></ProtectedRoute>} />
 
       {/* Menú de módulos protegido */}
       <Route path="/menu/:perfilId" element={<ProtectedRoute><MenuModulos /></ProtectedRoute>} />
@@ -73,11 +90,16 @@ export default function App() {
       <Route path="/menu/:perfilId/antecedentes-medicos/intolerancias/editar-eliminar/:intoleranciaId" element={<ProtectedRoute><EditarEliminarIntolerancias /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/antecedentes-medicos/no-patologicos/editar-eliminar/:id" element={<ProtectedRoute><EditDeletePersonalesNoPatologicos /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/antecedentes-medicos/heredo-familiares/editar-eliminar/:id" element={<ProtectedRoute><EditarEliminarHeredoFamiliares /></ProtectedRoute>} />
-      
+
       {/* Oftalmología */}
       <Route path="/menu/:perfilId/oftalmologia" element={<ProtectedRoute><OphthalmologyView /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/oftalmologia/agregar" element={<ProtectedRoute><OphthalmologyForm /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/oftalmologia/editar/:diagnosticoId" element={<ProtectedRoute><OphthalmologyForm editMode /></ProtectedRoute>} />
+
+      {/* Prescripciones */}
+      <Route path="/prescriptions" element={<ProtectedRoute><PrescriptionList /></ProtectedRoute>} />
+      <Route path="/prescriptions/nuevo" element={<ProtectedRoute><PrescriptionForm /></ProtectedRoute>} />
+      <Route path="/prescriptions/editar/:id" element={<ProtectedRoute><PrescriptionFormWrapper /></ProtectedRoute>} />
 
       {/* Ruta fallback */}
       <Route path="*" element={<Navigate to="/" />} />
