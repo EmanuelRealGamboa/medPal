@@ -80,9 +80,9 @@ export default function PersonalInfoForm() {
 
   const handleInputChange = e => {
     const { name, value } = e.target;
-<<<<<<< HEAD
+
     setFormData(prev => ({ ...prev, [name]: value }));
-=======
+
 
     if (name === 'nombreContactoEmergencia') {
       const nombreRegex = /^[A-Za-záéíóúÁÉÍÓÚñÑ\s]*$/;
@@ -93,7 +93,7 @@ export default function PersonalInfoForm() {
       ...prev,
       [name]: value,
     }));
->>>>>>> origin/feature/dara
+
   };
 
   const handleFileChange = e => {
@@ -171,10 +171,9 @@ export default function PersonalInfoForm() {
 
   return (
     <div className="main-layout">
-<<<<<<< HEAD
+
       {/* Navbar */}
-=======
->>>>>>> origin/feature/dara
+
       <nav className="custom-navbar d-flex justify-content-between align-items-center px-4 py-2">
         <h4 className="text-light m-0">
           <i className="bi bi-person-circle me-2"></i>MedPal
@@ -182,20 +181,19 @@ export default function PersonalInfoForm() {
         <button onClick={handleLogout} className="btn btn-outline-light">Logout</button>
       </nav>
 
-<<<<<<< HEAD
-      {/* Formulario */}
-=======
->>>>>>> origin/feature/dara
+
+    {/* Formulario */}
+
+
       <main className="form-section d-flex justify-content-center align-items-center py-4">
         <div className="form-card p-4 rounded shadow-sm custom-width">
           <h3 className="text-center mb-4">Editar Datos Personales</h3>
 
           <form onSubmit={handleSubmit} encType="multipart/form-data">
             <div className="row mb-3">
-<<<<<<< HEAD
+
               {/* Foto */}
-=======
->>>>>>> origin/feature/dara
+
               <div className="col-md-4 mb-3">
                 <label className="form-label">Foto de Perfil</label>
                 <div className="photo-placeholder border rounded bg-light d-flex justify-content-center align-items-center flex-column">

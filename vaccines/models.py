@@ -202,7 +202,9 @@ class VaccineAlert(models.Model):
         VaccineRecord,
         on_delete=models.CASCADE,
         related_name='alerts',
-        verbose_name="Registro de vacuna"
+        verbose_name="Registro de vacuna",
+        null=True,
+        blank=True
     )
     alert_type = models.CharField(
         max_length=20,
