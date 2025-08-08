@@ -76,6 +76,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'backend.middleware.DisableCSRFForAPIMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -211,5 +212,7 @@ VERIFICATION_CODE_ENCRYPTION_KEY = 'your-32-byte-base64-encoded-key-here-change-
 
 # MEDIA_URL = '/media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  
-
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',
+]
 

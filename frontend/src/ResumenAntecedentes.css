@@ -1,4 +1,17 @@
-/* Navbar fija */
+body {
+  background-color: #ffffff; /* fondo blanco */
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #204e40; 
+}
+
+.container {
+  background-color: #ffffff; 
+  padding-top: 80px; 
+  padding-bottom: 50px; 
+}
+/* ---------------- Navbar fija ---------------- */
 .custom-navbar {
   position: fixed;
   top: 0;
@@ -13,8 +26,8 @@
   z-index: 1000;
 }
 
-/* Footer fijo */
-.footer-bar {
+/* ---------------- Footer fijo ---------------- */
+.footer {
   position: fixed;
   bottom: 0;
   left: 0;
@@ -29,4 +42,55 @@
   font-size: 0.9rem;
   box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
   z-index: 1000;
+}
+
+/* ---------------- Botones personalizados ---------------- */
+
+/* Botón Agregar (verde agua) */
+.btn-primary {
+    background-color: #3D8D7A;
+    border-color: #2b6e5e;
+    color: white;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.btn-primary:hover {
+    background-color: #246455;
+    border-color: #194339;
+    transform: scale(1.05);
+}
+.btn-primary:active {
+    background-color: #194339;
+    border-color: #13322a;
+    transform: scale(0.97);
+}
+
+/* Botón Editar (ámbar) */
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffca2c;
+    color: #000;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+    transform: scale(1.05);
+}
+.btn-warning:active {
+    background-color: #b58900;
+    border-color: #8c6d00;
+    transform: scale(0.97);
+}
+
+/* Estilo general para todos los botones */
+.btn {
+    border-radius: 0.5rem;
+    padding: 0.5rem 1.2rem;
+    font-weight: 500;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+.btn:focus, .btn:active {
+    outline: none;
+    box-shadow: 0 0 0 0.25rem rgba(61,141,122,0.4);
 }
