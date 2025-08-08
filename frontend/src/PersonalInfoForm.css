@@ -40,7 +40,7 @@ html {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding-top: 80px;
+  padding-top: 150px;
   /* Altura de navbar + separación */
   padding-bottom: 3rem;
 }
@@ -55,19 +55,16 @@ html {
   margin-bottom: 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   min-height: 400px;
-  width: 100%;
-  max-width: 900px;
+  width: 400%;
+  max-width: 1100px;
 }
 
 /* Personal width class */
 .custom-width {
   width: 100%;
-  max-width: 900px;
+  max-width: 1100px;
 }
 
-.nowrap-label {
-  white-space: nowrap;
-}
 
 /* Close button */
 .close-btn {
@@ -134,6 +131,9 @@ html {
   flex-wrap: nowrap;
 }
 
+.nowrap-label {
+  white-space: nowrap;
+}
 
 
 
