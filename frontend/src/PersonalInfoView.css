@@ -1,0 +1,106 @@
+/* Navbar fija */
+.custom-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: #a7d0c3;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  z-index: 1000;
+}
+
+.custom-navbar h4 {
+  color: #204e40;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Contenido */
+.content-section {
+  padding: 90px 20px 60px;
+  max-width: 600px;
+  margin: 0 auto;
+  color: #204e40;
+}
+
+/* Card */
+.card {
+  background-color: #f9fdfb;
+  border-radius: 12px;
+  padding: 25px 30px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Campos */
+.data-field {
+  margin-bottom: 14px;
+}
+
+.data-label {
+  font-weight: 600;
+  color: #307060;
+}
+
+.data-value {
+  margin-left: 10px;
+  font-weight: 500;
+  color: #204e40;
+}
+
+/* Botones */
+.btn-container {
+  margin-top: 30px;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.btn-primary {
+  background-color: #307060;
+  color: white;
+  border: none;
+  padding: 10px 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
+}
+.btn-primary:hover {
+  background-color: #204e40;
+}
+
+.btn-secondary {
+  background-color: #e04040;
+  color: white;
+  border: none;
+  padding: 10px 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
+}
+.btn-secondary:hover {
+  background-color: #b03030;
+}
+
+/* Footer fijo */
+.footer-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 35px;
+  background-color: #a7d0c3;
+  color: #204e40;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+  z-index: 1000;
+}

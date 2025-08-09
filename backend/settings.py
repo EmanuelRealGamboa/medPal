@@ -32,6 +32,13 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'material',            
+    'material.frontend',  
+    'antecedentesMedicos',  
+    #'material.frontend',    
+    'material.admin',
+    'colorfield',
+    'admin_interface',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,14 +49,35 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'accounts',
-    
+    'vaccines',
+    'prescriptions',
+    'ophthalmology',
+    'cloudinary',
+    'cloudinary_storage',
+    'gineco',
+    'estudios',
 ]
+
+
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
+#pip install django-material --break-system-packages
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'backend.middleware.DisableCSRFForAPIMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -81,9 +109,9 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 
 import os
+import cloudinary
 from dotenv import load_dotenv
 from pathlib import Path
-
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -94,10 +122,17 @@ DATABASES = {
         'NAME': os.getenv('DB_NAME', ''),
         'USER': os.getenv('DB_USER', ''),
         'PASSWORD': os.getenv('DB_PASSWORD', ''),
-        'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': os.getenv('DB_PORT', '3306'),
+        'HOST': os.getenv('DB_HOST', ''),
+        'PORT': os.getenv('DB_PORT', ''),
     }
 }
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+}
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 # Password validation
@@ -122,9 +157,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Mexico_City'
 
 USE_I18N = True
 
@@ -150,11 +185,18 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'ramses.devn@gmail.com'
 EMAIL_HOST_PASSWORD = 'cmfabltprahohbup'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+#PASSWORD_RESET_TIMEOUT=14400
+
 
 #Cors Autenthications (React)
-CORS_ALLOWED_ORIGINS = []
+CORS_ALLOWED_ORIGINS = [
 
+    'http://localhost:5173',
 
+    
+]
+
+ 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
@@ -164,3 +206,18 @@ REST_FRAMEWORK = {
 
 ##Modelo para que se Use el User personalizado
 AUTH_USER_MODEL = 'accounts.User'
+
+# Clave de encriptación para códigos de verificación
+VERIFICATION_CODE_ENCRYPTION_KEY = 'your-32-byte-base64-encoded-key-here-change-in-production'
+
+
+
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',
+]
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
