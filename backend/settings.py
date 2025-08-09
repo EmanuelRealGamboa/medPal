@@ -209,13 +209,10 @@ AUTH_USER_MODEL = 'accounts.User'
 # Clave de encriptación para códigos de verificación
 VERIFICATION_CODE_ENCRYPTION_KEY = 'your-32-byte-base64-encoded-key-here-change-in-production'
 
-<<<<<<< HEAD
 
 # MEDIA_URL = '/media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  
 
 
-=======
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
->>>>>>> f9161db (fix: habilitado el manejo de archivos multimedia (videos, imágenes, PDFs))
