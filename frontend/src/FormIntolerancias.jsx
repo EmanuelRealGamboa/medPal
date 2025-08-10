@@ -34,11 +34,11 @@ export default function FormIntolerancias() {
             const token = localStorage.getItem('token');
 
             await axios.post(
-                'http://127.0.0.1:8000/antecedentesMedicos/Intolerancias/',
+                `http://127.0.0.1:8000/antecedentesMedicos/Intolerancias/`,
                 { ...form, perfil: perfilId },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Token ${token}`,
                         'Content-Type': 'application/json'
                     }
                 }

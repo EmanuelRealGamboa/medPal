@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import './FormAlergias.css';
 
-export default function FormAlergias({ perfilId }) {
+export default function FormAlergias() {
     const navigate = useNavigate();
-
+    const { perfilId } = useParams();
     const [form, setForm] = useState({
         tipo: '',
         reaccion: '',
@@ -39,8 +39,8 @@ export default function FormAlergias({ perfilId }) {
                 { ...form, perfil: perfilId },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'application/json',
+                        Authorization: `Token ${token}`,
+                        'Content-Type': 'application/json'
                     }
                 }
             );

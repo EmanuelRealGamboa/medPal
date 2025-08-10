@@ -26,6 +26,7 @@ import EditDeletePersonalesNoPatologicos from './EditDeletePersonalesNoPatologic
 import EditarEliminarHeredoFamiliares from './EditDeleteHeredoFamiliares.jsx';
 import PrescriptionForm from './PrescriptionForm.jsx';
 import PrescriptionList from './PrescriptionsList.jsx';
+import EditarEliminarPersonalesPatologicos from './EditarEliminarPersonalesPatologicos.jsx';
 
 // Wrappers para pasar ID como prop si el componente no usa useParams()
 function PerfilFormWrapper() {
@@ -90,7 +91,7 @@ export default function App() {
       <Route path="/menu/:perfilId/antecedentes-medicos/intolerancias/editar-eliminar/:intoleranciaId" element={<ProtectedRoute><EditarEliminarIntolerancias /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/antecedentes-medicos/no-patologicos/editar-eliminar/:id" element={<ProtectedRoute><EditDeletePersonalesNoPatologicos /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/antecedentes-medicos/heredo-familiares/editar-eliminar/:id" element={<ProtectedRoute><EditarEliminarHeredoFamiliares /></ProtectedRoute>} />
-
+      <Route path="/menu/:perfilId/antecedentes-medicos/patologicos/editar-eliminar/:id"element={<ProtectedRoute><EditarEliminarPersonalesPatologicos /></ProtectedRoute>}/>
       {/* Oftalmología */}
       <Route path="/menu/:perfilId/oftalmologia" element={<ProtectedRoute><OphthalmologyView /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/oftalmologia/agregar" element={<ProtectedRoute><OphthalmologyForm /></ProtectedRoute>} />

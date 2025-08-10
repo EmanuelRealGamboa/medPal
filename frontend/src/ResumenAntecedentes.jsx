@@ -25,7 +25,7 @@ export default function ResumenAntecedentes() {
 
     const fetchData = async () => {
       try {
-        const headers = { Authorization: `Bearer ${token}` };
+        const headers = { Authorization: `Token ${token}` };
 
         const [
           patologicos,
@@ -66,9 +66,15 @@ export default function ResumenAntecedentes() {
           <h5 className="card-title">{titulo}</h5>
           {data ? (
             <>
-              <pre className="card-text small bg-light p-2 rounded">
-                {JSON.stringify(data, null, 2)}
-              </pre>
+              <ul className="list-group list-group-flush mb-2">
+                {Object.entries(data).map(([key, value]) =>
+                  key !== 'id' && value !== null && value !== '' && (
+                    <li className="list-group-item" key={key}>
+                      <strong className="text-capitalize">{key.replace(/([A-Z])/g, ' $1')}:</strong> {value}
+                    </li>
+                  )
+                )}
+              </ul>
               <button
                 className="btn btn-warning mt-2"
                 onClick={() => {

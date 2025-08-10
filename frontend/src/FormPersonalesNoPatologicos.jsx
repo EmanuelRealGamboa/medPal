@@ -41,12 +41,11 @@ export default function FormPersonalesNoPatologicos() {
                 { ...form, perfil: perfilId },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Token ${token}`,
                         'Content-Type': 'application/json'
                     }
                 }
             );
-
             alert('Guardado correctamente');
             navigate(`/menu/${perfilId}/antecedentes-medicos`);
         } catch (err) {

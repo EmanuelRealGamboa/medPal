@@ -1,62 +1,95 @@
 from django.shortcuts import render
 from rest_framework import generics
-
-# Create your views here.
-
-from. models import (
+from rest_framework.permissions import IsAuthenticated
+from .models import (
     personalesPatologicos,
     personalesNoPatologicos,
     heredoFamiliares,
     Alergias,
     Intolerancias
 )
-
 from .serializers import (
     personalesPatologicosSerializer,
     personalesNoPatologicosSerializer,
     heredoFamiliaresSerializer,
     AlergiasSerializer,
     IntoleranciasSerializer
-    )
+)
+
+#heredoFamiliares
+
+class heredoFamiliaresView(generics.ListCreateAPIView):
+    serializer_class = heredoFamiliaresSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        perfil_id = self.request.query_params.get('perfil')
+        return heredoFamiliares.objects.filter(perfil_id=perfil_id)
+
+    def perform_create(self, serializer):
+        perfil_id = self.request.data.get('perfil')
+        serializer.save(perfil_id=perfil_id)
+
+class heredoFamiliaresDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = heredoFamiliaresSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'id'        # campo del modelo usado para buscar
+    lookup_url_kwarg = 'id'
+    queryset = heredoFamiliares.objects.all()
 
 #personalesPatologicos
 
 class personalesPatologicosView(generics.ListCreateAPIView):
-    queryset = personalesPatologicos.objects.all()
     serializer_class = personalesPatologicosSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        perfil_id = self.request.query_params.get('perfil')
+        return personalesPatologicos.objects.filter(perfil_id=perfil_id)
+
+    def perform_create(self, serializer):
+        perfil_id = self.request.data.get('perfil')
+        serializer.save(perfil_id=perfil_id)
 
 class personalesPatologicosDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = personalesPatologicos.objects.all()
-    lookup_url_kwarg = 'personalesPatologicos_id'
     serializer_class = personalesPatologicosSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = personalesPatologicos.objects.all()
+    lookup_field = 'id'        
+    lookup_url_kwarg = 'id'
 
 #personalesNoPatologicos
 
 class personalesNoPatologicosView(generics.ListCreateAPIView):
-    queryset = personalesNoPatologicos.objects.all()
     serializer_class = personalesNoPatologicosSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        perfil_id = self.request.query_params.get('perfil')
+        return personalesNoPatologicos.objects.filter(perfil_id=perfil_id)
+
+    def perform_create(self, serializer):
+        perfil_id = self.request.data.get('perfil')
+        serializer.save(perfil_id=perfil_id)
 
 class personalesNoPatologicosDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = personalesNoPatologicos.objects.all()
     lookup_field = 'id'
     serializer_class = personalesNoPatologicosSerializer
 
-#heredoFamiliares
-
-class heredoFamiliaresView(generics.ListCreateAPIView):
-    queryset = heredoFamiliares.objects.all()
-    serializer_class = heredoFamiliaresSerializer
-
-class heredoFamiliaresDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = heredoFamiliares.objects.all()
-    lookup_field = 'id'
-    serializer_class = heredoFamiliaresSerializer
-
 #Alergias
 
 class AlergiasView(generics.ListCreateAPIView):
-    queryset = Alergias.objects.all()
     serializer_class = AlergiasSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        perfil_id = self.request.query_params.get('perfil')
+        return Alergias.objects.filter(perfil_id=perfil_id)
+
+    def perform_create(self, serializer):
+        perfil_id = self.request.data.get('perfil')
+        serializer.save(perfil_id=perfil_id)
 
 class AlergiasDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Alergias.objects.all()
@@ -67,11 +100,22 @@ class AlergiasDetailView(generics.RetrieveUpdateDestroyAPIView):
 #Intolerancias
 
 class IntoleranciasView(generics.ListCreateAPIView):
-    queryset = Intolerancias.objects.all()
     serializer_class = IntoleranciasSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        perfil_id = self.request.query_params.get('perfil')
+        return Intolerancias.objects.filter(perfil_id=perfil_id)
+
+    def perform_create(self, serializer):
+        perfil_id = self.request.data.get('perfil')
+        serializer.save(perfil_id=perfil_id)
 
 class IntoleranciasDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Intolerancias.objects.all()
-    lookup_field = 'id'
     serializer_class = IntoleranciasSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        perfil_id = self.request.query_params.get('perfil')
+        return Intolerancias.objects.filter(perfil_id=perfil_id)
 

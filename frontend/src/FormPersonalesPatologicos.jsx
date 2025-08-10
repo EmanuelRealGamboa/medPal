@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import './FormPersonalesPatologicos.css';
 
-export default function FormPersonalesPatologicos({ perfilId }) {
+export default function FormPersonalesPatologicos() {
     const navigate = useNavigate();
+    const { perfilId } = useParams();
 
     const [form, setForm] = useState({
         nombreEnfermedad: '',
@@ -32,6 +33,15 @@ export default function FormPersonalesPatologicos({ perfilId }) {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
+    // Función para adaptar datetime-local a formato con segundos
+    const formatDateTimeLocal = (dateTimeLocalStr) => {
+        if (!dateTimeLocalStr) return null;
+        if (dateTimeLocalStr.length === 16) {
+            return dateTimeLocalStr + ':00';
+        }
+        return dateTimeLocalStr;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -43,17 +53,25 @@ export default function FormPersonalesPatologicos({ perfilId }) {
         setLoading(true);
         setError(null);
 
+        const dataToSend = {
+            ...form,
+            perfil: perfilId,
+            intervencionesFecha: formatDateTimeLocal(form.intervencionesFecha),
+            hospitalizacionFecha: formatDateTimeLocal(form.hospitalizacionFecha),
+            fechaDiagnostico: form.fechaDiagnostico ? form.fechaDiagnostico.split('T')[0] : '',
+        };
+
         try {
             const token = localStorage.getItem('token');
 
             await axios.post(
                 'http://127.0.0.1:8000/antecedentesMedicos/personalesPatologicos/',
-                { ...form, perfil: perfilId },
+                dataToSend,
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
+                        Authorization: `Token ${token}`,
+                        'Content-Type': 'application/json',
+                    },
                 }
             );
 
@@ -85,6 +103,9 @@ export default function FormPersonalesPatologicos({ perfilId }) {
         reaccionesTratamientos: 'Reacciones secundarias',
         frecuenciaTratamientos: 'Frecuencia del tratamiento'
     };
+
+    // Para campos tipo sí/no (hospitalizacion, tratamientos), uso select para controlar mejor
+    const camposSiNo = ['intervenciones', 'hospitalizacion', 'tratamientos'];
 
     return (
         <div className="form-patologicos">
@@ -120,16 +141,30 @@ export default function FormPersonalesPatologicos({ perfilId }) {
                     {Object.keys(form).map((key) => (
                         <div key={key} className="mb-3">
                             <label className="form-label">{etiquetas[key]}</label>
-                            <input
-                                className="form-control"
-                                type={key.toLowerCase().includes('fecha') ? 'datetime-local' : 'text'}
-                                name={key}
-                                value={form[key]}
-                                onChange={handleChange}
-                                required
-                            />
+
+                            {camposSiNo.includes(key) ? (
+                                <select
+                                    className="form-select"
+                                    name={key}
+                                    value={form[key]}
+                                    onChange={handleChange}
+                                >
+                                    <option value="">Selecciona</option>
+                                    <option value="Sí">Sí</option>
+                                    <option value="No">No</option>
+                                </select>
+                            ) : (
+                                <input
+                                    className="form-control"
+                                    type={key.toLowerCase().includes('fecha') ? 'datetime-local' : 'text'}
+                                    name={key}
+                                    value={form[key]}
+                                    onChange={handleChange}
+                                />
+                            )}
                         </div>
                     ))}
+
                     <button className="btn btn-success" disabled={loading}>
                         {loading ? 'Guardando...' : 'Guardar'}
                     </button>

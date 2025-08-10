@@ -40,8 +40,8 @@ export default function FormHeredoFamiliares() {
                 { ...form, perfil: perfilId },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'application/json',
+                        Authorization: `Token ${token}`,
+                        'Content-Type': 'application/json'
                     }
                 }
             );

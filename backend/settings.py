@@ -32,11 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'material',            
-    'material.frontend',  
     'antecedentesMedicos',  
-    #'material.frontend',    
-    'material.admin',
     'colorfield',
     'admin_interface',
     'django.contrib.admin',
