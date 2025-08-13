@@ -58,18 +58,18 @@ export default function ResumenAntecedentes() {
 
   const renderCard = (titulo, data, subRuta) => (
     <div className="col-md-4 mb-4" key={subRuta}>
-      <div className="card h-100 shadow-sm">
+      <div className="card h-100 shadow-sm d-flex flex-column justify-content-between">
         <div className="custom-navbar">
-          <h5 className="mb-0">MedPal</h5>
+          <h5 className="mb-0 text-center">MedPal</h5>
         </div>
-        <div className="card-body">
+        <div className="card-body d-flex flex-column justify-content-center align-items-center text-center">
           <h5 className="card-title">{titulo}</h5>
           {data ? (
             <>
-              <ul className="list-group list-group-flush mb-2">
+              <ul className="list-group list-group-flush mb-2 w-100">
                 {Object.entries(data).map(([key, value]) =>
                   key !== 'id' && value !== null && value !== '' && (
-                    <li className="list-group-item" key={key}>
+                    <li className="list-group-item text-center" key={key}>
                       <strong className="text-capitalize">{key.replace(/([A-Z])/g, ' $1')}:</strong> {value}
                     </li>
                   )
@@ -95,14 +95,14 @@ export default function ResumenAntecedentes() {
             </button>
           )}
         </div>
-        <div className="footer">&copy; 2025 MedPal - Todos los derechos reservados</div>
+        <div className="footer text-center">&copy; 2025 MedPal - Todos los derechos reservados</div>
       </div>
     </div>
   );
 
   return (
     <div className="container mt-5">
-      <h2 className="mb-4 text-center">Antecedentes Médicos</h2>
+      <h2 className="mb-4 text-center text-white">Antecedentes Médicos</h2>
       <div className="row">
         {renderCard('Antecedentes Personales Patológicos', datos.personalesPatologicos, 'patologicos')}
         {renderCard('Antecedentes Personales No Patológicos', datos.personalesNoPatologicos, 'no-patologicos')}

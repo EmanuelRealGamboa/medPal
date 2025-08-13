@@ -6,10 +6,11 @@
     margin-top: 1rem;
 }
 
-.vaccine-form h2 {
+ h3 {
     font-size: 1.5rem;
     font-weight: 600;
-    margin-bottom: 1.2rem;
+    margin-bottom: 1.5rem !important;
+    text-align: center !important;
 }
 
 .vaccine-form input,

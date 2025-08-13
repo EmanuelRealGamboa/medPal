@@ -107,9 +107,10 @@ export default function VaccinesForm() {
           </h2>
 
           <form onSubmit={handleSubmit} className="ophthalmology-form">
+            <h3>Agregar Vacuna</h3>
             <div className="row">
               {/* Columna 1 */}
-              <div className="col-md-4">
+              <div className="col-md-3">
                 <div className="form-group mb-3">
                   <label>Tipo de vacuna:</label>
                   <select
@@ -139,7 +140,10 @@ export default function VaccinesForm() {
                     max="10"
                   />
                 </div>
+              </div>
 
+              {/* Columna 2 */}
+              <div className="col-md-3">
                 <div className="form-group mb-3">
                   <label>Fecha programada:</label>
                   <input
@@ -150,10 +154,7 @@ export default function VaccinesForm() {
                     className="form-control"
                   />
                 </div>
-              </div>
 
-              {/* Columna 2 */}
-              <div className="col-md-4">
                 <div className="form-group mb-3">
                   <label>Fecha de aplicación:</label>
                   <input
@@ -164,7 +165,10 @@ export default function VaccinesForm() {
                     className="form-control"
                   />
                 </div>
+              </div>
 
+              {/* Columna 3 */}
+              <div className="col-md-3">
                 <div className="form-group mb-3">
                   <label>Proveedor de salud:</label>
                   <input
@@ -190,8 +194,8 @@ export default function VaccinesForm() {
                 </div>
               </div>
 
-              {/* Columna 3 */}
-              <div className="col-md-4">
+              {/* Columna 4 */}
+              <div className="col-md-3">
                 <div className="form-group mb-3">
                   <label>Número de lote:</label>
                   <input
@@ -257,6 +261,7 @@ export default function VaccinesForm() {
                 Guardar
               </button>
             </div>
+
           </form>
         </div>
       </main>

@@ -131,15 +131,15 @@ export default function FormPersonalesPatologicos() {
                 </div>
             </nav>
 
-            <main className="p-4">
-                <h3 className="mb-4">Antecedentes Personales Patológicos</h3>
+            <main className="form-section d-flex flex-column justify-content-start align-items-center py-4">
+                <h3 className="form-titulo mb-4 text-center">Antecedentes Personales Patológicos</h3>
 
                 {error && <div className="alert alert-danger">{error}</div>}
                 {loading && <div className="alert alert-info">Guardando datos...</div>}
 
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className="grid-form-4">
                     {Object.keys(form).map((key) => (
-                        <div key={key} className="mb-3">
+                        <div key={key} className="form-item">
                             <label className="form-label">{etiquetas[key]}</label>
 
                             {camposSiNo.includes(key) ? (
@@ -165,10 +165,13 @@ export default function FormPersonalesPatologicos() {
                         </div>
                     ))}
 
-                    <button className="btn btn-success" disabled={loading}>
-                        {loading ? 'Guardando...' : 'Guardar'}
-                    </button>
+                    <div className="form-buttons">
+                        <button className="btn btn-success" disabled={loading}>
+                            {loading ? 'Guardando...' : 'Guardar'}
+                        </button>
+                    </div>
                 </form>
+
             </main>
 
             <footer className="footer-bar mt-5">© 2025 MedPal</footer>

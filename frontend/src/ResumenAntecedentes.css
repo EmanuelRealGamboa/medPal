@@ -42,12 +42,14 @@ body {
   z-index: 1050;
 }
 
+
+
 /* ---------------- Botones personalizados ---------------- */
 
 /* Botón Agregar (verde agua) */
 .btn-primary {
-  background-color: #3D8D7A;
-  border-color: #2b6e5e;
+  background-color: #3D8D7A !important;
+  border-color: #2b6e5e !important;
   color: white;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }

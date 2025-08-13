@@ -1,0 +1,74 @@
+.gabinete-form {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.gabinete-form h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem 1.2rem;
+    /* menos espacio entre filas y columnas */
+}
+
+/* Inputs y textareas estilo común */
+.grid-container input[type="text"],
+.grid-container input[type="date"],
+.grid-container input[type="file"],
+.grid-container textarea {
+    width: 100%;
+    padding: 0.4rem 0.6rem;
+    /* menos padding */
+    border: 1.8px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    font-family: inherit;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+.grid-container input[type="file"] {
+    padding: 0.25rem 0.4rem;
+}
+
+.grid-container input[type="text"]:focus,
+.grid-container input[type="date"]:focus,
+.grid-container textarea:focus,
+.grid-container input[type="file"]:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+.grid-container textarea {
+    min-height: 80px;
+    /* un poco menos alto */
+}
+
+.observaciones {
+    grid-column: 1 / 4;
+}
+
+.grid-container div label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+    color: #34495e;
+}
+
+
+.observaciones {
+  grid-column: 1 / 4;
+  margin-bottom: 0.3rem; /* agrega este margin-bottom pequeño */
+}

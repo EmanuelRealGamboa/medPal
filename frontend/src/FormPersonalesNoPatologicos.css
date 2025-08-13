@@ -1,12 +1,16 @@
-.form-no-patologicos {
-    max-width: 500px;
-    margin: auto;
-    padding: 20px;
-    background-color: #e9f7ef;
-    border-radius: 10px;
-}
-.form-no-patologicos h3 {
+
+.form-title {
     text-align: center;
-    color: #28a745;
+    color: #fff;
     margin-bottom: 20px;
+}
+/* GRID DE 3 COLUMNAS */
+.grid-form-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px 25px;
+    padding: 25px;
+    background: #fff;
+    border-radius: 12px;
+ 
 }

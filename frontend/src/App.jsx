@@ -30,6 +30,10 @@ import PrescriptionList from './PrescriptionsList.jsx';
 import EditarEliminarPersonalesPatologicos from './EditarEliminarPersonalesPatologicos.jsx';
 import VaccinesView from './VaccinesView.jsx';
 import VaccinesForm from './VaccinesForm.jsx';
+import EstudioGabineteForm from './FormGabinete.jsx';
+import EstudioLaboratorioForm from './FormLaboratorio.jsx';
+import EstudioFuncionalForm from './FormFuncional.jsx';
+import EstudioView from './EstudioView.jsx';
 
 // Wrappers para pasar ID como prop si el componente no usa useParams()
 function PerfilFormWrapper() {
@@ -55,6 +59,32 @@ export default function App() {
       <Route path="/" element={<SignIn />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/personalinform" element={<PersonalInfoForm />} />
+
+      <Route path="/menu/:perfilId/estudios" element={
+        <ProtectedRoute>
+          <EstudioView />
+        </ProtectedRoute>
+      } />
+
+      {/* Rutas para formularios de estudios */}
+      <Route path="/menu/:perfilId/estudios/gabinete" element={
+        <ProtectedRoute>
+          <EstudioGabineteForm />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/menu/:perfilId/estudios/laboratorio" element={
+        <ProtectedRoute>
+          <EstudioLaboratorioForm />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/menu/:perfilId/estudios/funcional" element={
+        <ProtectedRoute>
+          <EstudioFuncionalForm />
+        </ProtectedRoute>
+      } />
+
 
       {/* Verificación protegida */}
       <Route
@@ -123,7 +153,7 @@ export default function App() {
       <Route path="/menu/:perfilId/antecedentes-medicos/intolerancias/editar-eliminar/:intoleranciaId" element={<ProtectedRoute><EditarEliminarIntolerancias /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/antecedentes-medicos/no-patologicos/editar-eliminar/:id" element={<ProtectedRoute><EditDeletePersonalesNoPatologicos /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/antecedentes-medicos/heredo-familiares/editar-eliminar/:id" element={<ProtectedRoute><EditarEliminarHeredoFamiliares /></ProtectedRoute>} />
-      <Route path="/menu/:perfilId/antecedentes-medicos/patologicos/editar-eliminar/:id"element={<ProtectedRoute><EditarEliminarPersonalesPatologicos /></ProtectedRoute>}/>
+      <Route path="/menu/:perfilId/antecedentes-medicos/patologicos/editar-eliminar/:id" element={<ProtectedRoute><EditarEliminarPersonalesPatologicos /></ProtectedRoute>} />
       {/* Oftalmología */}
       <Route path="/menu/:perfilId/oftalmologia" element={<ProtectedRoute><OphthalmologyView /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/oftalmologia/agregar" element={<ProtectedRoute><OphthalmologyForm /></ProtectedRoute>} />
