@@ -32,11 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'material',            
-    'material.frontend',  
     'antecedentesMedicos',  
-    #'material.frontend',    
-    'material.admin',
     'colorfield',
     'admin_interface',
     'django.contrib.admin',
@@ -77,6 +73,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'backend.middleware.DisableCSRFForAPIMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -210,6 +207,15 @@ AUTH_USER_MODEL = 'accounts.User'
 VERIFICATION_CODE_ENCRYPTION_KEY = 'your-32-byte-base64-encoded-key-here-change-in-production'
 
 
+
+
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',
+]
+
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-# (fix: habilitado el manejo de archivos multimedia (videos, imágenes, PDFs))
+

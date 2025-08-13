@@ -5,17 +5,21 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 const MenuModulos = () => {
   const navigate = useNavigate();
-  const { id: perfilId } = useParams(); // <- obtenemos el id del perfil desde la URL
+  const { perfilId } = useParams();
+ // obtenemos el id del perfil desde la URL
 
   const sections = [
+
+    
     { label: "Datos personales", color: "#E04040", icon: "/icons/personales.png", path: `/menu/${perfilId}/datos-personales` },
-    { label: "Antecedentes médicos", color: "#FF9455", icon: "/icons/antecedentes.png" },
     { label: "Vacunas", color: "#FCE536", icon: "/icons/vacunas.png", path: `/menu/${perfilId}/vacunas` },
+    { label: "Antecedentes médicos", color: "#FF9455", icon: "/icons/antecedentes.png",path: `/menu/${perfilId}/antecedentes-medicos` },
     { label: "Estudios", color: "#ACEB8A", icon: "/icons/estudios.png" },
     { label: "Recetas", color: "#71C4FF", icon: "/icons/recetas.png" },
     { label: "Historia gineco-obstétrica", color: "#E091FB", icon: "/icons/gineco.png" },
     { label: "Seguimiento de enfermedades crónicas degenerativas", color: "#FF7DB5", icon: "/icons/enfermedades.png" },
     { label: "Oftalmología", color: "#76EEC6", icon: "/icons/oftalmologia.png", path: `/menu/${perfilId}/oftalmologia` },
+
   ];
 
   useEffect(() => {

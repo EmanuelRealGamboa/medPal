@@ -1,3 +1,4 @@
+# En settings.py, busca y elimina estas líneas si existen:
 from django.apps import AppConfig
 
 

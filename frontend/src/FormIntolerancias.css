@@ -1,0 +1,12 @@
+.form-intolerancias {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+    background-color: #fff3cd;
+    border-radius: 10px;
+}
+.form-intolerancias h3 {
+    text-align: center;
+    color: #856404;
+    margin-bottom: 20px;
+}
