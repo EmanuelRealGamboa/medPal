@@ -10,7 +10,7 @@ const MenuModulos = () => {
   const sections = [
     { label: "Datos personales", color: "#E04040", icon: "/icons/personales.png", path: `/menu/${perfilId}/datos-personales` },
     { label: "Antecedentes médicos", color: "#FF9455", icon: "/icons/antecedentes.png" },
-    { label: "Vacunas", color: "#FCE536", icon: "/icons/vacunas.png" },
+    { label: "Vacunas", color: "#FCE536", icon: "/icons/vacunas.png", path: `/menu/${perfilId}/vacunas` },
     { label: "Estudios", color: "#ACEB8A", icon: "/icons/estudios.png" },
     { label: "Recetas", color: "#71C4FF", icon: "/icons/recetas.png" },
     { label: "Historia gineco-obstétrica", color: "#E091FB", icon: "/icons/gineco.png" },

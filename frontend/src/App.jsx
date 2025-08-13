@@ -1,8 +1,5 @@
 import React from 'react';
-
 import { Routes, Route, useParams, Navigate } from 'react-router-dom';
-
-import { Routes, Route, useParams } from 'react-router-dom';
 
 import SignIn from './signin.jsx';
 import Signup from './signup.jsx';
@@ -19,9 +16,8 @@ import PersonalInfoEdit from './EditPersonalInfo.jsx';
 import OphthalmologyView from './OphthalmologyView.jsx';
 import OphthalmologyForm from './OphthalmologyForm.jsx';
 
-
-import PersonalInfoForm from './PersonalInfoForm.jsx';
-
+import VaccinesView from './VaccinesView.jsx';
+import VaccinesForm from './VaccinesForm.jsx';
 
 export default function App() {
   return (
@@ -31,9 +27,6 @@ export default function App() {
       <Route path="/signup" element={<Signup />} />
       <Route path="/personalinform" element={<PersonalInfoForm />} />
 
-
-
-
       {/* Verificación protegida */}
       <Route
         path="/verificacion"
@@ -43,21 +36,6 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-
-
-      <Route path="/personalinform" element={<PersonalInfoForm />} /> 
-
-
-      {/* Verificación protegida */}
-      <Route
-        path="/verificacion"
-        element={
-          <ProtectedRoute requiresVerificationData={true}>
-            <Verificacion />
-          </ProtectedRoute>
-        }
-      />
-
 
       {/* Perfiles protegidos */}
       <Route
@@ -92,7 +70,6 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-
 
       {/* Menú de módulos */}
       <Route
@@ -130,25 +107,42 @@ export default function App() {
         }
       />
 
-      {/* Diagnóstico oftalmológico por perfil */}
+      {/* Diagnóstico oftalmológico */}
       <Route path="/menu/:perfilId/oftalmologia" element={<OphthalmologyView />} />
       <Route path="/menu/:perfilId/oftalmologia/agregar" element={<OphthalmologyForm />} />
       <Route path="/menu/:perfilId/oftalmologia/editar/:diagnosticoId" element={<OphthalmologyForm editMode />} />
 
+      {/* Vacunas */}
+      <Route
+        path="/menu/:id/vacunas"
+        element={
+          <ProtectedRoute>
+            <VaccinesViewWrapper />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/menu/:id/vacunas/agregar"
+        element={
+          <ProtectedRoute>
+            <VaccinesFormWrapper />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/menu/:id/vacunas/editar/:vacunaId"
+        element={
+          <ProtectedRoute>
+            <VaccinesFormWrapper />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Ruta fallback */}
       <Route path="*" element={<Navigate to="/" />} />
-
     </Routes>
   );
 }
-
-
-
-// Wrappers para pasar parámetros si se necesitan
-
-// Wrappers para pasar ID por props
-
 
 // Wrappers para extraer parámetros de URL y pasarlos como props
 
@@ -182,16 +176,12 @@ function PersonalInfoEditWrapper() {
   return <PersonalInfoEdit perfilId={id} />;
 }
 
-
-function PerfilDetailWrapper() {
+function VaccinesViewWrapper() {
   const { id } = useParams();
-  return <PerfilDetail perfilId={id} />;
+  return <VaccinesView perfilId={id} />;
 }
 
-// Nuevos wrappers para oftalmología
-function OphthalmologyViewWrapper() {
-  const { id } = useParams();
-  return <OphthalmologyView perfilId={id} />;
-
+function VaccinesFormWrapper() {
+  const { id, vacunaId } = useParams();
+  return <VaccinesForm perfilId={id} vacunaId={vacunaId} />;
 }
-
