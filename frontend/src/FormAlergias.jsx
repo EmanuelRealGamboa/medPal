@@ -76,51 +76,50 @@ export default function FormAlergias() {
                 </button>
             </nav>
 
-            <main className="form-section d-flex justify-content-center align-items-center py-4">
-                <div className="form-card p-4 rounded shadow-sm custom-width">
-                    <h3>Alergias</h3>
+            <main className="form-section d-flex flex-column justify-content-start align-items-center py-4">
+                <h3 className="form-alergias mb-4 text-center">Alergias</h3>
 
-                    {error && <div className="alert alert-danger">{error}</div>}
-                    {cargando && <div className="alert alert-info">Guardando...</div>}
+                {error && <div className="alert alert-danger">{error}</div>}
+                {cargando && <div className="alert alert-info">Guardando...</div>}
 
-                    <form onSubmit={handleSubmit}>
-                        <textarea
-                            className="form-control mb-2"
-                            name="tipo"
-                            value={form.tipo}
-                            onChange={handleChange}
-                            placeholder="Tipo"
-                            required
-                        />
-                        <textarea
-                            className="form-control mb-2"
-                            name="reaccion"
-                            value={form.reaccion}
-                            onChange={handleChange}
-                            placeholder="Reacción"
-                            required
-                        />
-                        <input
-                            className="form-control mb-2"
-                            type="date"
-                            name="fechaPrimerEvento"
-                            value={form.fechaPrimerEvento}
-                            onChange={handleChange}
-                            required
-                        />
-                        <input
-                            className="form-control mb-2"
-                            name="frecuencia"
-                            value={form.frecuencia}
-                            onChange={handleChange}
-                            placeholder="Frecuencia"
-                            required
-                        />
-                        <button className="btn btn-success" disabled={cargando}>
-                            {cargando ? 'Guardando...' : 'Guardar'}
-                        </button>
-                    </form>
-                </div>
+                <form className="form-alergia" onSubmit={handleSubmit}>
+                    <textarea
+                        className="form-control mb-2"
+                        name="tipo"
+                        value={form.tipo}
+                        onChange={handleChange}
+                        placeholder="Tipo"
+                        required
+                    />
+                    <textarea
+                        className="form-control mb-2"
+                        name="reaccion"
+                        value={form.reaccion}
+                        onChange={handleChange}
+                        placeholder="Reacción"
+                        required
+                    />
+                    <input
+                        className="form-control mb-2"
+                        type="date"
+                        name="fechaPrimerEvento"
+                        value={form.fechaPrimerEvento}
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        className="form-control mb-2"
+                        name="frecuencia"
+                        value={form.frecuencia}
+                        onChange={handleChange}
+                        placeholder="Frecuencia"
+                        required
+                    />
+                    <button className="btn btn-success" disabled={cargando}>
+                        {cargando ? 'Guardando...' : 'Guardar'}
+                    </button>
+                </form>
+                <footer className="footer-bar mt-5">© 2025 MedPal</footer>
             </main>
         </div>
     );

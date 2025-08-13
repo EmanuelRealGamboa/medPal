@@ -151,7 +151,7 @@ const Ophthalmology = () => {
       {/* Formulario centrado */}
       <main className="form-section d-flex justify-content-center align-items-center py-4">
         <div className="form-card p-4 rounded shadow-sm custom-width">
-          <h2 className="form-title text-center mb-4">Ophthalmology Diagnosis</h2>
+          <h2 className="form-ophthalmology text-center mb-4">Ophthalmology Diagnosis</h2>
 
           {errors.form && <p className="form-error">{errors.form}</p>}
 
