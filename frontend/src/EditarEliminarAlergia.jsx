@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './FormAlergias.css';
 
 export default function EditarEliminarAlergia() {
   const { perfilId, id } = useParams(); // Aquí el nombre debe coincidir con la ruta

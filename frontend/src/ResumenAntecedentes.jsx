@@ -59,62 +59,67 @@ export default function ResumenAntecedentes() {
   const renderCard = (titulo, data, subRuta) => (
     <div className="col-md-4 mb-4" key={subRuta}>
       <div className="card h-100 shadow-sm">
-        <div className="custom-navbar">
-          <h5 className="mb-0">MedPal</h5>
-        </div>
-        <div className="card-body">
+        <div className="card-body d-flex flex-column">
           <h5 className="card-title">{titulo}</h5>
           {data ? (
             <>
-              <ul className="list-group list-group-flush mb-2">
+              <ul className="list-group list-group-flush mb-3 flex-grow-1">
                 {Object.entries(data).map(([key, value]) =>
-                  key !== 'id' && value !== null && value !== '' && (
+                  key !== 'id' && value !== null && value !== '' ? (
                     <li className="list-group-item" key={key}>
                       <strong className="text-capitalize">{key.replace(/([A-Z])/g, ' $1')}:</strong> {value}
                     </li>
-                  )
+                  ) : null
                 )}
               </ul>
               <button
-                className="btn btn-warning mt-2"
-                onClick={() => {
-                  navigate(`/menu/${perfilId}/antecedentes-medicos/${subRuta}/editar-eliminar/${data.id}`);
-                }}
+                className="btn btn-warning mt-auto"
+                onClick={() => navigate(`/menu/${perfilId}/antecedentes-medicos/${subRuta}/editar-eliminar/${data.id}`)}
               >
                 Editar
               </button>
             </>
           ) : (
             <button
-              className="btn btn-primary"
-              onClick={() =>
-                navigate(`/menu/${perfilId}/antecedentes-medicos/${subRuta}`)
-              }
+              className="btn btn-primary mt-auto"
+              onClick={() => navigate(`/menu/${perfilId}/antecedentes-medicos/${subRuta}`)}
             >
               Agregar
             </button>
           )}
         </div>
-        <div className="footer">&copy; 2025 MedPal - Todos los derechos reservados</div>
       </div>
     </div>
   );
 
   return (
-    <div className="container mt-5">
-      <h2 className="mb-4 text-center">Antecedentes Médicos</h2>
-      <div className="row">
-        {renderCard('Antecedentes Personales Patológicos', datos.personalesPatologicos, 'patologicos')}
-        {renderCard('Antecedentes Personales No Patológicos', datos.personalesNoPatologicos, 'no-patologicos')}
-        {renderCard('Antecedentes Heredofamiliares', datos.heredoFamiliares, 'heredo-familiares')}
-        {renderCard('Alergias', datos.Alergias, 'alergias')}
-        {renderCard('Intolerancias', datos.Intolerancias, 'intolerancias')}
+    <>
+      {/* Navbar fijo arriba */}
+      <nav className="custom-navbar fixed-top bg-success text-white d-flex align-items-center px-4" style={{ height: '60px', zIndex: 1050 }}>
+        <h5 className="mb-0">MedPal</h5>
+      </nav>
+
+      {/* Contenedor principal con padding para navbar y footer */}
+      <div className="container" style={{ paddingTop: '70px', paddingBottom: '70px' }}>
+        <h2 className="mb-4 text-center">Antecedentes Médicos</h2>
+        <div className="row">
+          {renderCard('Antecedentes Personales Patológicos', datos.personalesPatologicos, 'patologicos')}
+          {renderCard('Antecedentes Personales No Patológicos', datos.personalesNoPatologicos, 'no-patologicos')}
+          {renderCard('Antecedentes Heredofamiliares', datos.heredoFamiliares, 'heredo-familiares')}
+          {renderCard('Alergias', datos.Alergias, 'alergias')}
+          {renderCard('Intolerancias', datos.Intolerancias, 'intolerancias')}
+        </div>
+        <div className="text-center mt-4">
+          <button className="btn btn-secondary" onClick={() => navigate(`/menu/${perfilId}`)}>
+            ← Volver al menú
+          </button>
+        </div>
       </div>
-      <div className="text-center mt-4">
-        <button className="btn btn-secondary" onClick={() => navigate(`/menu/${perfilId}`)}>
-          ← Volver al menú
-        </button>
-      </div>
-    </div>
+
+      {/* Footer fijo abajo */}
+      <footer className="footer fixed-bottom bg-success text-white d-flex justify-content-center align-items-center" style={{ height: '40px', zIndex: 1050 }}>
+        &copy; 2025 MedPal - Todos los derechos reservados
+      </footer>
+    </>
   );
 }

@@ -23,7 +23,7 @@ export default function PersonalInfoForm() {
   const [photoPreview, setPhotoPreview] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Carga datos usuario + personal-data para prellenar formulario
+  // Carga datos del perfil, personal-data y user para prellenar formulario
   useEffect(() => {
     async function fetchData() {
       if (!token || !perfilId) {
@@ -33,40 +33,47 @@ export default function PersonalInfoForm() {
       }
 
       try {
-        // Obtener usuarios
-        const userRes = await axios.get('http://127.0.0.1:8000/accounts/users/', {
-          headers: { Authorization: `Token ${token}` },
-        });
+        // Obtener datos del perfil
+        const perfilRes = await axios.get(
+          `http://127.0.0.1:8000/accounts/perfiles/${perfilId}/`,
+          { headers: { Authorization: `Token ${token}` } }
+        );
+        const perfilData = perfilRes.data;
 
         // Obtener datos personales
-        const personalRes = await axios.get('http://127.0.0.1:8000/accounts/personal-data/', {
-          headers: { Authorization: `Token ${token}` },
-        });
+        const personalRes = await axios.get(
+          `http://127.0.0.1:8000/accounts/personal-data/?perfil=${perfilId}`,
+          { headers: { Authorization: `Token ${token}` } }
+        );
+        const personalData = personalRes.data.length > 0 ? personalRes.data[0] : {};
 
-        // Extraer email del token para identificar usuario actual
-        let email = null;
-        try {
-          const payload = JSON.parse(atob(token.split('.')[1]));
-          email = payload.email;
-        } catch {
-          email = null;
+        // Obtener datos del usuario jefe (para foto y otros campos)
+        let userData = {};
+        if (perfilData.jefe) {
+          const userRes = await axios.get(
+            `http://127.0.0.1:8000/accounts/users/${perfilData.jefe}/`,
+            { headers: { Authorization: `Token ${token}` } }
+          );
+          userData = userRes.data;
         }
 
-        const currentUser = userRes.data.find(u => u.email === email);
-        if (!currentUser) throw new Error('Usuario no encontrado');
-
-        const personalData = personalRes.data.find(pd => String(pd.perfil) === String(perfilId)) || {};
-
         setFormData({
-          nombre: `${currentUser.name || ''} ${currentUser.apellido_paterno || ''} ${currentUser.apellido_materno || ''}`.trim(),
-          fechaNacimiento: personalData.fecha_nacimiento || '',
+          nombre: perfilData.nombre || '',
+          fechaNacimiento: perfilData.fecha_nacimiento || '',
           genero: personalData.genero || '',
-          grupoRH: currentUser.grupoRH || '',
-          contactoEmergencia: currentUser.contactoEmergencia || '',
+          grupoRH: personalData.grupoRH || '',
+          contactoEmergencia: personalData.contactoEmergencia || userData.contactoEmergencia || '',
+          nombreContactoEmergencia: personalData.nombre_contacto_emergencia || userData.nombreContactoEmergencia || '',
           photoUser: null,
         });
 
-        if (currentUser.photoUser) setPhotoPreview(currentUser.photoUser);
+        if (personalData.photoUser) {
+          setPhotoPreview(personalData.photoUser);
+        } else if (userData.photoUser) {
+          setPhotoPreview(userData.photoUser);
+        } else {
+          setPhotoPreview(null);
+        }
 
       } catch (error) {
         console.error('Error cargando datos:', error);
@@ -81,19 +88,12 @@ export default function PersonalInfoForm() {
   const handleInputChange = e => {
     const { name, value } = e.target;
 
-    setFormData(prev => ({ ...prev, [name]: value }));
-
-
     if (name === 'nombreContactoEmergencia') {
       const nombreRegex = /^[A-Za-záéíóúÁÉÍÓÚñÑ\s]*$/;
       if (!nombreRegex.test(value)) return;
     }
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = e => {
@@ -119,6 +119,7 @@ export default function PersonalInfoForm() {
     }
 
     const dataToSend = new FormData();
+    dataToSend.append('perfil', perfilId);
     dataToSend.append('nombre', formData.nombre);
     dataToSend.append('fecha_nacimiento', formData.fechaNacimiento);
     dataToSend.append('genero', formData.genero);
@@ -131,23 +132,28 @@ export default function PersonalInfoForm() {
     }
 
     try {
-      // Primero consulta si ya existe personalData para perfilId (para PUT o POST)
-      const existingRes = await axios.get(`http://127.0.0.1:8000/accounts/personal-data/?perfil=${perfilId}`, {
-        headers: { Authorization: `Token ${token}` },
-      });
+      // Consulta si ya existe personalData para perfilId (para PUT o POST)
+      const existingRes = await axios.get(
+        `http://127.0.0.1:8000/accounts/personal-data/?perfil=${perfilId}`,
+        { headers: { Authorization: `Token ${token}` } }
+      );
 
       if (existingRes.data.length > 0) {
         // Actualizar (PUT) el primer registro que encontró
         const id = existingRes.data[0].id;
-        await axios.put(`http://127.0.0.1:8000/accounts/personal-data/?perfil=${perfilId}`, dataToSend, {
-          headers: { Authorization: `Token ${token}`, 'Content-Type': 'multipart/form-data' },
-        });
+        await axios.put(
+          `http://127.0.0.1:8000/accounts/personal-data/${id}/`,
+          dataToSend,
+          { headers: { Authorization: `Token ${token}`, 'Content-Type': 'multipart/form-data' } }
+        );
         toast.success('Datos actualizados correctamente');
       } else {
         // Crear nuevo (POST)
-        await axios.post('http://127.0.0.1:8000/accounts/personal-data/', dataToSend, {
-          headers: { Authorization: `Token ${token}`, 'Content-Type': 'multipart/form-data' },
-        });
+        await axios.post(
+          'http://127.0.0.1:8000/accounts/personal-data/',
+          dataToSend,
+          { headers: { Authorization: `Token ${token}`, 'Content-Type': 'multipart/form-data' } }
+        );
         toast.success('Datos guardados correctamente');
       }
 
@@ -171,9 +177,7 @@ export default function PersonalInfoForm() {
 
   return (
     <div className="main-layout">
-
       {/* Navbar */}
-
       <nav className="custom-navbar d-flex justify-content-between align-items-center px-4 py-2">
         <h4 className="text-light m-0">
           <i className="bi bi-person-circle me-2"></i>MedPal
@@ -181,19 +185,13 @@ export default function PersonalInfoForm() {
         <button onClick={handleLogout} className="btn btn-outline-light">Logout</button>
       </nav>
 
-
-    {/* Formulario */}
-
-
+      {/* Formulario */}
       <main className="form-section d-flex justify-content-center align-items-center py-4">
         <div className="form-card p-4 rounded shadow-sm custom-width">
           <h3 className="text-center mb-4">Editar Datos Personales</h3>
-
           <form onSubmit={handleSubmit} encType="multipart/form-data">
             <div className="row mb-3">
-
               {/* Foto */}
-
               <div className="col-md-4 mb-3">
                 <label className="form-label">Foto de Perfil</label>
                 <div className="photo-placeholder border rounded bg-light d-flex justify-content-center align-items-center flex-column">
@@ -300,7 +298,6 @@ export default function PersonalInfoForm() {
                 />
               </div>
             </div>
-
 
             <div className="d-flex justify-content-end gap-3 mt-4">
               <button

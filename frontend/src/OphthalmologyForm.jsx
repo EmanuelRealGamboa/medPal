@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 import './OphthalmologyForm.css';
 
 const Ophthalmology = () => {
-  const [patients, setPatients] = useState([]);
   const [loadingPatients, setLoadingPatients] = useState(true);
   const [formData, setFormData] = useState({
-    patient: '',
+    perfil: '',          // Aquí usamos perfil (id) para enviar al backend
     exam_date: '',
     attention_type: '',
     diagnosis: '',
@@ -14,36 +14,37 @@ const Ophthalmology = () => {
     document: null,
   });
 
+  const [patientName, setPatientName] = useState(''); // Para mostrar nombre paciente
   const [errors, setErrors] = useState({});
   const [previewFileName, setPreviewFileName] = useState('');
   const navigate = useNavigate();
   const { perfilId } = useParams();
-
-
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
-    const fetchPatients = async () => {
+    const fetchPerfil = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/ophthalmology/diagnoses/');
-        if (!response.ok) throw new Error('Error fetching patients');
-        const data = await response.json();
-        setPatients(data);
+        const res = await axios.get(`http://127.0.0.1:8000/accounts/perfiles/${perfilId}/`, {
+          headers: { Authorization: `Token ${token}` },
+        });
 
-        // Autoasignar ID del paciente
-        if (data.length > 0) {
-          setFormData((prev) => ({ ...prev, patient: data[0].id }));
-        }
+        const perfilData = res.data;
+        // Ajusta según el campo que tengas para el nombre completo
+        setPatientName(perfilData.nombre || 'Paciente');
+        setFormData(prev => ({ ...prev, perfil: perfilId }));
       } catch (error) {
-        console.error('Error loading patients:', error);
+        console.error('Error fetching perfil:', error);
+        setPatientName('Paciente');
+        setFormData(prev => ({ ...prev, perfil: perfilId }));
       } finally {
         setLoadingPatients(false);
       }
     };
 
-    fetchPatients();
-  }, []);
-
-
+    if (perfilId) {
+      fetchPerfil();
+    }
+  }, [perfilId, token]);
 
   const attentionTypes = [
     { value: 'routine', label: 'Routine Check-up' },
@@ -60,65 +61,53 @@ const Ophthalmology = () => {
         const ext = file.name.split('.').pop().toLowerCase();
         const validExts = ['jpg', 'jpeg', 'png', 'pdf'];
         if (!validExts.includes(ext)) {
-          setErrors((prev) => ({ ...prev, document: 'Invalid file type. Allowed: JPG, PNG, PDF' }));
+          setErrors(prev => ({ ...prev, document: 'Invalid file type. Allowed: JPG, PNG, PDF' }));
           setPreviewFileName('');
           return;
         } else if (file.size > 2 * 1024 * 1024) {
-          setErrors((prev) => ({ ...prev, document: 'File exceeds 2MB size limit.' }));
+          setErrors(prev => ({ ...prev, document: 'File exceeds 2MB size limit.' }));
           setPreviewFileName('');
           return;
         }
         setPreviewFileName(file.name);
-        setFormData((prev) => ({ ...prev, document: file }));
-        setErrors((prev) => ({ ...prev, document: null }));
+        setFormData(prev => ({ ...prev, document: file }));
+        setErrors(prev => ({ ...prev, document: null }));
       }
     } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+      setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
+    const form = new FormData();
 
-    if (!formData.patient || !formData.exam_date || !formData.diagnosis || !formData.document) {
-      setErrors({ form: 'Please complete all required fields.' });
-      return;
+    form.append('perfil', perfilId);
+    form.append('patient_name', patientName); // Usa el nombre correcto
+    form.append('exam_date', formData.exam_date);
+    form.append('attention_type', formData.attention_type);
+    form.append('diagnosis', formData.diagnosis);
+    form.append('notes', formData.notes);
+    if (formData.document) {
+      form.append('document', formData.document);
     }
 
     try {
-      const data = new FormData();
-      data.append('patient', formData.patient);
-      data.append('exam_date', formData.exam_date);
-      data.append('attention_type', formData.attention_type);
-      data.append('diagnosis', formData.diagnosis);
-      data.append('notes', formData.notes);
-      data.append('document', formData.document);
-
-      const response = await fetch('http://127.0.0.1:8000/ophthalmology/diagnoses/', {
-        method: 'POST',
-        body: data,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        const formattedErrors = { form: 'Error saving data.' };
-
-        // Copiar errores individuales si están presentes
-        for (const field in errorData) {
-          formattedErrors[field] = Array.isArray(errorData[field])
-            ? errorData[field].join(' ')
-            : errorData[field];
+      await axios.post(
+        'http://127.0.0.1:8000/ophthalmology/diagnoses/',
+        form,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+            // No pongas 'Content-Type': 'application/json'
+          }
         }
-
-        setErrors(formattedErrors);
-        return;
-      }
-
+      );
       alert('Diagnosis submitted successfully!');
 
       setFormData({
-        patient: '',
+        perfil: perfilId,
         exam_date: '',
         attention_type: '',
         diagnosis: '',
@@ -128,12 +117,23 @@ const Ophthalmology = () => {
       setPreviewFileName('');
     } catch (error) {
       console.error('Submission error:', error);
-      setErrors({ form: 'Unexpected error submitting form.' });
+      if (error.response?.data) {
+        const errorData = error.response.data;
+        const formattedErrors = { form: 'Error saving data.' };
+        for (const field in errorData) {
+          formattedErrors[field] = Array.isArray(errorData[field])
+            ? errorData[field].join(' ')
+            : errorData[field];
+        }
+        setErrors(formattedErrors);
+      } else {
+        setErrors({ form: 'Unexpected error submitting form.' });
+      }
     }
   };
 
   if (loadingPatients) {
-    return <p style={{ textAlign: 'center', marginTop: '2rem' }}>Loading patients...</p>;
+    return <p style={{ textAlign: 'center', marginTop: '2rem' }}>Loading patient info...</p>;
   }
 
   return (
@@ -160,18 +160,15 @@ const Ophthalmology = () => {
               {/* Columna izquierda */}
               <div className="col-md-6">
                 <div className="form-group mb-3">
-                  <label htmlFor="patient">Nombre completo:</label>
+                  <label>Nombre completo:</label>
                   <input
                     type="text"
-                    name="patient"
-                    value={formData.patient}
-                    onChange={handleChange}
-                    required
+                    name="patientName"
+                    value={patientName}
+                    disabled
                     className="form-control"
                   />
-                  {errors.patient && <p className="form-error">{errors.patient}</p>}
                 </div>
-
 
                 <div className="form-group mb-3">
                   <label htmlFor="exam_date">Exam Date:</label>
@@ -257,7 +254,6 @@ const Ophthalmology = () => {
               </button>
             </div>
           </form>
-
         </div>
       </main>
 
@@ -267,7 +263,6 @@ const Ophthalmology = () => {
       </footer>
     </div>
   );
-
 };
 
 export default Ophthalmology;

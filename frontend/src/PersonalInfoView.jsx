@@ -1,126 +1,193 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './PersonalInfoForm.css';
 import './PersonalInfoView.css';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function PersonalInfoView() {
   const navigate = useNavigate();
   const { perfilId } = useParams();
   const token = localStorage.getItem('token');
-  const [data, setData] = useState(null);
-  const [mensaje, setMensaje] = useState('');
+  const [formData, setFormData] = useState({
+    nombre: '',
+    fechaNacimiento: '',
+    genero: '',
+    grupoRH: '',
+    contactoEmergencia: '',
+    nombreContactoEmergencia: '',
+    photoUser: null,
+  });
+  const [photoPreview, setPhotoPreview] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       if (!token || !perfilId) {
-        setMensaje('Falta token o perfilId');
+        setLoading(false);
         return;
       }
 
       try {
-        // Obtener usuarios filtrados por perfil
-        const userRes = await axios.get(`http://127.0.0.1:8000/accounts/users/?perfil=${perfilId}`, {
-          headers: { Authorization: `Token ${token}` }
-        });
+        // Obtener datos del perfil
+        const perfilRes = await axios.get(
+          `http://127.0.0.1:8000/accounts/perfiles/${perfilId}/`,
+          { headers: { Authorization: `Token ${token}` } }
+        );
+        const perfilData = perfilRes.data;
 
-        const currentUser = userRes.data.find(u => String(u.perfil) === String(perfilId));
-        if (!currentUser) {
-          setMensaje('Usuario no encontrado para este perfil.');
-          return;
+        // Obtener datos personales
+        const personalRes = await axios.get(
+          `http://127.0.0.1:8000/accounts/personal-data/?perfil=${perfilId}`,
+          { headers: { Authorization: `Token ${token}` } }
+        );
+        const personalData = personalRes.data.length > 0 ? personalRes.data[0] : {};
+
+        // Obtener datos del usuario jefe (para foto y otros campos)
+        let userData = {};
+        if (perfilData.jefe) {
+          const userRes = await axios.get(
+            `http://127.0.0.1:8000/accounts/users/?perfil=${perfilId}`,
+            { headers: { Authorization: `Token ${token}` } }
+          );
+          userData = userRes.data;
         }
 
-        // Obtener personal-data por perfil
-        const personalRes = await axios.get(`http://127.0.0.1:8000/accounts/personal-data/?perfil=${perfilId}`, {
-          headers: { Authorization: `Token ${token}` }
+        setFormData({
+          nombre: perfilData.nombre || '',
+          fechaNacimiento: perfilData.fecha_nacimiento || '',
+          genero: personalData.genero || '',
+          grupoRH: personalData.grupoRH || '',
+          contactoEmergencia: personalData.contactoEmergencia || userData.contactoEmergencia || '',
+          nombreContactoEmergencia: personalData.nombre_contacto_emergencia || userData.nombreContactoEmergencia || '',
+          photoUser: personalData.photoUser || userData.photoUser || null,
         });
 
-        if (!personalRes.data || personalRes.data.length === 0) {
-          setData(null);  
+        if (personalData.photoUser) {
+          setPhotoPreview(personalData.photoUser);
+        } else if (userData.photoUser) {
+          setPhotoPreview(userData.photoUser);
         } else {
-          const personalData = personalRes.data[0];
-          setData({
-            nombre: `${currentUser.name} ${currentUser.apellido_paterno} ${currentUser.apellido_materno}`,
-            contactoEmergencia: currentUser.contactoEmergencia,
-            grupoRH: currentUser.grupoRH,
-            photoUser: currentUser.photoUser,
-            fechaNacimiento: personalData.fecha_nacimiento,
-            sexo: personalData.genero,
-          });
+          setPhotoPreview(null);
         }
 
       } catch (error) {
-        console.error(error);
-        setMensaje('Error al cargar los datos personales.');
-        setData(null);
+        // Puedes mostrar un mensaje de error si lo deseas
+      } finally {
+        setLoading(false);
       }
     }
-
     fetchData();
   }, [perfilId, token]);
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/');
+  };
+
+  const handleEdit = () => {
+    navigate(`/menu/${perfilId}/datos-personales/editar`);
+  };
+
+  if (loading) {
+    return <div className="text-center py-5">Cargando datos...</div>;
+  }
+
   return (
-    <div className="perfil-bg">
+    <div>
       {/* Navbar */}
-      <div className="custom-navbar">
-        <h5 className="mb-0">MedPal</h5>
-        <span>Datos personales</span>
-      </div>
+      <nav className="custom-navbar d-flex justify-content-between align-items-center px-4 py-2">
+        <h4 className="text-light m-0">
+          <i className="bi bi-person-circle me-2"></i>MedPal
+        </h4>
+        <button onClick={handleLogout} className="btn btn-outline-light">Logout</button>
+      </nav>
 
-      {/* Contenido principal */}
-      <div className="main-layout p-4">
-        <h3 className="mb-4 text-center">Datos personales</h3>
-
-        {data ? (
-          <>
-            {data.photoUser && (
-              <div className="avatar-container">
-                <img src={data.photoUser} alt="Foto de perfil" className="avatar-img" />
+      {/* Vista de datos personales */}
+      <section className="content-section">
+        <div className="card">
+          <h3 className="text-center mb-4">Datos Personales</h3>
+          <div className="row mb-3">
+            {/* Foto */}
+            <div className="col-md-4 mb-3">
+              <label className="form-label data-label">Foto de Perfil</label>
+              <div className="photo-placeholder border rounded bg-light d-flex justify-content-center align-items-center flex-column">
+                {photoPreview ? (
+                  <img
+                    src={photoPreview}
+                    alt="Foto de perfil"
+                    className="img-fluid rounded"
+                    style={{ maxHeight: '120px', objectFit: 'cover' }}
+                  />
+                ) : (
+                  <i className="bi bi-person-circle fs-1 text-secondary"></i>
+                )}
               </div>
-            )}
-            <div className="perfil-wrapper">
-              <p><strong>Nombre completo:</strong> {data.nombre}</p>
-              <p><strong>Fecha de nacimiento:</strong> {data.fechaNacimiento}</p>
-              <p><strong>Sexo:</strong> {data.sexo}</p>
-              <p><strong>Grupo RH:</strong> {data.grupoRH}</p>
-              <p><strong>Contacto emergencia:</strong> {data.contactoEmergencia}</p>
             </div>
 
-            <div className="d-flex gap-3 justify-content-center mt-4">
-              <button
-                className="btn btn-primary"
-                onClick={() => navigate(`/menu/${perfilId}/datos-personales/editar`)}
-              >
-                Editar
-              </button>
-              <button
-                className="btn btn-secondary"
-                onClick={() => alert("Detalle no implementado aún")}
-              >
-                Ver detalle
-              </button>
+            <div className="col-md-8">
+              <div className="data-field mb-3">
+                <span className="data-label">Nombre Completo:</span>
+                <span className="data-value">{formData.nombre}</span>
+              </div>
+              <div className="row gx-5">
+                <div className="col-md-6 data-field mb-3">
+                  <span className="data-label">Fecha de nacimiento:</span>
+                  <span className="data-value">{formData.fechaNacimiento}</span>
+                </div>
+                <div className="col-md-6 data-field mb-3">
+                  <span className="data-label">Género:</span>
+                  <span className="data-value">{formData.genero}</span>
+                </div>
+              </div>
             </div>
-          </>
-        ) : (
-          <>
-            <p className="text-muted text-center">No hay datos personales registrados.</p>
-            <div className="d-flex justify-content-center">
-              <button
-                className="btn btn-success"
-                onClick={() => navigate(`/menu/${perfilId}/datos-personales/agregar`)}
-              >
-                Agregar
-              </button>
+          </div>
+
+          <div className="row mb-3">
+            <div className="col-md-6">
+              <div className="data-field">
+                <span className="data-label">Grupo RH:</span>
+                <span className="data-value">{formData.grupoRH}</span>
+              </div>
+              <div className="data-field mt-3">
+                <span className="data-label">Teléfono:</span>
+                <span className="data-value">{formData.contactoEmergencia}</span>
+              </div>
             </div>
-          </>
-        )}
+            <div className="col-md-6">
+              <div className="data-field">
+                <span className="data-label">Contacto de Emergencia:</span>
+                <span className="data-value">{formData.nombreContactoEmergencia}</span>
+              </div>
+            </div>
+          </div>
 
-        {mensaje && <div className="alert alert-warning mt-3 text-center">{mensaje}</div>}
-      </div>
+          <div className="btn-container">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleEdit}
+            >
+              Editar
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => navigate(`/menu/${perfilId}/datos-personales/editar`)}
+            >
+              Volver
+            </button>
+          </div>
+        </div>
+      </section>
 
-      {/* Footer */}
-      <div className="custom-footer">
-        &copy; 2025 MedPal - Todos los derechos reservados
-      </div>
+      <footer className="footer-bar">
+        © 2025 MedPal
+      </footer>
+
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
     </div>
   );
 }
