@@ -3,51 +3,64 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import './PersonalInfoView.css';
 
-export default function PersonalInfoView({ perfilId }) {
+export default function PersonalInfoView() {
   const navigate = useNavigate();
-  const { id } = useParams(); // por si se necesita
+  const { perfilId } = useParams();
   const token = localStorage.getItem('token');
   const [data, setData] = useState(null);
   const [mensaje, setMensaje] = useState('');
 
   useEffect(() => {
     async function fetchData() {
+      if (!token || !perfilId) {
+        setMensaje('Falta token o perfilId');
+        return;
+      }
+
       try {
-        const personalRes = await axios.get('http://127.0.0.1:8000/accounts/personal-data/', {
+        // Obtener usuarios filtrados por perfil
+        const userRes = await axios.get(`http://127.0.0.1:8000/accounts/users/?perfil=${perfilId}`, {
           headers: { Authorization: `Token ${token}` }
         });
 
-        const userRes = await axios.get('http://127.0.0.1:8000/accounts/users/', {
+        const currentUser = userRes.data.find(u => String(u.perfil) === String(perfilId));
+        if (!currentUser) {
+          setMensaje('Usuario no encontrado para este perfil.');
+          return;
+        }
+
+        // Obtener personal-data por perfil
+        const personalRes = await axios.get(`http://127.0.0.1:8000/accounts/personal-data/?perfil=${perfilId}`, {
           headers: { Authorization: `Token ${token}` }
         });
 
-        const currentUser = userRes.data.find(u => u.email === JSON.parse(atob(token.split('.')[1])).email);
-
-        if (!personalRes.data || Object.keys(personalRes.data).length === 0) {
-          setData(null);
+        if (!personalRes.data || personalRes.data.length === 0) {
+          setData(null);  
         } else {
+          const personalData = personalRes.data[0];
           setData({
             nombre: `${currentUser.name} ${currentUser.apellido_paterno} ${currentUser.apellido_materno}`,
             contactoEmergencia: currentUser.contactoEmergencia,
             grupoRH: currentUser.grupoRH,
             photoUser: currentUser.photoUser,
-            fechaNacimiento: personalRes.data.fecha_nacimiento,
-            sexo: personalRes.data.genero,
+            fechaNacimiento: personalData.fecha_nacimiento,
+            sexo: personalData.genero,
           });
         }
+
       } catch (error) {
         console.error(error);
-        setMensaje('No se encontraron datos personales registrados.');
+        setMensaje('Error al cargar los datos personales.');
         setData(null);
       }
     }
 
     fetchData();
-  }, []);
+  }, [perfilId, token]);
 
   return (
     <div className="perfil-bg">
-      {/* Navbar fijo arriba */}
+      {/* Navbar */}
       <div className="custom-navbar">
         <h5 className="mb-0">MedPal</h5>
         <span>Datos personales</span>
@@ -101,10 +114,10 @@ export default function PersonalInfoView({ perfilId }) {
           </>
         )}
 
-        {mensaje && <div className="alert alert-warning mt-3">{mensaje}</div>}
+        {mensaje && <div className="alert alert-warning mt-3 text-center">{mensaje}</div>}
       </div>
 
-      {/* Footer fijo abajo */}
+      {/* Footer */}
       <div className="custom-footer">
         &copy; 2025 MedPal - Todos los derechos reservados
       </div>

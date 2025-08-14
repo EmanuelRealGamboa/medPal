@@ -1,8 +1,5 @@
 import React from 'react';
-
-import { Routes, Route, useParams, Navigate } from 'react-router-dom';
-
-import { Routes, Route, useParams } from 'react-router-dom';
+import { Routes, Route, Navigate, useParams } from 'react-router-dom';
 
 import SignIn from './signin.jsx';
 import Signup from './signup.jsx';
@@ -11,17 +8,40 @@ import PerfilList from './PerfilList.jsx';
 import PerfilForm from './PerfilForm.jsx';
 import PerfilDetail from './PerfilDetail.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
-
 import MenuModulos from './MenuModulos.jsx';
 import PersonalInfoView from './PersonalInfoView.jsx';
 import PersonalInfoForm from './PersonalInfoForm.jsx';
 import PersonalInfoEdit from './EditPersonalInfo.jsx';
+import ResumenAntecedentes from './ResumenAntecedentes.jsx';
 import OphthalmologyView from './OphthalmologyView.jsx';
 import OphthalmologyForm from './OphthalmologyForm.jsx';
+import FormAlergias from './FormAlergias.jsx';
+import FormHeredoFamiliares from './FormHeredoFamiliares.jsx';
+import FormIntolerancias from './FormIntolerancias.jsx';
+import FormPersonalesNoPatologicos from './FormPersonalesNoPatologicos.jsx';
+import FormPersonalesPatologicos from './FormPersonalesPatologicos.jsx';
+import EditarEliminarAlergia from './EditarEliminarAlergia.jsx';
+import EditarEliminarIntolerancias from './EditarEliminarIntolerancias.jsx';
+import EditDeletePersonalesNoPatologicos from './EditDeletePersonalesNoPatologicos.jsx';
+import EditarEliminarHeredoFamiliares from './EditDeleteHeredoFamiliares.jsx';
+import PrescriptionForm from './PrescriptionForm.jsx';
+import PrescriptionList from './PrescriptionsList.jsx';
 
+// Wrappers para pasar ID como prop si el componente no usa useParams()
+function PerfilFormWrapper() {
+  const { perfilId } = useParams();
+  return <PerfilForm perfilId={perfilId} />;
+}
 
-import PersonalInfoForm from './PersonalInfoForm.jsx';
+function PerfilDetailWrapper() {
+  const { perfilId } = useParams();
+  return <PerfilDetail perfilId={perfilId} />;
+}
 
+function PrescriptionFormWrapper() {
+  const { id } = useParams();
+  return <PrescriptionForm prescriptionId={id} />;
+}
 
 export default function App() {
   return (
@@ -31,9 +51,6 @@ export default function App() {
       <Route path="/signup" element={<Signup />} />
       <Route path="/personalinform" element={<PersonalInfoForm />} />
 
-
-
-
       {/* Verificación protegida */}
       <Route
         path="/verificacion"
@@ -43,155 +60,49 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-
-
-      <Route path="/personalinform" element={<PersonalInfoForm />} /> 
-
-
-      {/* Verificación protegida */}
-      <Route
-        path="/verificacion"
-        element={
-          <ProtectedRoute requiresVerificationData={true}>
-            <Verificacion />
-          </ProtectedRoute>
-        }
-      />
-
 
       {/* Perfiles protegidos */}
-      <Route
-        path="/perfiles"
-        element={
-          <ProtectedRoute>
-            <PerfilList />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/perfiles/nuevo"
-        element={
-          <ProtectedRoute>
-            <PerfilForm />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/perfiles/:id"
-        element={
-          <ProtectedRoute>
-            <PerfilDetailWrapper />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/perfiles/:id/editar"
-        element={
-          <ProtectedRoute>
-            <PerfilFormWrapper />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/perfiles" element={<ProtectedRoute><PerfilList /></ProtectedRoute>} />
+      <Route path="/perfiles/nuevo" element={<ProtectedRoute><PerfilForm /></ProtectedRoute>} />
+      <Route path="/perfiles/:perfilId" element={<ProtectedRoute><PerfilDetailWrapper /></ProtectedRoute>} />
+      <Route path="/perfiles/:perfilId/editar" element={<ProtectedRoute><PerfilFormWrapper /></ProtectedRoute>} />
 
+      {/* Menú de módulos protegido */}
+      <Route path="/menu/:perfilId" element={<ProtectedRoute><MenuModulos /></ProtectedRoute>} />
 
-      {/* Menú de módulos */}
-      <Route
-        path="/menu/:id"
-        element={
-          <ProtectedRoute>
-            <MenuModulosWrapper />
-          </ProtectedRoute>
-        }
-      />
+      {/* Datos personales */}
+      <Route path="/menu/:perfilId/datos-personales" element={<ProtectedRoute><PersonalInfoView /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/datos-personales/agregar" element={<ProtectedRoute><PersonalInfoForm /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/datos-personales/editar" element={<ProtectedRoute><PersonalInfoEdit /></ProtectedRoute>} />
 
-      {/* Datos personales por perfil */}
-      <Route
-        path="/menu/:id/datos-personales"
-        element={
-          <ProtectedRoute>
-            <PersonalInfoViewWrapper />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/menu/:id/datos-personales/agregar"
-        element={
-          <ProtectedRoute>
-            <PersonalInfoFormWrapper />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/menu/:id/datos-personales/editar"
-        element={
-          <ProtectedRoute>
-            <PersonalInfoEditWrapper />
-          </ProtectedRoute>
-        }
-      />
+      {/* Antecedentes médicos - Resumen */}
+      <Route path="/menu/:perfilId/antecedentes-medicos" element={<ProtectedRoute><ResumenAntecedentes /></ProtectedRoute>} />
 
-      {/* Diagnóstico oftalmológico por perfil */}
-      <Route path="/menu/:perfilId/oftalmologia" element={<OphthalmologyView />} />
-      <Route path="/menu/:perfilId/oftalmologia/agregar" element={<OphthalmologyForm />} />
-      <Route path="/menu/:perfilId/oftalmologia/editar/:diagnosticoId" element={<OphthalmologyForm editMode />} />
+      {/* Formularios de antecedentes médicos */}
+      <Route path="/menu/:perfilId/antecedentes-medicos/alergias" element={<ProtectedRoute><FormAlergias /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/antecedentes-medicos/heredo-familiares" element={<ProtectedRoute><FormHeredoFamiliares /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/antecedentes-medicos/intolerancias" element={<ProtectedRoute><FormIntolerancias /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/antecedentes-medicos/no-patologicos" element={<ProtectedRoute><FormPersonalesNoPatologicos /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/antecedentes-medicos/patologicos" element={<ProtectedRoute><FormPersonalesPatologicos /></ProtectedRoute>} />
 
+      {/* Edición/Eliminación específicas */}
+      <Route path="/menu/:perfilId/antecedentes-medicos/alergias/editar-eliminar/:id" element={<ProtectedRoute><EditarEliminarAlergia /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/antecedentes-medicos/intolerancias/editar-eliminar/:intoleranciaId" element={<ProtectedRoute><EditarEliminarIntolerancias /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/antecedentes-medicos/no-patologicos/editar-eliminar/:id" element={<ProtectedRoute><EditDeletePersonalesNoPatologicos /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/antecedentes-medicos/heredo-familiares/editar-eliminar/:id" element={<ProtectedRoute><EditarEliminarHeredoFamiliares /></ProtectedRoute>} />
+
+      {/* Oftalmología */}
+      <Route path="/menu/:perfilId/oftalmologia" element={<ProtectedRoute><OphthalmologyView /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/oftalmologia/agregar" element={<ProtectedRoute><OphthalmologyForm /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/oftalmologia/editar/:diagnosticoId" element={<ProtectedRoute><OphthalmologyForm editMode /></ProtectedRoute>} />
+
+      {/* Prescripciones */}
+      <Route path="/prescriptions" element={<ProtectedRoute><PrescriptionList /></ProtectedRoute>} />
+      <Route path="/prescriptions/nuevo" element={<ProtectedRoute><PrescriptionForm /></ProtectedRoute>} />
+      <Route path="/prescriptions/editar/:id" element={<ProtectedRoute><PrescriptionFormWrapper /></ProtectedRoute>} />
 
       {/* Ruta fallback */}
       <Route path="*" element={<Navigate to="/" />} />
-
     </Routes>
   );
 }
-
-
-
-// Wrappers para pasar parámetros si se necesitan
-
-// Wrappers para pasar ID por props
-
-
-// Wrappers para extraer parámetros de URL y pasarlos como props
-
-function PerfilFormWrapper() {
-  const { id } = useParams();
-  return <PerfilForm perfilId={id} />;
-}
-
-function PerfilDetailWrapper() {
-  const { id } = useParams();
-  return <PerfilDetail perfilId={id} />;
-}
-
-function MenuModulosWrapper() {
-  const { id } = useParams();
-  return <MenuModulos perfilId={id} />;
-}
-
-function PersonalInfoViewWrapper() {
-  const { id } = useParams();
-  return <PersonalInfoView perfilId={id} />;
-}
-
-function PersonalInfoFormWrapper() {
-  const { id } = useParams();
-  return <PersonalInfoForm perfilId={id} />;
-}
-
-function PersonalInfoEditWrapper() {
-  const { id } = useParams();
-  return <PersonalInfoEdit perfilId={id} />;
-}
-
-
-function PerfilDetailWrapper() {
-  const { id } = useParams();
-  return <PerfilDetail perfilId={id} />;
-}
-
-// Nuevos wrappers para oftalmología
-function OphthalmologyViewWrapper() {
-  const { id } = useParams();
-  return <OphthalmologyView perfilId={id} />;
-
-}
-

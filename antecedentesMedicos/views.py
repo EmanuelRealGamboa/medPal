@@ -38,7 +38,7 @@ class personalesNoPatologicosView(generics.ListCreateAPIView):
 
 class personalesNoPatologicosDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = personalesNoPatologicos.objects.all()
-    lookup_url_kwarg = 'personalesNoPatologicos_id'
+    lookup_field = 'id'
     serializer_class = personalesNoPatologicosSerializer
 
 #heredoFamiliares
@@ -49,7 +49,7 @@ class heredoFamiliaresView(generics.ListCreateAPIView):
 
 class heredoFamiliaresDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = heredoFamiliares.objects.all()
-    lookup_url_kwarg = 'heredoFamiliares_id'
+    lookup_field = 'id'
     serializer_class = heredoFamiliaresSerializer
 
 #Alergias
@@ -60,7 +60,7 @@ class AlergiasView(generics.ListCreateAPIView):
 
 class AlergiasDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Alergias.objects.all()
-    lookup_url_kwarg = 'Alergias_id'
+    lookup_field = 'id'
     serializer_class = AlergiasSerializer
 
 
@@ -72,6 +72,6 @@ class IntoleranciasView(generics.ListCreateAPIView):
 
 class IntoleranciasDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Intolerancias.objects.all()
-    lookup_url_kwarg = 'Intolerancias_id'
+    lookup_field = 'id'
     serializer_class = IntoleranciasSerializer
 
