@@ -19,3 +19,8 @@ frontend/dist/
 .vscode/
 .idea/
 .DS_Store
+
+# Media y temporales
+user_photos/
+*.sqlite3
+.env
