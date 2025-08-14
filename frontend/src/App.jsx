@@ -30,10 +30,17 @@ import PrescriptionList from './PrescriptionsList.jsx';
 import EditarEliminarPersonalesPatologicos from './EditarEliminarPersonalesPatologicos.jsx';
 import VaccinesView from './VaccinesView.jsx';
 import VaccinesForm from './VaccinesForm.jsx';
-import EstudioGabineteForm from './FormGabinete.jsx';
-import EstudioLaboratorioForm from './FormLaboratorio.jsx';
-import EstudioFuncionalForm from './FormFuncional.jsx';
 import EstudioView from './EstudioView.jsx';
+import FormGabinete from './FormGabinete.jsx';
+import EditDeletGabinete from './EditDeletGabinete.jsx';
+import GabineteList from './GabineteList.jsx';
+import FormLaboratorio from './FormLaboratorio.jsx';
+import EditDeletLaboratorio from './EditDeletLaboratorio.jsx';
+import LaboratorioList from './LaboratorioList.jsx';
+import FormFuncional from './FormFuncional.jsx';
+import FuncionalList from './FuncionalList.jsx'
+import EditDeletFuncional from './EditDeletFuncional.jsx';
+
 
 // Wrappers para pasar ID como prop si el componente no usa useParams()
 function PerfilFormWrapper() {
@@ -60,30 +67,7 @@ export default function App() {
       <Route path="/signup" element={<Signup />} />
       <Route path="/personalinform" element={<PersonalInfoForm />} />
 
-      <Route path="/menu/:perfilId/estudios" element={
-        <ProtectedRoute>
-          <EstudioView />
-        </ProtectedRoute>
-      } />
 
-      {/* Rutas para formularios de estudios */}
-      <Route path="/menu/:perfilId/estudios/gabinete" element={
-        <ProtectedRoute>
-          <EstudioGabineteForm />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/menu/:perfilId/estudios/laboratorio" element={
-        <ProtectedRoute>
-          <EstudioLaboratorioForm />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/menu/:perfilId/estudios/funcional" element={
-        <ProtectedRoute>
-          <EstudioFuncionalForm />
-        </ProtectedRoute>
-      } />
 
 
       {/* Verificación protegida */}
@@ -113,6 +97,10 @@ export default function App() {
 
       {/* Antecedentes médicos - Resumen */}
       <Route path="/menu/:perfilId/antecedentes-medicos" element={<ProtectedRoute><ResumenAntecedentes /></ProtectedRoute>} />
+
+      {/* Estudios */}
+      <Route path="/menu/:perfilId/estudios" element={<ProtectedRoute><EstudioView /></ProtectedRoute>} />
+
 
 
       {/* Vacunas */}
@@ -158,6 +146,19 @@ export default function App() {
       <Route path="/menu/:perfilId/oftalmologia" element={<ProtectedRoute><OphthalmologyView /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/oftalmologia/agregar" element={<ProtectedRoute><OphthalmologyForm /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/oftalmologia/editar/:diagnosticoId" element={<ProtectedRoute><OphthalmologyForm editMode /></ProtectedRoute>} />
+
+      {/* Rutas para formularios de estudios */}
+      <Route path="/menu/:perfilId/estudios/gabinete" element={<ProtectedRoute><FormGabinete /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/estudios/laboratorio" element={<ProtectedRoute><FormLaboratorio /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/estudios/funcional" element={<ProtectedRoute><FormFuncional /></ProtectedRoute>} />
+
+      {/* Edición/Eliminación específicas de Estudios */}
+      <Route path="/menu/:perfilId/estudios/laboratorio/editar-eliminar/:id" element={<ProtectedRoute><EditDeletLaboratorio /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/estudios/laboratorio/lista" element={<ProtectedRoute><LaboratorioList /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/estudios/gabinete/editar-eliminar/:id" element={<ProtectedRoute><EditDeletGabinete /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/estudios/gabinete/lista" element={<ProtectedRoute><GabineteList /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/estudios/funcional/lista" element={<ProtectedRoute><FuncionalList /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/estudios/funcional/editar-eliminar/:id" element={<ProtectedRoute><EditDeletFuncional /></ProtectedRoute>} />
 
       {/* Prescripciones */}
       <Route path="/prescriptions" element={<ProtectedRoute><PrescriptionList /></ProtectedRoute>} />
