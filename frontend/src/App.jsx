@@ -160,9 +160,9 @@ export default function App() {
       <Route path="/menu/:perfilId/oftalmologia/editar/:diagnosticoId" element={<ProtectedRoute><OphthalmologyForm editMode /></ProtectedRoute>} />
 
       {/* Prescripciones */}
-      <Route path="/prescriptions" element={<ProtectedRoute><PrescriptionList /></ProtectedRoute>} />
-      <Route path="/prescriptions/nuevo" element={<ProtectedRoute><PrescriptionForm /></ProtectedRoute>} />
-      <Route path="/prescriptions/editar/:id" element={<ProtectedRoute><PrescriptionFormWrapper /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/prescriptions" element={<ProtectedRoute><PrescriptionList /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/prescriptions/nuevo" element={<ProtectedRoute><PrescriptionForm /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/prescriptions/editar/:id" element={<ProtectedRoute><PrescriptionFormWrapper /></ProtectedRoute>} />
 
 
       {/* Ruta fallback */}
