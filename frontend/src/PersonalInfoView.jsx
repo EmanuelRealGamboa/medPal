@@ -29,7 +29,7 @@ export default function PersonalInfoView() {
         setLoading(false);
         return;
       }
-
+  
       try {
         // Obtener datos del perfil
         const perfilRes = await axios.get(
@@ -37,50 +37,47 @@ export default function PersonalInfoView() {
           { headers: { Authorization: `Token ${token}` } }
         );
         const perfilData = perfilRes.data;
-
-        // Obtener datos personales
+  
+        // Obtener datos del usuario/personal
         const personalRes = await axios.get(
           `http://127.0.0.1:8000/accounts/personal-data/?perfil=${perfilId}`,
           { headers: { Authorization: `Token ${token}` } }
         );
-        const personalData = personalRes.data.length > 0 ? personalRes.data[0] : {};
-
-        // Obtener datos del usuario jefe (para foto y otros campos)
-        let userData = {};
-        if (perfilData.jefe) {
-          const userRes = await axios.get(
-            `http://127.0.0.1:8000/accounts/users/?perfil=${perfilId}`,
-            { headers: { Authorization: `Token ${token}` } }
-          );
-          userData = userRes.data;
-        }
-
+        
+        console.log('Respuesta personalRes.data:', personalRes.data);
+        
+  
+        // Extraer personal_data del UserSerializer
+        const personalData = personalRes.data.personal_data || {};
+  
+        // Ajustar los campos para setFormData
         setFormData({
-          nombre: perfilData.nombre || '',
-          fechaNacimiento: perfilData.fecha_nacimiento || '',
+          nombre: `${personalRes.data.name || ''} ${personalRes.data.apellido_paterno || ''} ${personalRes.data.apellido_materno || ''}`.trim(),
+          fechaNacimiento: personalData.fecha_nacimiento || perfilData.fecha_nacimiento || '',
           genero: personalData.genero || '',
           grupoRH: personalData.grupoRH || '',
-          contactoEmergencia: personalData.contactoEmergencia || userData.contactoEmergencia || '',
-          nombreContactoEmergencia: personalData.nombre_contacto_emergencia || userData.nombreContactoEmergencia || '',
-          photoUser: personalData.photoUser || userData.photoUser || null,
+          contactoEmergencia: personalRes.data.phone || '',
+          nombreContactoEmergencia: `${personalRes.data.name || ''} ${personalRes.data.apellido_paterno || ''} ${personalRes.data.apellido_materno || ''}`.trim(),
+          photoUser: personalRes.data.photoUser || null,
         });
-
-        if (personalData.photoUser) {
-          setPhotoPreview(personalData.photoUser);
-        } else if (userData.photoUser) {
-          setPhotoPreview(userData.photoUser);
-        } else {
-          setPhotoPreview(null);
-        }
-
+  
+        // Foto para preview
+        setPhotoPreview(personalRes.data.photoUser || null);
+  
       } catch (error) {
-        // Puedes mostrar un mensaje de error si lo deseas
+        console.error('Error cargando datos:', error);
       } finally {
         setLoading(false);
       }
     }
+  
     fetchData();
   }, [perfilId, token]);
+  
+  
+  
+  
+  
 
   const handleLogout = () => {
     localStorage.removeItem('token');

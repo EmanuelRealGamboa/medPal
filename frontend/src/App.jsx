@@ -109,7 +109,8 @@ export default function App() {
       {/* Datos personales */}
       <Route path="/menu/:perfilId/datos-personales" element={<ProtectedRoute><PersonalInfoView /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/datos-personales/agregar" element={<ProtectedRoute><PersonalInfoForm /></ProtectedRoute>} />
-      <Route path="/menu/:perfilId/datos-personales/editar" element={<ProtectedRoute><PersonalInfoEdit /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/datos-personales/editar" element={<ProtectedRoute><PersonalInfoForm /></ProtectedRoute>} />
+
 
 
       {/* Antecedentes médicos - Resumen */}
