@@ -1,9 +1,11 @@
 from django.db import models
+from accounts.models import Perfil  # Ajusta el import según tu estructura
 
 # Create your models here.
 
 
 class heredoFamiliares(models.Model):
+    perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='heredoFamiliares')
     nombreEnfermedad = models.CharField(max_length=100)
     parentesco = models.CharField(max_length=100)
     tipoEnfermedad = models.TextField()
@@ -15,6 +17,7 @@ class heredoFamiliares(models.Model):
 
 
 class personalesPatologicos(models.Model):
+    perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='personalesPatologicos')
     nombreEnfermedad = models.CharField(max_length=100)
     fechaDiagnostico = models.DateField()
     intervenciones  = models.CharField( max_length=100,blank=True, null=True)
@@ -38,6 +41,7 @@ class personalesPatologicos(models.Model):
 
 
 class Alergias(models.Model):
+    perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='alergias')
     tipo = models.TextField(help_text="Medicamentos, alimentos, sustancias ambientales", blank=True, null=True)
     reaccion = models.TextField(help_text="Ej: rash, dificultad respiratoria, anafilaxia", blank=True, null=True)
     fechaPrimerEvento = models.DateField(blank=True, null=True)
@@ -50,7 +54,8 @@ class Alergias(models.Model):
 
 
 class Intolerancias(models.Model):
-    tipo = models.TextField(help_text="Ej: lactosa, gluten, fructosa", blank=True, null=True)
+    perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='intolerancias')
+    tipo = models.CharField(max_length=100, help_text="Ej: lactosa, gluten, fructosa", blank=True, null=True)
     sintomas = models.TextField(help_text="Síntomas experimentados y severidad", blank=True, null=True)
     diagnostico = models.TextField(help_text="Diagnóstico médico o autoinforme", blank=True, null=True)
 
@@ -59,6 +64,7 @@ class Intolerancias(models.Model):
 
 
 class personalesNoPatologicos(models.Model):
+    perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='personalesNoPatologicos')
     tabaquismo = models.TextField(help_text="Tipo, frecuencia, duración en años", blank=True, null=True)
     alcohol = models.TextField(help_text="Frecuencia y cantidad promedio", blank=True, null=True)
     actividadFisica = models.TextField(help_text="Tipo, frecuencia semanal, intensidad", blank=True, null=True)

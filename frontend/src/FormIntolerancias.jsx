@@ -34,11 +34,11 @@ export default function FormIntolerancias() {
             const token = localStorage.getItem('token');
 
             await axios.post(
-                'http://127.0.0.1:8000/antecedentesMedicos/Intolerancias/',
+                `http://127.0.0.1:8000/antecedentesMedicos/Intolerancias/`,
                 { ...form, perfil: perfilId },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Token ${token}`,
                         'Content-Type': 'application/json'
                     }
                 }
@@ -76,43 +76,43 @@ export default function FormIntolerancias() {
                 </button>
             </nav>
 
-            <main className="form-section d-flex justify-content-center align-items-center py-4">
-                <div className="form-card p-4 rounded shadow-sm custom-width">
-                    <h3>Intolerancias</h3>
+            <main className="form-section d-flex flex-column justify-content-start align-items-center py-4">
 
-                    {error && <div className="alert alert-danger">{error}</div>}
-                    {cargando && <div className="alert alert-info">Guardando...</div>}
+                <h3 className="form-intolerancias mb-4 text-center">Intolerancias</h3>
 
-                    <form onSubmit={handleSubmit}>
-                        <textarea
-                            className="form-control mb-2"
-                            name="tipo"
-                            value={form.tipo}
-                            onChange={handleChange}
-                            placeholder="Tipo"
-                            required
-                        />
-                        <textarea
-                            className="form-control mb-2"
-                            name="sintomas"
-                            value={form.sintomas}
-                            onChange={handleChange}
-                            placeholder="Síntomas"
-                            required
-                        />
-                        <textarea
-                            className="form-control mb-2"
-                            name="diagnostico"
-                            value={form.diagnostico}
-                            onChange={handleChange}
-                            placeholder="Diagnóstico"
-                            required
-                        />
-                        <button className="btn btn-success" disabled={cargando}>
-                            {cargando ? 'Guardando...' : 'Guardar'}
-                        </button>
-                    </form>
-                </div>
+                {error && <div className="alert alert-danger">{error}</div>}
+                {cargando && <div className="alert alert-info">Guardando...</div>}
+
+                <form className="form-intolerancia" onSubmit={handleSubmit}>
+                    <textarea
+                        className="form-control mb-2"
+                        name="tipo"
+                        value={form.tipo}
+                        onChange={handleChange}
+                        placeholder="Tipo"
+                        required
+                    />
+                    <textarea
+                        className="form-control mb-2"
+                        name="sintomas"
+                        value={form.sintomas}
+                        onChange={handleChange}
+                        placeholder="Síntomas"
+                        required
+                    />
+                    <textarea
+                        className="form-control mb-2"
+                        name="diagnostico"
+                        value={form.diagnostico}
+                        onChange={handleChange}
+                        placeholder="Diagnóstico"
+                        required
+                    />
+                    <button className="btn btn-success" disabled={cargando}>
+                        {cargando ? 'Guardando...' : 'Guardar'}
+                    </button>
+                </form>
+                <footer className="footer-bar mt-5">© 2025 MedPal</footer>
             </main>
         </div>
     );

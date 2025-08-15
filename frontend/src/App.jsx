@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate, useParams } from 'react-router-dom';
 
+
 import SignIn from './signin.jsx';
 import Signup from './signup.jsx';
 import Verificacion from './verificacion.jsx';
@@ -15,6 +16,7 @@ import PersonalInfoEdit from './EditPersonalInfo.jsx';
 import ResumenAntecedentes from './ResumenAntecedentes.jsx';
 import OphthalmologyView from './OphthalmologyView.jsx';
 import OphthalmologyForm from './OphthalmologyForm.jsx';
+import OphthalmologyDetail from "./OphthalmologyDetail.jsx";
 import FormAlergias from './FormAlergias.jsx';
 import FormHeredoFamiliares from './FormHeredoFamiliares.jsx';
 import FormIntolerancias from './FormIntolerancias.jsx';
@@ -26,6 +28,13 @@ import EditDeletePersonalesNoPatologicos from './EditDeletePersonalesNoPatologic
 import EditarEliminarHeredoFamiliares from './EditDeleteHeredoFamiliares.jsx';
 import PrescriptionForm from './PrescriptionForm.jsx';
 import PrescriptionList from './PrescriptionsList.jsx';
+import EditarEliminarPersonalesPatologicos from './EditarEliminarPersonalesPatologicos.jsx';
+import VaccinesView from './VaccinesView.jsx';
+import VaccinesForm from './VaccinesForm.jsx';
+import EstudioGabineteForm from './FormGabinete.jsx';
+import EstudioLaboratorioForm from './FormLaboratorio.jsx';
+import EstudioFuncionalForm from './FormFuncional.jsx';
+import EstudioView from './EstudioView.jsx';
 
 // Wrappers para pasar ID como prop si el componente no usa useParams()
 function PerfilFormWrapper() {
@@ -43,6 +52,7 @@ function PrescriptionFormWrapper() {
   return <PrescriptionForm prescriptionId={id} />;
 }
 
+
 export default function App() {
   return (
     <Routes>
@@ -50,6 +60,32 @@ export default function App() {
       <Route path="/" element={<SignIn />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/personalinform" element={<PersonalInfoForm />} />
+
+      <Route path="/menu/:perfilId/estudios" element={
+        <ProtectedRoute>
+          <EstudioView />
+        </ProtectedRoute>
+      } />
+
+      {/* Rutas para formularios de estudios */}
+      <Route path="/menu/:perfilId/estudios/gabinete" element={
+        <ProtectedRoute>
+          <EstudioGabineteForm />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/menu/:perfilId/estudios/laboratorio" element={
+        <ProtectedRoute>
+          <EstudioLaboratorioForm />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/menu/:perfilId/estudios/funcional" element={
+        <ProtectedRoute>
+          <EstudioFuncionalForm />
+        </ProtectedRoute>
+      } />
+
 
       {/* Verificación protegida */}
       <Route
@@ -75,8 +111,36 @@ export default function App() {
       <Route path="/menu/:perfilId/datos-personales/agregar" element={<ProtectedRoute><PersonalInfoForm /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/datos-personales/editar" element={<ProtectedRoute><PersonalInfoEdit /></ProtectedRoute>} />
 
+
       {/* Antecedentes médicos - Resumen */}
       <Route path="/menu/:perfilId/antecedentes-medicos" element={<ProtectedRoute><ResumenAntecedentes /></ProtectedRoute>} />
+
+
+      {/* Vacunas */}
+      <Route
+        path="/menu/:id/vacunas"
+        element={
+          <ProtectedRoute>
+            <VaccinesViewWrapper />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/menu/:id/vacunas/agregar"
+        element={
+          <ProtectedRoute>
+            <VaccinesFormWrapper />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/menu/:id/vacunas/editar/:vacunaId"
+        element={
+          <ProtectedRoute>
+            <VaccinesFormWrapper />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Formularios de antecedentes médicos */}
       <Route path="/menu/:perfilId/antecedentes-medicos/alergias" element={<ProtectedRoute><FormAlergias /></ProtectedRoute>} />
@@ -90,19 +154,33 @@ export default function App() {
       <Route path="/menu/:perfilId/antecedentes-medicos/intolerancias/editar-eliminar/:intoleranciaId" element={<ProtectedRoute><EditarEliminarIntolerancias /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/antecedentes-medicos/no-patologicos/editar-eliminar/:id" element={<ProtectedRoute><EditDeletePersonalesNoPatologicos /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/antecedentes-medicos/heredo-familiares/editar-eliminar/:id" element={<ProtectedRoute><EditarEliminarHeredoFamiliares /></ProtectedRoute>} />
-
+      <Route path="/menu/:perfilId/antecedentes-medicos/patologicos/editar-eliminar/:id" element={<ProtectedRoute><EditarEliminarPersonalesPatologicos /></ProtectedRoute>} />
       {/* Oftalmología */}
       <Route path="/menu/:perfilId/oftalmologia" element={<ProtectedRoute><OphthalmologyView /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/oftalmologia/agregar" element={<ProtectedRoute><OphthalmologyForm /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/oftalmologia/editar/:diagnosticoId" element={<ProtectedRoute><OphthalmologyForm editMode /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/oftalmologia/detalle/:diagnosticoId"element={<OphthalmologyDetail />}/>
 
       {/* Prescripciones */}
-      <Route path="/prescriptions" element={<ProtectedRoute><PrescriptionList /></ProtectedRoute>} />
-      <Route path="/prescriptions/nuevo" element={<ProtectedRoute><PrescriptionForm /></ProtectedRoute>} />
-      <Route path="/prescriptions/editar/:id" element={<ProtectedRoute><PrescriptionFormWrapper /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/prescriptions" element={<ProtectedRoute><PrescriptionList /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/prescriptions/nuevo" element={<ProtectedRoute><PrescriptionForm /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/prescriptions/editar/:id" element={<ProtectedRoute><PrescriptionFormWrapper /></ProtectedRoute>} />
+
 
       {/* Ruta fallback */}
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 }
+
+
+function VaccinesViewWrapper() {
+  const { id } = useParams();
+  return <VaccinesView perfilId={id} />;
+}
+
+function VaccinesFormWrapper() {
+  const { id, vacunaId } = useParams();
+  return <VaccinesForm perfilId={id} vacunaId={vacunaId} />;
+}
+

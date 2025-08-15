@@ -23,10 +23,10 @@ export default function EditarEliminarIntolerancias() {
     const fetchIntolerancia = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/antecedentesMedicos/Intolerancias/${intoleranciaId}/`,
+          `http://127.0.0.1:8000/antecedentesMedicos/Intolerancias/${intoleranciaId}/?perfil=${perfilId}`,
           {
             headers: {
-              Authorization: `Bearer ${token}`
+              Authorization: `Token ${token}`
             }
           }
         );
@@ -49,32 +49,33 @@ export default function EditarEliminarIntolerancias() {
   };
 
   const handleUpdate = async () => {
-    try {
-      await axios.put(
-        `http://127.0.0.1:8000/antecedentesMedicos/Intolerancias/${intoleranciaId}/`,
-        { ...form, perfil: perfilId },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+  try {
+    await axios.put(
+      `http://127.0.0.1:8000/antecedentesMedicos/Intolerancias/${intoleranciaId}/?perfil=${perfilId}`,
+      form, 
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+          'Content-Type': 'application/json'
         }
-      );
-      navigate(`/menu/${perfilId}/antecedentes-medicos`);
-    } catch (error) {
-      console.error('Error al actualizar la intolerancia:', error);
-    }
-  };
+      }
+    );
+    navigate(`/menu/${perfilId}/antecedentes-medicos`);
+  } catch (error) {
+    console.error('Error al actualizar la intolerancia:', error.response?.data || error);
+  }
+};
 
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `http://127.0.0.1:8000/antecedentesMedicos/Intolerancias/${intoleranciaId}/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
+        `http://127.0.0.1:8000/antecedentesMedicos/Intolerancias/${intoleranciaId}/?perfil=${perfilId}`,
+          {
+            headers: {
+              Authorization: `Token ${token}`
+            }
           }
-        }
-      );
+        );
       navigate(`/menu/${perfilId}/antecedentes-medicos`);
     } catch (error) {
       console.error('Error al eliminar la intolerancia:', error);
@@ -82,52 +83,28 @@ export default function EditarEliminarIntolerancias() {
   };
 
   return (
-    <div className="container mt-5">
-      <h2 className="mb-4 text-center">Editar o Eliminar Intolerancia</h2>
-      <div className="card p-4 shadow-sm">
-        <div className="mb-3">
-          <label className="form-label">Tipo</label>
-          <input
-            type="text"
-            className="form-control"
-            name="tipo"
-            value={form.tipo}
-            onChange={handleChange}
-          />
-        </div>
+  <>
+    <nav className="custom-navbar">
+      <h5 className="mb-0 text-center w-100">MedPal</h5>
+    </nav>
 
-        <div className="mb-3">
-          <label className="form-label">Síntomas</label>
-          <textarea
-            className="form-control"
-            name="sintomas"
-            value={form.sintomas}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="mb-3">
-          <label className="form-label">Diagnóstico</label>
-          <textarea
-            className="form-control"
-            name="diagnostico"
-            value={form.diagnostico}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="d-flex justify-content-between">
-          <button className="btn btn-success" onClick={handleUpdate}>
-            Guardar Cambios
-          </button>
-          <button className="btn btn-danger" onClick={handleDelete}>
-            Eliminar
-          </button>
-          <button className="btn btn-secondary" onClick={() => navigate(`/menu/${perfilId}/antecedentes-medicos`)}>
-            Cancelar
-          </button>
-        </div>
+    <div className="container mt-3 mb-5" style={{ paddingTop: '70px', paddingBottom: '50px' }}>
+      <h2 className="mb-4 text-center">Antecedentes Médicos</h2>
+      <div className="row">
+        {renderCard('Antecedentes Personales Patológicos', datos.personalesPatologicos, 'patologicos')}
+        {renderCard('Antecedentes Personales No Patológicos', datos.personalesNoPatologicos, 'no-patologicos')}
+        {renderCard('Antecedentes Heredofamiliares', datos.heredoFamiliares, 'heredo-familiares')}
+        {renderCard('Alergias', datos.Alergias, 'alergias')}
+        {renderCard('Intolerancias', datos.Intolerancias, 'intolerancias')}
+      </div>
+      <div className="text-center mt-4">
+        <button className="btn btn-secondary" onClick={() => navigate(`/menu/${perfilId}`)}>
+          ← Volver al menú
+        </button>
       </div>
     </div>
-  );
+
+    <footer className="footer">&copy; 2025 MedPal - Todos los derechos reservados</footer>
+  </>
+);
 }

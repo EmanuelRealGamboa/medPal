@@ -1,0 +1,91 @@
+.funcional-form {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 25px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+}
+
+.funcional-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.grid-container input,
+.grid-container textarea,
+.grid-container input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+
+.grid-container textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.grid-container label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.checkbox-label {
+    grid-column: span 3;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+
+.checkbox-label input {
+    margin-right: 8px;
+    width: auto;
+}
+
+.buttons-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.submit-btn {
+    background-color: #307060 !important;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover{
+    background-color: #204e40 !important;
+}
+
+
+
+.cancel-btn {
+    background-color: #307060;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cancel-btn:hover {
+    background-color: #204e40;
+}

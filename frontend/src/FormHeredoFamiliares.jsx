@@ -40,8 +40,8 @@ export default function FormHeredoFamiliares() {
                 { ...form, perfil: perfilId },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'application/json',
+                        Authorization: `Token ${token}`,
+                        'Content-Type': 'application/json'
                     }
                 }
             );
@@ -78,16 +78,16 @@ export default function FormHeredoFamiliares() {
                 </button>
             </nav>
 
-            <main className="form-section d-flex justify-content-center align-items-center py-4">
-                <div className="form-card p-4 rounded shadow-sm custom-width">
-                    <h3>Heredo Familiares</h3>
+            <main className="form-section d-flex flex-column justify-content-start align-items-center py-4">
+                <h3 className="form-heredo mb-4 text-center">Heredo Familiares</h3>
 
-                    {error && <div className="alert alert-danger">{error}</div>}
-                    {cargando && <div className="alert alert-info">Guardando...</div>}
+                {error && <div className="alert alert-danger">{error}</div>}
+                {cargando && <div className="alert alert-info">Guardando...</div>}
 
-                    <form onSubmit={handleSubmit}>
+                <form className="form-heredo-form" onSubmit={handleSubmit}>
+                    <div className="form-row">
                         <input
-                            className="form-control mb-2"
+                            className="form-control"
                             name="nombreEnfermedad"
                             value={form.nombreEnfermedad}
                             onChange={handleChange}
@@ -95,15 +95,17 @@ export default function FormHeredoFamiliares() {
                             required
                         />
                         <input
-                            className="form-control mb-2"
+                            className="form-control"
                             name="parentesco"
                             value={form.parentesco}
                             onChange={handleChange}
                             placeholder="Parentesco"
                             required
                         />
+                    </div>
+                    <div className="form-row">
                         <textarea
-                            className="form-control mb-2"
+                            className="form-control"
                             name="tipoEnfermedad"
                             value={form.tipoEnfermedad}
                             onChange={handleChange}
@@ -111,7 +113,7 @@ export default function FormHeredoFamiliares() {
                             required
                         />
                         <input
-                            className="form-control mb-2"
+                            className="form-control"
                             type="number"
                             name="edadDiacnosticoEnfermedad"
                             value={form.edadDiacnosticoEnfermedad}
@@ -119,20 +121,25 @@ export default function FormHeredoFamiliares() {
                             placeholder="Edad diagnóstico"
                             required
                         />
+                    </div>
+                    <div className="form-row">
                         <input
-                            className="form-control mb-2"
+                            className="form-control"
                             name="estadoActual"
                             value={form.estadoActual}
                             onChange={handleChange}
                             placeholder="Estado actual"
                             required
                         />
-                        <button className="btn btn-success" disabled={cargando}>
-                            {cargando ? 'Guardando...' : 'Guardar'}
-                        </button>
-                    </form>
-                </div>
+                    </div>
+                    <button className="btn btn-success mt-3" disabled={cargando}>
+                        {cargando ? 'Guardando...' : 'Guardar'}
+                    </button>
+                </form>
+
+
             </main>
+            <footer className="footer-bar mt-5">© 2025 MedPal</footer>
         </div>
     );
 }

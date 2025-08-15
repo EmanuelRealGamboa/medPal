@@ -32,11 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'material',            
-    'material.frontend',  
     'antecedentesMedicos',  
-    #'material.frontend',    
-    'material.admin',
     'colorfield',
     'admin_interface',
     'django.contrib.admin',
@@ -212,6 +208,7 @@ VERIFICATION_CODE_ENCRYPTION_KEY = 'your-32-byte-base64-encoded-key-here-change-
 
 
 
+
 # MEDIA_URL = '/media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  
 CSRF_TRUSTED_ORIGINS = [
@@ -221,3 +218,6 @@ CSRF_TRUSTED_ORIGINS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+import os
+print("Cloudinary API_KEY:", os.getenv('CLOUDINARY_API_KEY'))

@@ -3,9 +3,9 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import './OphthalmologyView.css';
 
-export default function OphthalmologyView({ perfilId }) {
+export default function OphthalmologyView() {
     const navigate = useNavigate();
-    const { id } = useParams(); // opcional, para edición si lo necesitas
+    const { perfilId } = useParams();
     const token = localStorage.getItem('token');
     const [diagnostico, setDiagnostico] = useState(null);
     const [mensaje, setMensaje] = useState('');
@@ -15,66 +15,73 @@ export default function OphthalmologyView({ perfilId }) {
             try {
                 const response = await axios.get(
                     'http://127.0.0.1:8000/ophthalmology/diagnoses/',
-                    { headers: { Authorization: `Token ${token}` } }
+                    {
+                        params: { perfil: perfilId },
+                        headers: { Authorization: `Token ${token}` }
+                    }
                 );
 
-                const data = response.data.find(
-                    item => item.perfil === parseInt(perfilId)
-                );
-
-                if (data) {
-                    setDiagnostico(data);
+                if (response.data.length > 0) {
+                    // Si hay varios, podrías listarlos, pero aquí tomamos el primero
+                    setDiagnostico(response.data[0]);
                 } else {
                     setDiagnostico(null);
+                    setMensaje('No se encontraron diagnósticos registrados.');
                 }
             } catch (error) {
                 console.error(error);
-                setMensaje('No se encontraron diagnósticos registrados.');
                 setDiagnostico(null);
+                setMensaje('Error al obtener el diagnóstico.');
             }
         }
 
-        fetchData();
-    }, [perfilId]);
+        if (perfilId) {
+            fetchData();
+        }
+    }, [perfilId, token]);
 
     return (
         <div className="perfil-bg">
-            {/* Navbar fijo arriba */}
             <div className="custom-navbar">
                 <h5 className="mb-0">MedPal</h5>
                 <span>Diagnóstico oftalmológico</span>
             </div>
 
-            {/* Contenido principal */}
             <div className="main-layout p-4">
                 <h3 className="mb-4 text-center">Diagnóstico oftalmológico</h3>
 
                 {diagnostico ? (
                     <>
                         <div className="perfil-wrapper">
-                            <p><strong>Diagnóstico:</strong> {diagnostico.descripcion}</p>
-                            <p><strong>Fecha:</strong> {diagnostico.fecha}</p>
-                            {/* Más campos si tu API los proporciona */}
+                            <p><strong>Diagnóstico:</strong> {diagnostico.diagnosis}</p>
+                            <p><strong>Fecha:</strong> {diagnostico.exam_date}</p>
+                            <p><strong>Paciente:</strong> {diagnostico.patient_name}</p>
                         </div>
 
                         <div className="d-flex gap-3 justify-content-center mt-4">
+                            {/* Editar → redirige a la ruta con diagnosticoId */}
                             <button
                                 className="btn btn-primary"
-                                onClick={() => navigate(`/menu/${perfilId}/oftalmologia/editar/${diagnostico.id}`)}
+                                onClick={() =>
+                                    navigate(`/menu/${perfilId}/oftalmologia/editar/${diagnostico.id}`)
+                                }
                             >
                                 Editar
                             </button>
 
+                            {/* Eliminar diagnóstico */}
                             <button
                                 className="btn btn-danger"
                                 onClick={async () => {
+                                    if (!window.confirm("¿Seguro que deseas eliminar este diagnóstico?")) return;
                                     try {
                                         await axios.delete(
                                             `http://127.0.0.1:8000/ophthalmology/diagnoses/${diagnostico.id}/`,
                                             { headers: { Authorization: `Token ${token}` } }
                                         );
-                                        alert("Diagnóstico eliminado");
+                                        alert("Diagnóstico eliminado correctamente");
                                         setDiagnostico(null);
+                                        setMensaje("Diagnóstico eliminado");
                                     } catch (error) {
                                         console.error(error);
                                         alert("Error al eliminar diagnóstico");
@@ -84,17 +91,21 @@ export default function OphthalmologyView({ perfilId }) {
                                 Eliminar
                             </button>
 
+                            {/* Ver detalle */}
                             <button
-                                className="btn btn-secondary"
-                                onClick={() => alert("Detalle no implementado aún")}
-                            >
-                                Ver detalle
-                            </button>
+  className="btn btn-secondary"
+  onClick={() =>
+    navigate(`/menu/${perfilId}/oftalmologia/detalle/${diagnostico.id}`)
+  }
+>
+  Ver detalle
+</button>
+
                         </div>
                     </>
                 ) : (
                     <>
-                        <p className="text-muted text-center">No hay diagnóstico registrado.</p>
+                        <p className="text-muted text-center">{mensaje || 'No hay diagnóstico registrado.'}</p>
                         <div className="d-flex justify-content-center">
                             <button
                                 className="btn btn-success"
@@ -105,11 +116,8 @@ export default function OphthalmologyView({ perfilId }) {
                         </div>
                     </>
                 )}
-
-                {mensaje && <div className="alert alert-warning mt-3">{mensaje}</div>}
             </div>
 
-            {/* Footer fijo abajo */}
             <div className="custom-footer">
                 &copy; 2025 MedPal - Todos los derechos reservados
             </div>

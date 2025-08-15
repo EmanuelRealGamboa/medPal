@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './FormAlergias.css';
 
-export default function EditDeleteAlergia() {
-  const { perfilId } = useParams();
+export default function EditarEliminarAlergia() {
+  const { perfilId, id } = useParams(); // Aquí el nombre debe coincidir con la ruta
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
 
   const [form, setForm] = useState({
     tipo: '',
@@ -12,187 +15,130 @@ export default function EditDeleteAlergia() {
     fechaPrimerEvento: '',
     frecuencia: '',
   });
-  const [alergiaId, setAlergiaId] = useState(null);
-  const [cargando, setCargando] = useState(false);
-  const [error, setError] = useState(null);
-  const [sinDatos, setSinDatos] = useState(false);
 
   useEffect(() => {
-    if (!perfilId) return;
+    if (!token) {
+      navigate('/signin');
+      return;
+    }
 
     const fetchAlergia = async () => {
-      setCargando(true);
       try {
-        const token = localStorage.getItem('token');
-        const res = await axios.get(
-          `http://127.0.0.1:8000/antecedentesMedicos/Alergias/?perfil=${perfilId}`,
+        const response = await axios.get(
+          `http://127.0.0.1:8000/antecedentesMedicos/Alergias/${id}/?perfil=${perfilId}`,
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Token ${token}` }
           }
         );
-
-        if (res.data.length === 0) {
-          setSinDatos(true);
-        } else {
-          const alergia = res.data[0];
-          setAlergiaId(alergia.id);
-          setForm({
-            tipo: alergia.tipo || '',
-            reaccion: alergia.reaccion || '',
-            fechaPrimerEvento: alergia.fechaPrimerEvento || '',
-            frecuencia: alergia.frecuencia || '',
-          });
-        }
-      } catch (err) {
-        setError('Error cargando la alergia');
-      } finally {
-        setCargando(false);
+        setForm(response.data);
+      } catch (error) {
+        console.error('Error al obtener la alergia:', error);
       }
     };
 
-    fetchAlergia();
-  }, [perfilId]);
+    if (id) { // ✅ antes estaba alergiaId
+      fetchAlergia();
+    }
+  }, [id, navigate, perfilId, token]); // ✅ dependencias corregidas
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!alergiaId) {
-      alert('No se puede actualizar, ID no encontrado.');
-      return;
-    }
-
-    setCargando(true);
-    setError(null);
-
+  const handleUpdate = async () => {
     try {
-      const token = localStorage.getItem('token');
       await axios.put(
-        `http://127.0.0.1:8000/antecedentesMedicos/Alergias/${alergiaId}/`,
-        { ...form, perfil: perfilId },
+        `http://127.0.0.1:8000/antecedentesMedicos/Alergias/${id}/?perfil=${perfilId}`,
+        form,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Token ${token}`,
             'Content-Type': 'application/json',
           },
         }
       );
-      alert('Actualizado correctamente');
       navigate(`/menu/${perfilId}/antecedentes-medicos`);
-    } catch (err) {
-      setError('Error al actualizar. Intenta nuevamente.');
-    } finally {
-      setCargando(false);
+    } catch (error) {
+      console.error('Error al actualizar la alergia:', error.response?.data || error);
     }
   };
 
   const handleDelete = async () => {
-    if (!alergiaId) {
-      setError('ID no válido');
-      return;
-    }
-
-    if (!window.confirm('¿Estás seguro de eliminar esta alergia?')) return;
-
-    setCargando(true);
-    setError(null);
-
     try {
-      const token = localStorage.getItem('token');
       await axios.delete(
-        `http://127.0.0.1:8000/antecedentesMedicos/Alergias/${alergiaId}/`,
+        `http://127.0.0.1:8000/antecedentesMedicos/Alergias/${id}/?perfil=${perfilId}`,
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Token ${token}` },
         }
       );
-      alert('Alergia eliminada');
       navigate(`/menu/${perfilId}/antecedentes-medicos`);
-    } catch (err) {
-      setError('Error al eliminar. Intenta nuevamente.');
-    } finally {
-      setCargando(false);
+    } catch (error) {
+      console.error('Error al eliminar la alergia:', error);
     }
   };
 
-  if (sinDatos) {
-    return <p className="text-warning text-center mt-4">No hay alergias registradas para este perfil.</p>;
-  }
-
   return (
-    <div className="main-layout">
-      <nav className="custom-navbar d-flex justify-content-between align-items-center px-4 py-2">
-        <h4 className="text-light m-0">
-          <i className="bi bi-person-circle me-2"></i>MedPal
-        </h4>
-        <button
-          onClick={() => {
-            localStorage.removeItem('token');
-            navigate('/signin');
-          }}
-          className="btn btn-outline-light"
-        >
-          Logout
-        </button>
-      </nav>
-
-      <main className="form-section d-flex justify-content-center align-items-center py-4">
-        <div className="form-card p-4 rounded shadow-sm custom-width">
-          <h3>Editar / Eliminar Alergia</h3>
-
-          {error && <div className="alert alert-danger">{error}</div>}
-          {cargando && <div className="alert alert-info">Procesando...</div>}
-
-          <form onSubmit={handleSubmit}>
-            <textarea
-              className="form-control mb-2"
-              name="tipo"
-              value={form.tipo}
-              onChange={handleChange}
-              placeholder="Tipo"
-              required
-            />
-            <textarea
-              className="form-control mb-2"
-              name="reaccion"
-              value={form.reaccion}
-              onChange={handleChange}
-              placeholder="Reacción"
-              required
-            />
-            <input
-              className="form-control mb-2"
-              type="date"
-              name="fechaPrimerEvento"
-              value={form.fechaPrimerEvento}
-              onChange={handleChange}
-              required
-            />
-            <input
-              className="form-control mb-2"
-              name="frecuencia"
-              value={form.frecuencia}
-              onChange={handleChange}
-              placeholder="Frecuencia"
-              required
-            />
-            <div className="d-flex justify-content-between">
-              <button className="btn btn-primary" disabled={cargando}>
-                {cargando ? 'Guardando...' : 'Guardar cambios'}
-              </button>
-              <button
-                type="button"
-                className="btn btn-danger"
-                onClick={handleDelete}
-                disabled={cargando}
-              >
-                {cargando ? 'Eliminando...' : 'Eliminar'}
-              </button>
-            </div>
-          </form>
+    <div className="container mt-5">
+      <h2 className="mb-4 text-center">Editar o Eliminar Alergia</h2>
+      <div className="card p-4 shadow-sm">
+        <div className="mb-3">
+          <label className="form-label">Tipo</label>
+          <input
+            type="text"
+            className="form-control"
+            name="tipo"
+            value={form.tipo}
+            onChange={handleChange}
+          />
         </div>
-      </main>
+
+        <div className="mb-3">
+          <label className="form-label">Reacción</label>
+          <textarea
+            className="form-control"
+            name="reaccion"
+            value={form.reaccion}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Fecha del primer evento</label>
+          <input
+            type="date"
+            className="form-control"
+            name="fechaPrimerEvento"
+            value={form.fechaPrimerEvento}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Frecuencia</label>
+          <input
+            type="text"
+            className="form-control"
+            name="frecuencia"
+            value={form.frecuencia}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="d-flex justify-content-between">
+          <button className="btn btn-success" onClick={handleUpdate}>
+            Guardar Cambios
+          </button>
+          <button className="btn btn-danger" onClick={handleDelete}>
+            Eliminar
+          </button>
+          <button
+            className="btn btn-secondary"
+            onClick={() => navigate(`/menu/${perfilId}/antecedentes-medicos`)}
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
