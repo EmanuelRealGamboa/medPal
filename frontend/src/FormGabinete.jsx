@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import './FormGabinete.css';  // Importamos el CSS personalizado
 
 export default function EstudioGabineteForm() {
   const navigate = useNavigate();
+  const { perfilId } = useParams(); // ← Obtiene el perfilId de la URL
 
   const API_URL = "http://127.0.0.1:8000/api/estudios/gabinete/";
 
@@ -32,18 +33,36 @@ export default function EstudioGabineteForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!perfilId) {
+      alert("ID de perfil no válido. No se puede guardar.");
+      return;
+    }
     const data = new FormData();
-    for (const key in formData) data.append(key, formData[key]);
+    for (const key in formData) {
+      // Solo agrega archivos si hay uno seleccionado
+      if (
+        (key === "archivo_pdf" || key === "imagenes" || key === "video") &&
+        !formData[key]
+      ) {
+        continue;
+      }
+      data.append(key, formData[key]);
+    }
+    data.append("perfil", perfilId);
 
     try {
+      const token = localStorage.getItem('token');
       await axios.post(API_URL, data, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Token ${token}`,
+        },
       });
       alert("Estudio de gabinete guardado correctamente");
-      navigate(-1); // Vuelve a la página anterior o cambia la ruta que prefieras
+      navigate(`/menu/${perfilId}/estudios`);
     } catch (error) {
-      console.error(error);
-      alert("Error al guardar el estudio de gabinete");
+      console.error('Error al guardar:', error.response?.data || error);
+      alert(JSON.stringify(error.response?.data)); // Muestra el error del backend
     }
   };
 
@@ -136,7 +155,7 @@ export default function EstudioGabineteForm() {
           />
         </div>
 
-         <div className="buttons-container">
+        <div className="buttons-container">
           <button type="submit" className="submit-btn">Guardar</button>
           <button type="button" className="cancel-btn" onClick={() => navigate(-1)}>Cancelar</button>
         </div>

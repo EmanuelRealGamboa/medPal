@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom"; // ← Importa useParams
 import './FormFuncional.css';
 
 export default function EstudioFuncionalForm() {
   const API_URL = "http://127.0.0.1:8000/api/estudios/funcionales/";
   const navigate = useNavigate();
+  const { perfilId } = useParams(); // ← Obtiene el perfilId de la URL
 
   const [formData, setFormData] = useState({
     nombre: "",
@@ -29,14 +30,24 @@ export default function EstudioFuncionalForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!perfilId) {
+      alert("ID de perfil no válido. No se puede guardar.");
+      return;
+    }
     const data = new FormData();
     for (const key in formData) data.append(key, formData[key]);
+    data.append("perfil", perfilId); // ← Agrega el perfilId al formulario
 
     try {
+      const token = localStorage.getItem('token');
       await axios.post(API_URL, data, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Token ${token}`,
+        },
       });
       alert("Estudio funcional guardado correctamente");
+      navigate(`/menu/${perfilId}/estudios`);
     } catch (error) {
       console.error(error);
       alert("Error al guardar el estudio funcional");

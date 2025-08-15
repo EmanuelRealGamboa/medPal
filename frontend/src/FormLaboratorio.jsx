@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import './FormLaboratorio.css'; // Para estilos personalizados
+import { useNavigate, useParams } from "react-router-dom";
+import './FormLaboratorio.css';
 
-export default function EstudioLaboratorioForm() {
+export default function FormLaboratorio() {
   const navigate = useNavigate();
+  const { perfilId } = useParams();
   const API_URL = "http://127.0.0.1:8000/api/estudios/laboratorio/";
 
   const [formData, setFormData] = useState({
@@ -29,15 +30,24 @@ export default function EstudioLaboratorioForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!perfilId) {
+      alert("ID de perfil no válido. No se puede guardar.");
+      return;
+    }
     const data = new FormData();
     for (const key in formData) data.append(key, formData[key]);
+    data.append("perfil", perfilId);
 
     try {
+      const token = localStorage.getItem('token');
       await axios.post(API_URL, data, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Token ${token}`,
+        },
       });
       alert("Estudio de laboratorio guardado correctamente");
-      navigate(-1);
+      navigate(`/menu/${perfilId}/estudios`);
     } catch (error) {
       console.error(error);
       alert("Error al guardar el estudio de laboratorio");
