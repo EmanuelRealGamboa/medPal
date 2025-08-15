@@ -1,17 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 import './PrescriptionForm.css';
 
 export default function PrescriptionForm() {
-  const { id } = useParams();
+  const { id, perfilId } = useParams();
+  const navigate = useNavigate();
+  const isEdit = Boolean(id);
+
+  // Estado separado para el nombre del paciente (no se sobrescribe)
+  const [patientName, setPatientName] = useState('');
+
   const [formData, setFormData] = useState({
-    issue_date: '',
-    institution: '',
-    prescribing_doctor: '',
-    specialty: '',
-    description: '',
-    medications: '',
+    issue_date: "",
+    institution: "",
+    prescribing_doctor: "",
+    specialty: "",
+    description: "",
+    medications: "",
     file: null,
   });
 
@@ -20,18 +26,24 @@ export default function PrescriptionForm() {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [validationErrors, setValidationErrors] = useState({
-    issue_date: false,
-    institution: false,
-    prescribing_doctor: false,
-    specialty: false,
-    medications: false,
-    file: false
-  });
-  
-  const navigate = useNavigate();
-  const isEdit = Boolean(id);
+  const [validationErrors, setValidationErrors] = useState({});
 
+  // Cargar usuario desde localStorage
+  useEffect(() => {
+    try {
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      console.log("Usuario cargado desde localStorage:", storedUser);
+      if (storedUser && storedUser.username) {
+        setPatientName(storedUser.username);
+      }
+    } catch (err) {
+      console.error("Error leyendo el usuario de localStorage:", err);
+    }
+  }, []);
+  
+  
+
+  // Cargar receta si es edición
   useEffect(() => {
     if (isEdit) {
       const fetchPrescription = async () => {
@@ -39,25 +51,21 @@ export default function PrescriptionForm() {
         try {
           const response = await axios.get(
             `http://127.0.0.1:8000/prescriptions/prescriptions/${id}/`,
-            {
-              headers: {
-                Authorization: `Token ${localStorage.getItem('token')}`,
-              },
-            }
+            { headers: { Authorization: `Token ${localStorage.getItem('token')}` } }
           );
           setFormData({
-            issue_date: response.data.issue_date,
-            institution: response.data.institution,
-            prescribing_doctor: response.data.prescribing_doctor,
-            specialty: response.data.specialty,
+            issue_date: response.data.issue_date || '',
+            institution: response.data.institution || '',
+            prescribing_doctor: response.data.prescribing_doctor || '',
+            specialty: response.data.specialty || '',
             description: response.data.description || '',
-            medications: response.data.medications,
+            medications: response.data.medications || '',
             file: null,
           });
           setCurrentFile(response.data.file);
-        } catch (error) {
-          console.error('Error al cargar receta:', error);
-          setError(`No se pudo cargar la receta médica: ${error.response?.data?.detail || ''}`);
+        } catch (err) {
+          console.error(err);
+          setError(`No se pudo cargar la receta médica: ${err.response?.data?.detail || ''}`);
         } finally {
           setIsLoading(false);
         }
@@ -68,25 +76,15 @@ export default function PrescriptionForm() {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
-      [name]: files ? files[0] : value,
+      [name]: files ? files[0] : value
     }));
-    
-    if (validationErrors[name]) {
-      setValidationErrors(prev => ({
-        ...prev,
-        [name]: false
-      }));
-    }
   };
 
   const handleBlur = (e) => {
     const { name, value } = e.target;
-    setValidationErrors(prev => ({
-      ...prev,
-      [name]: !value
-    }));
+    setValidationErrors(prev => ({ ...prev, [name]: !value }));
   };
 
   const validateForm = () => {
@@ -96,64 +94,45 @@ export default function PrescriptionForm() {
       prescribing_doctor: !formData.prescribing_doctor,
       specialty: !formData.specialty,
       medications: !formData.medications,
-      file: !isEdit && !formData.file
+      file: !isEdit && !formData.file,
     };
-    
     setValidationErrors(errors);
-    return !Object.values(errors).some(error => error);
+    return !Object.values(errors).some(Boolean);
   };
 
   const prepareFormData = () => {
     const data = new FormData();
-    
+    data.append('patient_name', patientName); // siempre enviar el nombre del paciente
     Object.entries(formData).forEach(([key, value]) => {
       if (value !== null && value !== '') {
-        if (key === 'file') {
-          if (value instanceof File) {
-            data.append(key, value);
-          }
-        } else {
+        if (key === 'file' && value instanceof File) {
+          data.append(key, value);
+        } else if (key !== 'file') {
           data.append(key, value);
         }
       }
     });
-
     if (isEdit && currentFile && !formData.file) {
       data.append('keep_existing_file', 'true');
     }
-    
     return data;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
+  const submitForm = async () => {
     if (!validateForm()) {
       setError('Por favor complete todos los campos requeridos');
       return;
     }
 
-    if (isEdit) {
-      setShowConfirmModal(true);
-    } else {
-      await submitForm();
-    }
-  };
-
-  const submitForm = async () => {
     const data = prepareFormData();
-    
     try {
       setIsLoading(true);
-      setShowConfirmModal(false);
-
       const config = {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Token ${localStorage.getItem('token')}`,
         },
       };
-
       let response;
       if (isEdit) {
         response = await axios.patch(
@@ -168,267 +147,112 @@ export default function PrescriptionForm() {
           config
         );
       }
-
       if (response.status === 200 || response.status === 201) {
         setShowSuccessModal(true);
-      } else {
-        throw new Error('Respuesta inesperada del servidor');
       }
-    } catch (error) {
-      console.error('Error al guardar receta:', error);
-      let errorMessage = 'Error al guardar la receta médica. Intente nuevamente.';
-      
-      if (error.response) {
-        if (error.response.data) {
-          if (typeof error.response.data === 'object') {
-            errorMessage = Object.entries(error.response.data)
-              .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
-              .join('\n');
-          } else {
-            errorMessage = error.response.data.toString();
-          }
-        }
-      } else if (error.request) {
-        errorMessage = 'No se recibió respuesta del servidor. Verifique su conexión.';
-      }
-      
-      setError(errorMessage);
+    } catch (err) {
+      console.error(err);
+      setError('Error al guardar la receta médica. Intente nuevamente.');
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (isEdit) {
+      setShowConfirmModal(true);
+    } else {
+      await submitForm();
+    }
+  };
+
+  // Cargando receta
   if (isLoading && isEdit && !showConfirmModal) {
     return (
-      <div className="prescription-form-container">
-        <div className="loading-container">
-          <div className="spinner"></div>
-          <p>Cargando receta médica...</p>
-        </div>
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p>Cargando receta médica...</p>
       </div>
     );
   }
 
   return (
     <div className="prescription-form-container">
+      {/* Navbar */}
       <nav className="custom-navbar d-flex justify-content-between align-items-center px-4 py-2">
         <h4 className="text-light m-0">MedPal</h4>
-        <button
-          onClick={() => {
-            localStorage.removeItem('token');
-            navigate('/');
-          }}
-          className="btn btn-outline-light"
-        >
-          Logout
-        </button>
+        <button onClick={() => { localStorage.removeItem('token'); navigate('/'); }} className="btn btn-outline-light">Logout</button>
       </nav>
 
-      <div className="prescription-form-container">
-        <form className="prescription-form" onSubmit={handleSubmit}>
-          <h1>{isEdit ? 'Editar Receta Médica' : 'Nueva Receta Médica'}</h1>
+      {/* Formulario */}
+      <form className="prescription-form" onSubmit={handleSubmit}>
+        <h1>{isEdit ? 'Editar Receta Médica' : 'Nueva Receta Médica'}</h1>
+        {error && <div className="alert alert-danger">{error}</div>}
 
-          {error && <div className="alert alert-danger">{error}</div>}
+        <div className="form-group">
+          <label>Nombre del paciente</label>
+          <input type="text" value={patientName || ""} disabled className="form-control" />
+        </div>
 
-          <div className="form-grid-container">
-            <div className="field-group">
-              <label>Fecha de emisión *</label>
-              <input
-                type="date"
-                name="issue_date"
-                value={formData.issue_date}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={validationErrors.issue_date ? 'error' : ''}
-                disabled={isLoading}
-              />
-              {validationErrors.issue_date && (
-                <span className="error-message">Este campo es requerido</span>
-              )}
-            </div>
+        <div className="form-group">
+          <label>Fecha de emisión</label>
+          <input type="date" name="issue_date" value={formData.issue_date} onChange={handleChange} onBlur={handleBlur} />
+        </div>
 
-            <div className="field-group">
-              <label>Institución *</label>
-              <input
-                type="text"
-                name="institution"
-                value={formData.institution}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={validationErrors.institution ? 'error' : ''}
-                disabled={isLoading}
-              />
-              {validationErrors.institution && (
-                <span className="error-message">Este campo es requerido</span>
-              )}
-            </div>
+        <div className="form-group">
+          <label>Institución</label>
+          <input type="text" name="institution" value={formData.institution} onChange={handleChange} onBlur={handleBlur} />
+        </div>
 
-            <div className="field-group">
-              <label>Médico que prescribe *</label>
-              <input
-                type="text"
-                name="prescribing_doctor"
-                value={formData.prescribing_doctor}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={validationErrors.prescribing_doctor ? 'error' : ''}
-                disabled={isLoading}
-              />
-              {validationErrors.prescribing_doctor && (
-                <span className="error-message">Este campo es requerido</span>
-              )}
-            </div>
+        <div className="form-group">
+          <label>Médico que prescribe</label>
+          <input type="text" name="prescribing_doctor" value={formData.prescribing_doctor} onChange={handleChange} onBlur={handleBlur} />
+        </div>
 
-            <div className="field-group">
-              <label>Especialidad *</label>
-              <input
-                type="text"
-                name="specialty"
-                value={formData.specialty}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={validationErrors.specialty ? 'error' : ''}
-                disabled={isLoading}
-              />
-              {validationErrors.specialty && (
-                <span className="error-message">Este campo es requerido</span>
-              )}
-            </div>
-          </div>
+        <div className="form-group">
+          <label>Especialidad</label>
+          <input type="text" name="specialty" value={formData.specialty} onChange={handleChange} onBlur={handleBlur} />
+        </div>
 
-          <div className="field-group full-width-field">
-            <label>Medicamentos (uno por línea) *</label>
-            <textarea
-              name="medications"
-              value={formData.medications}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className={validationErrors.medications ? 'error' : ''}
-              disabled={isLoading}
-            />
-            {validationErrors.medications && (
-              <span className="error-message">Este campo es requerido</span>
-            )}
-          </div>
+        <div className="form-group">
+          <label>Medicamentos</label>
+          <textarea name="medications" value={formData.medications} onChange={handleChange} onBlur={handleBlur} rows="4" />
+        </div>
 
-          <div className="field-group full-width-field">
-            <label>Notas</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              disabled={isLoading}
-            />
-          </div>
+        <div className="form-group">
+          <label>Notas / Descripción</label>
+          <textarea name="description" value={formData.description} onChange={handleChange} rows="3" />
+        </div>
 
-          <div className="field-group full-width-field">
-            <label>Documento (PDF o imagen máx. 2 MB) {!isEdit && '*'}</label>
-            <div className={`file-input-container ${validationErrors.file ? 'error' : ''}`}>
-              <input
-                type="file"
-                name="file"
-                onChange={handleChange}
-                onBlur={() => setValidationErrors(prev => ({
-                  ...prev,
-                  file: !isEdit && !formData.file
-                }))}
-                disabled={isLoading}
-                accept=".pdf,.jpg,.jpeg,.png"
-              />
-              
-              {isEdit && currentFile && (
-                <div className="current-file-info">
-                  <p>
-                    <i className="bi bi-file-earmark"></i> Archivo actual: 
-                    <a 
-                      href={currentFile} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="file-link"
-                    >
-                      {currentFile.split('/').pop()}
-                    </a>
-                  </p>
-                  <small className="text-muted">
-                    Seleccione un nuevo archivo solo si desea reemplazar el actual
-                  </small>
-                </div>
-              )}
-              
-              {validationErrors.file && (
-                <span className="error-message">
-                  {isEdit ? 'Seleccione un archivo si desea reemplazar el actual' : 'Debe seleccionar un archivo'}
-                </span>
-              )}
-            </div>
-          </div>
+        <div className="form-group">
+          <label>Archivo PDF (opcional)</label>
+          <input type="file" name="file" onChange={handleChange} accept=".pdf" />
+          {isEdit && currentFile && !formData.file && <p>Archivo actual: {currentFile}</p>}
+        </div>
 
-          <div className="form-actions">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => navigate('/prescriptions')}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Cancelando...' : 'Volver'}
-            </button>
+        <div className="form-actions">
+          <button type="button" className="btn btn-secondary" onClick={() => navigate(`/menu/${perfilId}/prescriptions`)}>Volver</button>
+          <button type="submit" className="btn btn-secondary">{isEdit ? 'Actualizar Receta' : 'Guardar Receta'}</button>
+        </div>
+      </form>
 
-            <button
-              type="submit"
-              className="btn btn-secondary"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                  {isEdit ? ' Actualizando...' : ' Guardando...'}
-                </>
-              ) : (
-                isEdit ? 'Actualizar Receta' : 'Guardar Receta'
-              )}
-            </button>
-          </div>
-        </form>
-      </div>
-
+      {/* Modales de confirmación y éxito */}
       {showConfirmModal && (
-        <div className="modal fade show d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog modal-dialog-centered" role="document">
+        <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Confirmar actualización</h5>
-                <button 
-                  type="button" 
-                  className="btn-close" 
-                  onClick={() => setShowConfirmModal(false)}
-                  disabled={isLoading}
-                ></button>
+                <button type="button" className="btn-close" onClick={() => setShowConfirmModal(false)} disabled={isLoading}></button>
               </div>
               <div className="modal-body">
                 <p>¿Estás seguro de que deseas actualizar esta receta médica?</p>
-                <p className="text-muted">Se actualizarán todos los campos del formulario.</p>
               </div>
               <div className="modal-footer">
-                <button 
-                  className="btn-consistent" 
-                  onClick={() => setShowConfirmModal(false)}
-                  disabled={isLoading}
-                >
-                  Cancelar
-                </button>
-                <button 
-                  className="btn-consistent" 
-                  onClick={submitForm}
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <>
-                      <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                      Actualizando...
-                    </>
-                  ) : (
-                    'Sí, actualizar'
-                  )}
+                <button className="btn-consistent" onClick={() => setShowConfirmModal(false)} disabled={isLoading}>Cancelar</button>
+                <button className="btn-consistent" onClick={submitForm} disabled={isLoading}>
+                  {isLoading ? 'Actualizando...' : 'Sí, actualizar'}
                 </button>
               </div>
             </div>
@@ -437,8 +261,8 @@ export default function PrescriptionForm() {
       )}
 
       {showSuccessModal && (
-        <div className="modal fade show d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog modal-dialog-centered" role="document">
+        <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title text-success">
@@ -449,7 +273,7 @@ export default function PrescriptionForm() {
                   className="btn-close"
                   onClick={() => {
                     setShowSuccessModal(false);
-                    navigate('/prescriptions');
+                    navigate(`/menu/${perfilId}/prescriptions`);
                   }}
                 ></button>
               </div>
@@ -461,7 +285,7 @@ export default function PrescriptionForm() {
                   className="btn-consistent"
                   onClick={() => {
                     setShowSuccessModal(false);
-                    navigate('/prescriptions');
+                    navigate(`/menu/${perfilId}/prescriptions`);
                   }}
                 >
                   Aceptar
