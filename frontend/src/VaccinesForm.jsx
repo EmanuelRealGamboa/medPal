@@ -1,4 +1,3 @@
-// VaccinesForm.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -27,7 +26,7 @@ export default function VaccinesForm() {
   useEffect(() => {
     async function fetchVaccineTypes() {
       try {
-        const res = await axios.get('http://127.0.0.1:8000/vacunas/tipos/', {
+        const res = await axios.get('http://127.0.0.1:8000/vaccines/types/', {
           headers: { Authorization: `Token ${token}` }
         });
         setVaccineTypes(res.data);
@@ -38,7 +37,7 @@ export default function VaccinesForm() {
 
     async function fetchVaccineData() {
       try {
-        const res = await axios.get(`http://127.0.0.1:8000/vacunas/registros/${vacunaId}/`, {
+        const res = await axios.get(`http://127.0.0.1:8000/vaccines/records/${vacunaId}/`, {
           headers: { Authorization: `Token ${token}` }
         });
         setFormData(res.data);
@@ -66,11 +65,12 @@ export default function VaccinesForm() {
       };
 
       const url = vacunaId
-        ? `http://127.0.0.1:8000/vacunas/registros/${vacunaId}/`
-        : 'http://127.0.0.1:8000/vacunas/registros/';
+        ? `http://127.0.0.1:8000/vaccines/records/${vacunaId}/`
+        : 'http://127.0.0.1:8000/vaccines/records/';
 
       const method = vacunaId ? 'put' : 'post';
 
+      // Siempre usa perfilId para el usuario
       const payload = { ...formData, user: perfilId };
 
       await axios[method](url, payload, { headers });
@@ -83,7 +83,7 @@ export default function VaccinesForm() {
   };
 
   return (
-    <>
+    <div className="main-layout">
       {/* Navbar */}
       <nav className="custom-navbar d-flex justify-content-between align-items-center px-4 py-2">
         <h4 className="text-light m-0">
@@ -100,14 +100,14 @@ export default function VaccinesForm() {
         </button>
       </nav>
 
-      <main className="form-section d-flex justify-content-center align-items-center py-4">
+      <main className="form-section d-flex justify-content-center align-items-center py-4" style={{ marginTop: "170px" }}>
         <div className="form-card p-4 rounded shadow-sm custom-width">
           <h2 className="form-title text-center mb-4">
             {vacunaId ? 'Editar' : 'Agregar'} Vacuna
           </h2>
 
           <form onSubmit={handleSubmit} className="ophthalmology-form">
-            <h3>Agregar Vacuna</h3>
+            <h2 className="vacuna-titulo text-center mb-4">Agregar Vacuna</h2>
             <div className="row">
               {/* Columna 1 */}
               <div className="col-md-3">
@@ -253,11 +253,11 @@ export default function VaccinesForm() {
               <button
                 type="button"
                 className="btn btn-secondary"
-                onClick={() => navigate(`/menu/${perfilId}/vacunas`)}
+                onClick={() => navigate(`/menu/${perfilId}/vacunas/lista`)}
               >
                 Volver a módulos
               </button>
-              <button type="submit" className="btn btn-primary">
+              <button type="submit" className="btn-save">
                 Guardar
               </button>
             </div>
@@ -266,11 +266,10 @@ export default function VaccinesForm() {
         </div>
       </main>
 
-
       {/* Footer */}
       <footer className="custom-footer text-center text-light py-2">
         © 2025 MedPal
       </footer>
-    </>
+    </div >
   );
 }

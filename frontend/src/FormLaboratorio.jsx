@@ -55,15 +55,14 @@ export default function FormLaboratorio() {
   };
 
   return (
-    <>
+    <div className="main-layout">
       {/* Navbar */}
+
       <nav className="custom-navbar d-flex justify-content-between align-items-center px-4 py-2">
         <h4 className="text-light m-0">
           <i className="bi bi-person-circle me-2"></i>MedPal
         </h4>
-        <button onClick={handleLogout} className="btn btn-outline-light">
-          Logout
-        </button>
+        <button onClick={handleLogout} className="btn btn-outline-light">Logout</button>
       </nav>
 
       {/* Formulario */}
@@ -132,6 +131,6 @@ export default function FormLaboratorio() {
       <footer className="custom-footer text-center text-light py-2">
         © 2025 MedPal
       </footer>
-    </>
+    </div>
   );
 }

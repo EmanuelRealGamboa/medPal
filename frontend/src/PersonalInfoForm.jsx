@@ -185,7 +185,10 @@ export default function PersonalInfoForm() {
         <button onClick={handleLogout} className="btn btn-outline-light">Logout</button>
       </nav>
 
+
       {/* Formulario */}
+
+
       <main className="form-section d-flex justify-content-center align-items-center py-4">
         <div className="form-card p-4 rounded shadow-sm custom-width">
           <h3 className="text-center mb-4">Editar Datos Personales</h3>

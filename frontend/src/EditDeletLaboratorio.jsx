@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './EditDeletLaboratorio.css';
 
 export default function EditarEliminarLaboratorio() {
     const { perfilId, id } = useParams();
@@ -93,98 +94,119 @@ export default function EditarEliminarLaboratorio() {
     };
 
     return (
-        <div className="container mt-5">
-            <h2 className="mb-4 text-center">Editar o Eliminar Estudio de Laboratorio</h2>
-            <div className="card p-4 shadow-sm">
-                <div className="mb-3">
-                    <label className="form-label">Nombre</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        name="nombre"
-                        value={form.nombre}
-                        onChange={handleChange}
-                    />
+
+        <div className="main-layout">
+            {/* Navbar */}
+            <nav className="custom-navbar d-flex justify-content-between align-items-center px-4 py-2">
+                <h4 className="text-light m-0">
+                    <i className="bi bi-person-circle me-2"></i>MedPal
+                </h4>
+                <button onClick={() => alert('Logout pressed')} className="btn btn-outline-light">
+                    Logout
+                </button>
+            </nav>
+            <div className="container" style={{ marginTop: "70px" }}>
+                <h2 className="mb-4 text-center text-white">Editar o Eliminar Estudio de Laboratorio</h2>
+                <div className="card p-4 shadow-sm">
+                    <div className="grid-form">
+                        <div className="mb-3">
+                            <label className="form-label">Nombre</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="nombre"
+                                value={form.nombre}
+                                onChange={handleChange}
+                            />
+                        </div>
+
+                        <div className="mb-3">
+                            <label className="form-label">Fecha de muestra</label>
+                            <input
+                                type="date"
+                                className="form-control"
+                                name="fecha_muestra"
+                                value={form.fecha_muestra}
+                                onChange={handleChange}
+                            />
+                        </div>
+
+                        <div className="mb-3">
+                            <label className="form-label">Laboratorio</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="laboratorio"
+                                value={form.laboratorio}
+                                onChange={handleChange}
+                            />
+                        </div>
+
+                        <div className="mb-3">
+                            <label className="form-label">Técnica</label>
+                            <textarea
+                                className="form-control"
+                                name="tecnica"
+                                value={form.tecnica}
+                                onChange={handleChange}
+                            />
+                        </div>
+
+                        <div className="mb-3">
+                            <label className="form-label">Valores</label>
+                            <textarea
+                                className="form-control"
+                                name="valores"
+                                value={form.valores}
+                                onChange={handleChange}
+                            />
+                        </div>
+
+                        <div className="mb-3">
+                            <label className="form-label">PDF</label>
+                            <input
+                                type="file"
+                                className="form-control"
+                                name="archivo_pdf"
+                                accept="application/pdf"
+                                onChange={handleChange}
+                            />
+                        </div>
+
+                        <div className="mb-3">
+                            <label className="form-label">Acción médica</label>
+                            <textarea
+                                className="form-control"
+                                name="accion_medica"
+                                value={form.accion_medica}
+                                onChange={handleChange}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="d-flex justify-content-between">
+                        <button className="btn btn-success" onClick={handleUpdate}>
+                            Guardar Cambios
+                        </button>
+                        <button className="btn btn-danger" onClick={handleDelete}>
+                            Eliminar
+                        </button>
+                        <button
+                            className="btn btn-secondary"
+                            onClick={() => navigate(`/menu/${perfilId}/estudios`)}
+                        >
+                            Cancelar
+                        </button>
+                    </div>
                 </div>
 
-                <div className="mb-3">
-                    <label className="form-label">Fecha de muestra</label>
-                    <input
-                        type="date"
-                        className="form-control"
-                        name="fecha_muestra"
-                        value={form.fecha_muestra}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Laboratorio</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        name="laboratorio"
-                        value={form.laboratorio}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Técnica</label>
-                    <textarea
-                        className="form-control"
-                        name="tecnica"
-                        value={form.tecnica}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Valores</label>
-                    <textarea
-                        className="form-control"
-                        name="valores"
-                        value={form.valores}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">PDF</label>
-                    <input
-                        type="file"
-                        className="form-control"
-                        name="archivo_pdf"
-                        accept="application/pdf"
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Acción médica</label>
-                    <textarea
-                        className="form-control"
-                        name="accion_medica"
-                        value={form.accion_medica}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="d-flex justify-content-between">
-                    <button className="btn btn-success" onClick={handleUpdate}>
-                        Guardar Cambios
-                    </button>
-                    <button className="btn btn-danger" onClick={handleDelete}>
-                        Eliminar
-                    </button>
-                    <button
-                        className="btn btn-secondary"
-                        onClick={() => navigate(`/menu/${perfilId}/estudios`)}
-                    >
-                        Cancelar
-                    </button>
-                </div>
             </div>
+
+            {/* Footer */}
+            <footer className="custom-footer text-center text-light py-2">
+                © 2025 MedPal
+            </footer>
+
         </div>
     );
 }
