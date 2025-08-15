@@ -29,7 +29,6 @@ MarkupSafe==3.0.2
 mysqlclient==2.2.7
 pillow==11.3.0
 packaging==25.0
-pillow==11.2.1
 propcache==0.3.2
 pycparser==2.22
 PyJWT==2.10.1
