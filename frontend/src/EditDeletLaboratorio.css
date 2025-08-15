@@ -1,0 +1,9 @@
+.grid-form {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 columnas iguales */
+  gap: 20px; /* espacio entre columnas y filas */
+}
+
+.grid-form textarea {
+  width: 100%; /* asegura que los textarea ocupen todo el ancho de la columna */
+}

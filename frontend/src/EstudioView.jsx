@@ -82,7 +82,7 @@ export default function EstudioView() {
         </div>
       </div>
 
-      <div className="text-center mt-4">
+      <div className="boton-regresar">
         <button className="btn btn-secondary" onClick={() => navigate(`/menu/${perfilId}`)}>
           ← Volver al menú
         </button>

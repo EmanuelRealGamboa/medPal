@@ -67,20 +67,22 @@ export default function EstudioGabineteForm() {
   };
 
   return (
-    <>
+
+    <div className="main-layout">
       {/* Navbar */}
       <nav className="custom-navbar d-flex justify-content-between align-items-center px-4 py-2">
         <h4 className="text-light m-0">
           <i className="bi bi-person-circle me-2"></i>MedPal
         </h4>
-        <button onClick={handleLogout} className="btn btn-outline-light">
+        <button onClick={() => alert('Logout pressed')} className="btn btn-outline-light">
           Logout
         </button>
       </nav>
 
+
       {/* Formulario */}
       <form className="gabinete-form" onSubmit={handleSubmit}>
-        <h2>Nuevo Estudio de Gabinete</h2>
+        <h2 className="gabinete-titulo text-center mb-4">Nuevo Estudio de Gabinete</h2>
 
         <div className="grid-container">
           <input
@@ -165,6 +167,8 @@ export default function EstudioGabineteForm() {
       <footer className="custom-footer text-center text-light py-2">
         © 2025 MedPal
       </footer>
-    </>
+
+    </div>
+
   );
 }

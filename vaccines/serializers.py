@@ -23,32 +23,34 @@ class VaccineRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = VaccineRecord
         fields = '__all__'
-        read_only_fields = ('created_at', 'updated_at', 'created_by')
+        read_only_fields = ('created_at', 'updated_at', 'created_by', 'user')  # user ahora es read-only
 
     def validate(self, data):
-        # Validar que la dosis no exceda las requeridas
-        vaccine_type = data.get('vaccine_type')
-        dose_number = data.get('dose_number')
-        
-        if dose_number > vaccine_type.doses_required:
-            raise serializers.ValidationError(
-                f"La dosis {dose_number} excede las {vaccine_type.doses_required} dosis requeridas para {vaccine_type.name}"
-            )
-        
-        # Validar que no exista ya este registro
-        user = data.get('user')
-        if VaccineRecord.objects.filter(
-            user=user, 
-            vaccine_type=vaccine_type, 
-            dose_number=dose_number
-        ).exclude(pk=self.instance.pk if self.instance else None).exists():
-            raise serializers.ValidationError(
-                f"Ya existe un registro para la dosis {dose_number} de {vaccine_type.name}"
-            )
-        
+        # Obtener vaccine_type y dose_number desde data o instancia existente
+        vaccine_type = data.get('vaccine_type') or getattr(self.instance, 'vaccine_type', None)
+        dose_number = data.get('dose_number') or getattr(self.instance, 'dose_number', None)
+
+        if vaccine_type and dose_number:
+            # Validar dosis máxima
+            if dose_number > vaccine_type.doses_required:
+                raise serializers.ValidationError(
+                    f"La dosis {dose_number} excede las {vaccine_type.doses_required} dosis requeridas para {vaccine_type.name}"
+                )
+            
+            # Validar duplicados
+            user = self.context['request'].user
+            if VaccineRecord.objects.filter(
+                user=user, 
+                vaccine_type=vaccine_type, 
+                dose_number=dose_number
+            ).exclude(pk=self.instance.pk if self.instance else None).exists():
+                raise serializers.ValidationError(
+                    f"Ya existe un registro para la dosis {dose_number} de {vaccine_type.name}"
+                )
+
         # Validar fechas
-        scheduled_date = data.get('scheduled_date')
-        applied_date = data.get('applied_date')
+        scheduled_date = data.get('scheduled_date') or getattr(self.instance, 'scheduled_date', None)
+        applied_date = data.get('applied_date') or getattr(self.instance, 'applied_date', None)
         
         if applied_date and scheduled_date and applied_date < scheduled_date:
             raise serializers.ValidationError(
@@ -58,12 +60,18 @@ class VaccineRecordSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        # Asignar el usuario que crea el registro
         request = self.context.get('request')
         if request and request.user:
+            validated_data['user'] = request.user
             validated_data['created_by'] = request.user
-        
         return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        request = self.context.get('request')
+        if request and request.user:
+            validated_data['user'] = request.user  # siempre usamos el usuario autenticado
+        return super().update(instance, validated_data)
+
 
 class VaccineRecordCreateSerializer(serializers.ModelSerializer):
     """Serializer simplificado para crear registros de vacunas"""

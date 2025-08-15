@@ -3,9 +3,9 @@ body,
 html {
   margin: 0;
   padding: 0;
-  height: 100%;
-  background-color: #40897e;
+  min-height: 100%;
   font-family: 'Segoe UI', sans-serif;
+  background-attachment: fixed;
 }
 
 

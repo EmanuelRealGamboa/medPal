@@ -182,7 +182,7 @@ export default function PersonalInfoForm() {
       </nav>
 
 
-    {/* Formulario */}
+      {/* Formulario */}
 
 
       <main className="form-section d-flex justify-content-center align-items-center py-4">

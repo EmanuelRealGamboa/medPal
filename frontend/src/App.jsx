@@ -40,6 +40,9 @@ import LaboratorioList from './LaboratorioList.jsx';
 import FormFuncional from './FormFuncional.jsx';
 import FuncionalList from './FuncionalList.jsx'
 import EditDeletFuncional from './EditDeletFuncional.jsx';
+import VaccinesList from './VaccinesList.jsx';
+import EditDeletVaccines from './EditDeletVaccines.jsx';
+import AlertasView from './AlertasView.jsx'
 
 
 // Wrappers para pasar ID como prop si el componente no usa useParams()
@@ -104,30 +107,11 @@ export default function App() {
 
 
       {/* Vacunas */}
-      <Route
-        path="/menu/:id/vacunas"
-        element={
-          <ProtectedRoute>
-            <VaccinesViewWrapper />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/menu/:id/vacunas/agregar"
-        element={
-          <ProtectedRoute>
-            <VaccinesFormWrapper />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/menu/:id/vacunas/editar/:vacunaId"
-        element={
-          <ProtectedRoute>
-            <VaccinesFormWrapper />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/menu/:perfilId/vacunas" element={<ProtectedRoute><VaccinesView /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/vacunas/lista" element={<ProtectedRoute><VaccinesList /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/vacunas/agregar" element={<ProtectedRoute><VaccinesForm/></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/vacunas/editar-eliminar/:id"element={<ProtectedRoute><EditDeletVaccines /></ProtectedRoute>}/>
+      <Route path="/menu/:perfilId/vacunas/alertas" element={<ProtectedRoute><AlertasView/></ProtectedRoute>} />
 
       {/* Formularios de antecedentes médicos */}
       <Route path="/menu/:perfilId/antecedentes-medicos/alergias" element={<ProtectedRoute><FormAlergias /></ProtectedRoute>} />
@@ -173,13 +157,4 @@ export default function App() {
 }
 
 
-function VaccinesViewWrapper() {
-  const { id } = useParams();
-  return <VaccinesView perfilId={id} />;
-}
-
-function VaccinesFormWrapper() {
-  const { id, vacunaId } = useParams();
-  return <VaccinesForm perfilId={id} vacunaId={vacunaId} />;
-}
 
