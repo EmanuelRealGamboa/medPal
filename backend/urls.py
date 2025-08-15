@@ -30,6 +30,7 @@ urlpatterns = [
     path('gineco/', include('gineco.urls')),
     path('vaccines/', include('vaccines.urls')),   
     path('api/estudios/', include('estudios.urls')),
+    path('api/chronic/', include('chronic.urls')),
 ]
 
 
@@ -40,4 +41,3 @@ if settings.DEBUG:
 
 
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
