@@ -7,7 +7,7 @@ hhtml, body {
 /* Fondo general completo */
 .perfil-bg {
   min-height: 100vh;
-  background-color: #FBFFE4; 
+  background-color: #ffffff; 
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

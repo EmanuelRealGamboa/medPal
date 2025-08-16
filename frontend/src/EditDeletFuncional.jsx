@@ -64,7 +64,7 @@ export default function EditarEliminarFuncional() {
             // No agregues perfil aquí
 
             await axios.put(
-                `http://127.0.0.1:8000/api/estudios/funcionales/${id}/`,
+                `http://127.0.0.1:8000/api/estudios/funcionales/${id}/?perfil=${perfilId}`,
                 data,
                 {
                     headers: {

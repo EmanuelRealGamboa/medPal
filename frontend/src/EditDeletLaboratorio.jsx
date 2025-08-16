@@ -64,7 +64,7 @@ export default function EditarEliminarLaboratorio() {
             // No agregues perfil aquí
 
             await axios.put(
-                `http://127.0.0.1:8000/api/estudios/laboratorio/${id}/`,
+                `http://127.0.0.1:8000/api/estudios/laboratorio/${id}/?perfil=${perfilId}`,
                 data,
                 {
                     headers: {

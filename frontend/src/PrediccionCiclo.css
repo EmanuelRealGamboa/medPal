@@ -1,0 +1,199 @@
+/* Reset mínimo */
+html, body, #root { height: 100%; }
+body { margin: 0; }
+
+/* Paleta base ya usada en la pantalla anterior */
+:root{
+  --mp-mint:#A7D0C8;   /* barra superior */
+  --mp-text:#2F7B66;   /* títulos/contornos/verde */
+  --mp-btn:#2D8166;    /* botón principal */
+  --mp-btnH:#256B55;   /* hover botón */
+
+  /* Colores de calendario del mock */
+  --cal-header:#F15F79;     /* franja rosa con "Junio" */
+  --cal-weekbar:#F47C97;    /* barra de días de semana */
+  --cal-bg:#F2DDDB;         /* fondo rosado del calendario */
+  --day-white:#FFFFFF;      /* casillas en blanco */
+
+  --pre:#F7B08F;            /* pre-periodo (durazno) */
+  --periodo:#EFB3C2;        /* periodo (rosa) */
+  --post:#BFE7DB;           /* post (menta claro) */
+
+  --stroke:#2F7B66;         /* mismo que mp-text para bordes */
+}
+
+/* CONTENEDOR PRINCIPAL */
+.prediccion-container{
+  min-height:100svh;
+  background:#fff;
+  display:flex;
+  flex-direction:column;
+}
+
+/* NAVBAR */
+.navbar{
+  background:var(--mp-mint);
+  height:64px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 clamp(16px,3vw,32px);
+  border-bottom-left-radius:24px;
+  border-bottom-right-radius:24px;
+  box-shadow:0 1px 4px rgba(0,0,0,.05);
+}
+.navbar-logo{ font-weight:800; font-size:clamp(22px,2.4vw,32px); }
+.logo-med{ color:#fff; }
+.logo-pal{ color:var(--mp-text); }
+.navbar-user-icon{
+  width:40px;height:40px;border-radius:50%;
+  background:#fff;display:flex;align-items:center;justify-content:center;
+}
+.user-icon{ width:22px;height:22px;color:var(--mp-text); }
+
+/* LAYOUT DOS COLUMNAS */
+.prediccion-main{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: clamp(16px,2.8vw,40px);
+  padding: clamp(18px,3.5vw,44px) clamp(14px,3vw,40px);
+}
+@media (min-width: 992px){
+  .prediccion-main{ grid-template-columns: 1.4fr .9fr; align-items:start; }
+}
+
+/* CALENDARIO (COLUMNA IZQ.) */
+.cal-card{
+  background:var(--cal-bg);
+  border-radius:28px;
+  overflow:hidden;            /* para redondear cabecera */
+  box-shadow:0 6px 20px rgba(0,0,0,.06);
+}
+.cal-header{
+  background:var(--cal-header);
+  padding: clamp(10px,1.8vw,20px) clamp(18px,2.6vw,28px);
+}
+.cal-header h1{
+  margin:0;color:#fff;font-weight:800;letter-spacing:.4px;
+  font-size: clamp(28px,4.2vw,64px);      /* grande como el mock */
+}
+.cal-body{ padding: clamp(16px,2.2vw,24px); }
+
+/* BARRA DE SEMANA */
+.weekbar{
+  background:var(--cal-weekbar);
+  color:#fff;
+  font-weight:800;
+  border-radius:12px;
+  padding:.75rem 1.1rem;
+  display:grid; grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin: 0 0 clamp(12px,1.6vw,16px) 0;
+  letter-spacing:.4px;
+  text-align:center;
+}
+
+/* GRILLA DE DÍAS */
+.days-grid{
+  display:grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 16px;
+}
+.day{
+  background: var(--day-white);
+  border-radius:10px;
+  min-height:56px;              /* altura caja día */
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+  box-shadow:0 1px 0 rgba(0,0,0,.03);
+}
+
+/* NÚMERO */
+.day-number{
+  font-weight:900;
+  font-size: clamp(16px,1.6vw,22px);
+  color:#222;
+}
+
+/* ESTADOS DE RANGO (relleno interior) */
+.day.pre::before,
+.day.periodo::before,
+.day.post::before{
+  content:"";
+  position:absolute; inset:0;
+  border-radius:10px;
+  opacity:1;
+}
+.day.pre::before{ background: var(--pre); }
+.day.periodo::before{ background: var(--periodo); }
+.day.post::before{ background: var(--post); }
+
+/* NÚMERO POR ENCIMA DEL RELLENO */
+.day.pre .day-number,
+.day.periodo .day-number,
+.day.post .day-number{ position:relative; z-index:1; }
+
+/* Derivar un leve “marco” entre cajas pintadas adyacentes */
+.day.pre,
+.day.periodo,
+.day.post{
+  outline: 1px solid rgba(0,0,0,0.025);
+  outline-offset:-1px;
+}
+
+/* COLUMNA DERECHA */
+.side-info{
+  display:flex;
+  flex-direction:column;
+  gap: clamp(16px,2vw,24px);
+}
+.side-title{
+  color:var(--mp-text);
+  font-weight:900;
+  font-size: clamp(22px,2.8vw,36px);
+  margin: clamp(6px,1vw,10px) 0;
+  text-align:center;
+}
+@media (min-width: 992px){
+  .side-title{ text-align:left; }
+}
+
+.legend-box{
+  border: 4px solid var(--stroke);
+  border-radius:18px;
+  padding: clamp(14px,2.2vw,20px);
+  display:flex;
+  flex-direction:column;
+  gap: clamp(12px,1.4vw,16px);
+  background:#fff;
+}
+.legend-item{
+  display:flex; align-items:center; gap:14px;
+  color:var(--mp-text); font-weight:800; font-size: clamp(15px,1.4vw,18px);
+}
+.swatch{ width:44px; height:44px; border-radius:6px; display:inline-block; }
+.swatch-pre{ background:var(--pre); }
+.swatch-periodo{ background:var(--periodo); }
+.swatch-post{ background:var(--post); }
+
+/* BOTÓN */
+.back-btn{
+  margin-top: clamp(8px,1.8vw,20px);
+  align-self:center;
+  background:var(--mp-btn);
+  color:#fff;
+  font-weight:800;
+  height:64px;
+  padding: 0 clamp(28px,4vw,64px);
+  border:none;
+  border-radius:9999px;
+  cursor:pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+  transition: background-color .15s ease, transform .06s ease;
+}
+.back-btn:hover{ background:var(--mp-btnH); }
+.back-btn:active{ transform: translateY(1px); }
+
+@media (min-width: 992px){
+  .back-btn{ align-self:flex-start; }
+}

@@ -15,8 +15,8 @@ const MenuModulos = () => {
     { label: "Vacunas", color: "#FCE536", icon: "/icons/vacunas.png", path: `/menu/${perfilId}/vacunas/lista` },
     { label: "Antecedentes médicos", color: "#FF9455", icon: "/icons/antecedentes.png",path: `/menu/${perfilId}/antecedentes-medicos` },
     { label: "Estudios", color: "#ACEB8A", icon: "/icons/estudios.png", path: `/menu/${perfilId}/estudios` },
-    { label: "Recetas", color: "#71C4FF", icon: "/icons/recetas.png" },
-    { label: "Historia gineco-obstétrica", color: "#E091FB", icon: "/icons/gineco.png" },
+    { label: "Recetas", color: "#71C4FF", icon: "/icons/recetas.png", path: `/menu/${perfilId}/prescriptions` },
+    { label: "Historia gineco-obstétrica", color: "#E091FB", icon: "/icons/gineco.png", path: `/menu/${perfilId}/gineco`  },
     { label: "Seguimiento de enfermedades crónicas degenerativas", color: "#FF7DB5", icon: "/icons/enfermedades.png" },
     { label: "Oftalmología", color: "#76EEC6", icon: "/icons/oftalmologia.png", path: `/menu/${perfilId}/oftalmologia` },
 

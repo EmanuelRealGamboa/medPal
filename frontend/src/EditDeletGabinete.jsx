@@ -61,7 +61,7 @@ export default function EditarEliminarGabinete() {
             // No agregues perfil aquí
 
             await axios.put(
-                `http://127.0.0.1:8000/api/estudios/gabinete/${id}/`,
+                `http://127.0.0.1:8000/api/estudios/gabinete/${id}/?perfil=${perfilId}`,
                 data,
                 {
                     headers: {

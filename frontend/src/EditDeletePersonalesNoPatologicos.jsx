@@ -106,91 +106,93 @@ export default function EditDeletePersonalesNoPatologicos() {
       {loading && <div className="alert alert-info">Procesando...</div>}
 
       <form onSubmit={handleUpdate}>
-        <div className="mb-3">
-          <label htmlFor="tabaquismo" className="form-label">Tabaquismo</label>
-          <textarea
-            id="tabaquismo"
-            name="tabaquismo"
-            className="form-control"
-            rows={2}
-            value={form.tabaquismo}
-            onChange={handleChange}
-            required
-            placeholder="Describe el tabaquismo"
-          />
+        <div className="row g-3">
+          <div className="col-md-6">
+            <label htmlFor="tabaquismo" className="form-label">Tabaquismo</label>
+            <textarea
+              id="tabaquismo"
+              name="tabaquismo"
+              className="form-control"
+              rows={2}
+              value={form.tabaquismo}
+              onChange={handleChange}
+              required
+              placeholder="Describe el tabaquismo"
+            />
+          </div>
+
+          <div className="col-md-6">
+            <label htmlFor="alcohol" className="form-label">Consumo de alcohol</label>
+            <textarea
+              id="alcohol"
+              name="alcohol"
+              className="form-control"
+              rows={2}
+              value={form.alcohol}
+              onChange={handleChange}
+              required
+              placeholder="Describe el consumo de alcohol"
+            />
+          </div>
+
+          <div className="col-md-6">
+            <label htmlFor="actividadFisica" className="form-label">Actividad física</label>
+            <textarea
+              id="actividadFisica"
+              name="actividadFisica"
+              className="form-control"
+              rows={2}
+              value={form.actividadFisica}
+              onChange={handleChange}
+              required
+              placeholder="Describe la actividad física"
+            />
+          </div>
+
+          <div className="col-md-6">
+            <label htmlFor="alimentacion" className="form-label">Alimentación</label>
+            <textarea
+              id="alimentacion"
+              name="alimentacion"
+              className="form-control"
+              rows={2}
+              value={form.alimentacion}
+              onChange={handleChange}
+              required
+              placeholder="Describe la alimentación"
+            />
+          </div>
+
+          <div className="col-md-6">
+            <label htmlFor="saludMental" className="form-label">Salud mental</label>
+            <textarea
+              id="saludMental"
+              name="saludMental"
+              className="form-control"
+              rows={2}
+              value={form.saludMental}
+              onChange={handleChange}
+              required
+              placeholder="Describe la salud mental"
+            />
+          </div>
+
+          <div className="col-md-6">
+            <label htmlFor="suenio" className="form-label">Sueño</label>
+            <textarea
+              id="suenio"
+              name="suenio"
+              className="form-control"
+              rows={2}
+              value={form.suenio}
+              onChange={handleChange}
+              required
+              placeholder="Describe el sueño"
+            />
+          </div>
         </div>
 
-        <div className="mb-3">
-          <label htmlFor="alcohol" className="form-label">Consumo de alcohol</label>
-          <textarea
-            id="alcohol"
-            name="alcohol"
-            className="form-control"
-            rows={2}
-            value={form.alcohol}
-            onChange={handleChange}
-            required
-            placeholder="Describe el consumo de alcohol"
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="actividadFisica" className="form-label">Actividad física</label>
-          <textarea
-            id="actividadFisica"
-            name="actividadFisica"
-            className="form-control"
-            rows={2}
-            value={form.actividadFisica}
-            onChange={handleChange}
-            required
-            placeholder="Describe la actividad física"
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="alimentacion" className="form-label">Alimentación</label>
-          <textarea
-            id="alimentacion"
-            name="alimentacion"
-            className="form-control"
-            rows={2}
-            value={form.alimentacion}
-            onChange={handleChange}
-            required
-            placeholder="Describe la alimentación"
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="saludMental" className="form-label">Salud mental</label>
-          <textarea
-            id="saludMental"
-            name="saludMental"
-            className="form-control"
-            rows={2}
-            value={form.saludMental}
-            onChange={handleChange}
-            required
-            placeholder="Describe la salud mental"
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="suenio" className="form-label">Sueño</label>
-          <textarea
-            id="suenio"
-            name="suenio"
-            className="form-control"
-            rows={2}
-            value={form.suenio}
-            onChange={handleChange}
-            required
-            placeholder="Describe el sueño"
-          />
-        </div>
-
-        <div className="d-flex justify-content-between">
+        <div className="d-flex justify-content-between mt-4">
           <button className="btn btn-success" type="submit" disabled={loading}>
             {loading ? 'Guardando...' : 'Guardar Cambios'}
           </button>
