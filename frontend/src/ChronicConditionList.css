@@ -1,0 +1,35 @@
+
+
+/* Barra superior personalizada */
+.custom-navbar {
+  flex: 0 0 auto;
+  height: 60px;
+  background-color: #a7d0c3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+/* Botón cerrar sesión */
+.logout-btn {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Barra inferior del footer */
+.footer-bar {
+  flex: 0 0 auto;
+  height: 40px;
+  background-color: #a7d0c3;
+  text-align: center;
+  padding: 10px 0;
+  font-size: 14px;
+  color: #666;
+  box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);
+}

@@ -53,6 +53,8 @@ import PrediccionCiclo from './PrediccionCiclo.jsx';
 import NotasClinicasView from './NotasClinicasView.jsx';
 import EmbarazoView from './EmbarazoView.jsx';
 import ConsultaEmbarazoView from './ConsultaEmbarazoView.jsx';
+import ChronicList from './ChronicConditionList.jsx';
+import ChronicConditionForm from './ChronicConditionForm.jsx';
 
 
 // Wrappers para pasar ID como prop si el componente no usa useParams()
@@ -119,9 +121,9 @@ export default function App() {
       {/* Vacunas */}
       <Route path="/menu/:perfilId/vacunas" element={<ProtectedRoute><VaccinesView /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/vacunas/lista" element={<ProtectedRoute><VaccinesList /></ProtectedRoute>} />
-      <Route path="/menu/:perfilId/vacunas/agregar" element={<ProtectedRoute><VaccinesForm/></ProtectedRoute>} />
-      <Route path="/menu/:perfilId/vacunas/editar-eliminar/:id"element={<ProtectedRoute><EditDeletVaccines /></ProtectedRoute>}/>
-      <Route path="/menu/:perfilId/vacunas/alertas" element={<ProtectedRoute><AlertasView/></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/vacunas/agregar" element={<ProtectedRoute><VaccinesForm /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/vacunas/editar-eliminar/:id" element={<ProtectedRoute><EditDeletVaccines /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/vacunas/alertas" element={<ProtectedRoute><AlertasView /></ProtectedRoute>} />
 
       {/* Formularios de antecedentes médicos */}
       <Route path="/menu/:perfilId/antecedentes-medicos/alergias" element={<ProtectedRoute><FormAlergias /></ProtectedRoute>} />
@@ -165,14 +167,21 @@ export default function App() {
       <Route path="/menu/:perfilId/gineco/Modulos_Embarazo/notas-clinicas" element={<ProtectedRoute><NotasClinicasForm /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/gineco/Modulos_Embarazo/Datos_Embarazo" element={<ProtectedRoute><EmbarazoForm /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/gineco/Modulos_Embarazo/Consulta_Embarazo" element={<ProtectedRoute><ConsultaEmbarazoForm /></ProtectedRoute>} />
-      <Route path="/menu/:perfilId/gineco/Modulos_Embarazo/notas-clinicas/view/:notaId"element={<ProtectedRoute><NotasClinicasView /></ProtectedRoute>}/>
-      <Route path="/menu/:perfilId/gineco/Modulos_Embarazo/Datos_Embarazo/view/:embarazoId"element={<ProtectedRoute><EmbarazoView /></ProtectedRoute>}/>
+      <Route path="/menu/:perfilId/gineco/Modulos_Embarazo/notas-clinicas/view/:notaId" element={<ProtectedRoute><NotasClinicasView /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/gineco/Modulos_Embarazo/Datos_Embarazo/view/:embarazoId" element={<ProtectedRoute><EmbarazoView /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/gineco/Modulos_Embarazo/Consulta_Embarazo/view/:consultaId" element={<ProtectedRoute><ConsultaEmbarazoView /></ProtectedRoute>} />
 
 
       {/* Calculadora menstrual */}
-      <Route path="/menu/:perfilId/gineco/registro-menstrual" element={<ProtectedRoute><CalculadoraMenstrual /></ProtectedRoute>}/>
-      <Route path="/menu/:perfilId/gineco/prediccion-ciclo" element={<ProtectedRoute><PrediccionCiclo /></ProtectedRoute>} /> 
+      <Route path="/menu/:perfilId/gineco/registro-menstrual" element={<ProtectedRoute><CalculadoraMenstrual /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/gineco/prediccion-ciclo" element={<ProtectedRoute><PrediccionCiclo /></ProtectedRoute>} />
+
+      {/* Gineco */}
+      <Route path="/menu/:perfilId/Enfermedades_Cronicas" element={<ProtectedRoute><ChronicList /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/Enfermedades_Cronicas/Agregar" element={<ProtectedRoute><ChronicConditionForm /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/Enfermedades_Cronicas/Editar/:id"element={<ProtectedRoute><ChronicConditionForm /></ProtectedRoute>
+        }
+      />
       {/* Ruta fallback */}
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
