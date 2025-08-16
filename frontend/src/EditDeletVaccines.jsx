@@ -80,7 +80,7 @@ export default function EditarEliminarVacuna() {
     const handleUpdate = async () => {
         const payload = {
             ...form,
-           
+
             vaccine_type: parseInt(form.vaccine_type) || null,
             dose_number: Number(form.dose_number),
             status: String(form.status).trim()
@@ -126,160 +126,180 @@ export default function EditarEliminarVacuna() {
     };
 
     return (
-        <div className="container mt-5">
-            <h2 className="mb-4 text-center">Editar o Eliminar Vacuna</h2>
-            <div className="card p-4 shadow-sm">
+        <div className="main-layout">
+            {/* Navbar */}
+            <nav className="custom-navbar d-flex justify-content-between align-items-center px-4 py-2">
+                <h4 className="text-light m-0">
+                    <i className="bi bi-person-circle me-2"></i>MedPal
+                </h4>
+                <button onClick={() => alert('Logout pressed')} className="btn btn-outline-light">
+                    Logout
+                </button>
+            </nav>
 
-                <div className="mb-3">
-                    <label className="form-label">Tipo de vacuna</label>
-                    <select
-                        className="form-control"
-                        name="vaccine_type"
-                        value={form.vaccine_type}
-                        onChange={handleChange}
-                        required
-                    >
-                        <option value="">Seleccione un tipo de vacuna</option>
-                        {vaccineTypes.map(v => (
-                            <option key={v.id} value={v.id}>
-                                {v.name}
-                            </option>
-                        ))}
-                    </select>
+            <div className="container" style={{ marginTop: "160px" }}>
+                <h2 className="mb-4 text-center text-white">Editar o Eliminar Vacuna</h2>
+                <div className="card p-4 shadow-sm">
+                    <div className="row g-3">
+                        <div className="col-md-3">
+                            <label className="form-label">Tipo de vacuna</label>
+                            <select
+                                className="form-control"
+                                name="vaccine_type"
+                                value={form.vaccine_type}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">Seleccione un tipo de vacuna</option>
+                                {vaccineTypes.map(v => (
+                                    <option key={v.id} value={v.id}>
+                                        {v.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="col-md-3">
+                            <label className="form-label">Número de dosis</label>
+                            <input
+                                type="number"
+                                className="form-control"
+                                name="dose_number"
+                                value={form.dose_number}
+                                onChange={handleChange}
+                                min="1"
+                                max="10"
+                            />
+                        </div>
+
+                        <div className="col-md-3">
+                            <label className="form-label">Estado</label>
+                            <select
+                                className="form-control"
+                                name="status"
+                                value={form.status}
+                                onChange={handleChange}
+                            >
+                                <option value="scheduled">Programada</option>
+                                <option value="applied">Aplicada</option>
+                                <option value="cancelled">Cancelada</option>
+                            </select>
+                        </div>
+
+                        <div className="col-md-3">
+                            <label className="form-label">Fecha programada</label>
+                            <input
+                                type="date"
+                                className="form-control"
+                                name="scheduled_date"
+                                value={form.scheduled_date || ''}
+                                onChange={handleChange}
+                            />
+                        </div>
+
+                        <div className="col-md-3">
+                            <label className="form-label">Fecha aplicada</label>
+                            <input
+                                type="date"
+                                className="form-control"
+                                name="applied_date"
+                                value={form.applied_date || ''}
+                                onChange={handleChange}
+                            />
+                        </div>
+
+                        <div className="col-md-3">
+                            <label className="form-label">Proveedor de salud</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="healthcare_provider"
+                                value={form.healthcare_provider}
+                                onChange={handleChange}
+                            />
+                        </div>
+
+                        <div className="col-md-3">
+                            <label className="form-label">Nombre del médico</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="doctor_name"
+                                value={form.doctor_name}
+                                onChange={handleChange}
+                            />
+                        </div>
+
+                        <div className="col-md-3">
+                            <label className="form-label">Número de lote</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="batch_number"
+                                value={form.batch_number}
+                                onChange={handleChange}
+                            />
+                        </div>
+
+                        <div className="col-md-3">
+                            <label className="form-label">Reacción</label>
+                            <select
+                                className="form-control"
+                                name="reaction"
+                                value={form.reaction}
+                                onChange={handleChange}
+                            >
+                                <option value="none">Ninguna</option>
+                                <option value="mild">Leve</option>
+                                <option value="moderate">Moderada</option>
+                                <option value="severe">Severa</option>
+                            </select>
+                        </div>
+
+                        <div className="col-md-6">
+                            <label className="form-label">Notas sobre reacciones</label>
+                            <textarea
+                                className="form-control"
+                                name="reaction_notes"
+                                value={form.reaction_notes}
+                                onChange={handleChange}
+                            />
+                        </div>
+
+                        <div className="col-md-6">
+                            <label className="form-label">Observaciones generales</label>
+                            <textarea
+                                className="form-control"
+                                name="notes"
+                                value={form.notes}
+                                onChange={handleChange}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="d-flex justify-content-between mt-4">
+                        <button className="btn btn-success" onClick={handleUpdate}>
+                            Guardar Cambios
+                        </button>
+                        <button className="btn btn-danger" onClick={handleDelete}>
+                            Eliminar
+                        </button>
+                        <button
+                            className="btn btn-secondary"
+                            onClick={() => navigate(`/menu/${perfilId}/vacunas/lista`)}
+                        >
+                            Cancelar
+                        </button>
+                    </div>
                 </div>
 
-                <div className="mb-3">
-                    <label className="form-label">Número de dosis</label>
-                    <input
-                        type="number"
-                        className="form-control"
-                        name="dose_number"
-                        value={form.dose_number}
-                        onChange={handleChange}
-                        min="1"
-                        max="10"
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Estado</label>
-                    <select
-                        className="form-control"
-                        name="status"
-                        value={form.status}
-                        onChange={handleChange}
-                    >
-                        <option value="scheduled">Programada</option>
-                        <option value="applied">Aplicada</option>
-                        <option value="cancelled">Cancelada</option>
-                    </select>
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Fecha programada</label>
-                    <input
-                        type="date"
-                        className="form-control"
-                        name="scheduled_date"
-                        value={form.scheduled_date || ''}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Fecha aplicada</label>
-                    <input
-                        type="date"
-                        className="form-control"
-                        name="applied_date"
-                        value={form.applied_date || ''}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Proveedor de salud</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        name="healthcare_provider"
-                        value={form.healthcare_provider}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Nombre del médico</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        name="doctor_name"
-                        value={form.doctor_name}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Número de lote</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        name="batch_number"
-                        value={form.batch_number}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Reacción</label>
-                    <select
-                        className="form-control"
-                        name="reaction"
-                        value={form.reaction}
-                        onChange={handleChange}
-                    >
-                        <option value="none">Ninguna</option>
-                        <option value="mild">Leve</option>
-                        <option value="moderate">Moderada</option>
-                        <option value="severe">Severa</option>
-                    </select>
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Notas sobre reacciones</label>
-                    <textarea
-                        className="form-control"
-                        name="reaction_notes"
-                        value={form.reaction_notes}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Observaciones generales</label>
-                    <textarea
-                        className="form-control"
-                        name="notes"
-                        value={form.notes}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="d-flex justify-content-between">
-                    <button className="btn btn-success" onClick={handleUpdate}>
-                        Guardar Cambios
-                    </button>
-                    <button className="btn btn-danger" onClick={handleDelete}>
-                        Eliminar
-                    </button>
-                    <button
-                        className="btn btn-secondary"
-                        onClick={() => navigate(`/menu/${perfilId}/vacunas/lista`)}
-                    >
-                        Cancelar
-                    </button>
-                </div>
             </div>
+
+            {/* Footer */}
+            <footer className="custom-footer text-center text-light py-2">
+                © 2025 MedPal
+            </footer>
+
         </div>
     );
 }

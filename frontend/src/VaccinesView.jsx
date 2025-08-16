@@ -56,7 +56,7 @@ export default function VaccinesView() {
 
                 {vaccineAlerts.length === 0 ? (
                     <div className="alert alert-info text-center">
-                        No hay alertas registradas para este perfil.
+                       Vacuna Agregada con Éxito
                     </div>
                 ) : (
                     <div className="row">
