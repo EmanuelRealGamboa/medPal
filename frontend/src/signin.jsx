@@ -24,25 +24,35 @@ import './signin.css';
         },
         body: JSON.stringify({ email, password })
       });
-
+  
       if (!response.ok) {
         throw new Error('Error en el inicio de sesión');
       }
-
+  
       const data = await response.json();
-
-      // ✅ Guarda el token correctamente
+  
+      // ✅ Guarda el token
       if (data.token) {
         localStorage.setItem('token', data.token);
+      
+        // Guardar también el usuario
+        localStorage.setItem('user', JSON.stringify({
+          username: data.username,
+          email: data.email
+        }));
+        
+      
         navigate('/perfiles');
-      } else {
-        throw new Error('Token no recibido');
       }
-
+      
+      
+      
+  
     } catch (err) {
       alert(err.message);
     }
   };
+  
   return (
     <div className="auth-wrapper">
       <div className="auth-left">

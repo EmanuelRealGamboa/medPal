@@ -22,14 +22,16 @@ export default function OphthalmologyView() {
                 );
 
                 if (response.data.length > 0) {
+                    // Si hay varios, podrías listarlos, pero aquí tomamos el primero
                     setDiagnostico(response.data[0]);
                 } else {
                     setDiagnostico(null);
+                    setMensaje('No se encontraron diagnósticos registrados.');
                 }
             } catch (error) {
                 console.error(error);
-                setMensaje('No se encontraron diagnósticos registrados.');
                 setDiagnostico(null);
+                setMensaje('Error al obtener el diagnóstico.');
             }
         }
 
@@ -57,23 +59,29 @@ export default function OphthalmologyView() {
                         </div>
 
                         <div className="d-flex gap-3 justify-content-center mt-4">
+                            {/* Editar → redirige a la ruta con diagnosticoId */}
                             <button
                                 className="btn btn-primary"
-                                onClick={() => navigate(`/menu/${perfilId}/oftalmologia/editar/${diagnostico.id}`)}
+                                onClick={() =>
+                                    navigate(`/menu/${perfilId}/oftalmologia/editar/${diagnostico.id}`)
+                                }
                             >
                                 Editar
                             </button>
 
+                            {/* Eliminar diagnóstico */}
                             <button
                                 className="btn btn-danger"
                                 onClick={async () => {
+                                    if (!window.confirm("¿Seguro que deseas eliminar este diagnóstico?")) return;
                                     try {
                                         await axios.delete(
                                             `http://127.0.0.1:8000/ophthalmology/diagnoses/${diagnostico.id}/`,
                                             { headers: { Authorization: `Token ${token}` } }
                                         );
-                                        alert("Diagnóstico eliminado");
+                                        alert("Diagnóstico eliminado correctamente");
                                         setDiagnostico(null);
+                                        setMensaje("Diagnóstico eliminado");
                                     } catch (error) {
                                         console.error(error);
                                         alert("Error al eliminar diagnóstico");
@@ -83,17 +91,21 @@ export default function OphthalmologyView() {
                                 Eliminar
                             </button>
 
+                            {/* Ver detalle */}
                             <button
-                                className="btn btn-secondary"
-                                onClick={() => alert("Detalle no implementado aún")}
-                            >
-                                Ver detalle
-                            </button>
+  className="btn btn-secondary"
+  onClick={() =>
+    navigate(`/menu/${perfilId}/oftalmologia/detalle/${diagnostico.id}`)
+  }
+>
+  Ver detalle
+</button>
+
                         </div>
                     </>
                 ) : (
                     <>
-                        <p className="text-muted text-center">No hay diagnóstico registrado.</p>
+                        <p className="text-muted text-center">{mensaje || 'No hay diagnóstico registrado.'}</p>
                         <div className="d-flex justify-content-center">
                             <button
                                 className="btn btn-success"
@@ -104,8 +116,6 @@ export default function OphthalmologyView() {
                         </div>
                     </>
                 )}
-
-                {mensaje && <div className="alert alert-warning mt-3">{mensaje}</div>}
             </div>
 
             <div className="custom-footer">

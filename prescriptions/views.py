@@ -10,4 +10,5 @@ class MedicalPrescriptionViewSet(viewsets.ModelViewSet):
         return MedicalPrescription.objects.filter(patient=self.request.user)
 
     def perform_create(self, serializer):
-        serializer.save(patient=self.request.user)
+        serializer.save(patient=self.request.user)  # ¡Esto es lo importante!
+

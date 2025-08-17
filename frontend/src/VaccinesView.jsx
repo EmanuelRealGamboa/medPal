@@ -1,36 +1,54 @@
 import React, { useState, useEffect } from 'react';
+// ❌ Elimina este import, ya no se usará
+// import VaccineForm from './VaccinesForm';
+
 import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'; // ✅ Usa navigate
 import './VaccinesView.css';
 
-export default function VaccinesView() {
+export default function VaccineList() {
+    const [vaccineRecords, setVaccineRecords] = useState([]);
+    const [vaccineTypes, setVaccineTypes] = useState([]);
     const [vaccineAlerts, setVaccineAlerts] = useState([]);
-    const { perfilId } = useParams();
-    const navigate = useNavigate();
+    const [editingRecord, setEditingRecord] = useState(null);
+
+    const { id: perfilId } = useParams();
+    const navigate = useNavigate(); // ✅ para redirigir
     const token = localStorage.getItem('token');
 
-    useEffect(() => {
-        if (!token) {
-            navigate('/signin');
-            return;
+    const headers = {
+        Authorization: `Token ${token}`,
+        'Content-Type': 'application/json',
+    };
+
+    const fetchData = async () => {
+        try {
+            const [recordsRes, typesRes, alertsRes] = await Promise.all([
+                axios.get('http://127.0.0.1:8000/vacunas/registros/', { headers }),
+                axios.get('http://127.0.0.1:8000/vacunas/tipos/', { headers }),
+                axios.get('http://127.0.0.1:8000/vacunas/alertas/', { headers }),
+            ]);
+            setVaccineRecords(recordsRes.data);
+            setVaccineTypes(typesRes.data);
+            setVaccineAlerts(alertsRes.data);
+        } catch (error) {
+            console.error('Error al cargar los datos:', error);
         }
+    };
 
-        const headers = {
-            Authorization: `Token ${token}`,
-            'Content-Type': 'application/json',
-        };
+    useEffect(() => {
+        fetchData();
+    }, []);
 
-        const fetchAlerts = async () => {
-            try {
-                const alertsRes = await axios.get('http://127.0.0.1:8000/vacunas/alertas/', { headers });
-                setVaccineAlerts(alertsRes.data);
-            } catch (error) {
-                console.error('Error al cargar las alertas:', error);
-            }
-        };
-
-        fetchAlerts();
-    }, [perfilId, navigate, token]);
+    const handleDelete = async (id) => {
+        if (!window.confirm('¿Estás seguro de eliminar este registro?')) return;
+        try {
+            await axios.delete(`http://127.0.0.1:8000/vacunas/registros/${id}/`, { headers });
+            fetchData();
+        } catch (error) {
+            console.error('Error al eliminar:', error);
+        }
+    };
 
     return (
         <div className="perfil-bg">
@@ -52,31 +70,19 @@ export default function VaccinesView() {
 
             {/* Contenido principal */}
             <div className="main-layout p-4">
-                <h3 className="text-center mb-4">Alertas de Vacunas</h3>
+                <h3 className="text-center mb-4">Registros de Vacunas</h3>
 
-                {vaccineAlerts.length === 0 ? (
-                    <div className="alert alert-info text-center">
-                        No hay alertas registradas para este perfil.
-                    </div>
-                ) : (
-                    <div className="row">
-                        {vaccineAlerts.map((alert) => (
-                            <div className="col-md-6 mb-4" key={alert.id}>
-                                <div className={`card h-100 shadow-sm border-${alert.priority === 'urgent' ? 'danger' : alert.priority === 'high' ? 'warning' : 'secondary'}`}>
-                                    <div className="card-body">
-                                        <h5 className="card-title">
-                                            {alert.vaccine_name || 'Vacuna desconocida'}
-                                        </h5>
-                                        <p><strong>Tipo de alerta:</strong> {alert.alert_type}</p>
-                                        <p><strong>Prioridad:</strong> {alert.priority}</p>
-                                        <p><strong>Mensaje:</strong> {alert.message}</p>
-                                        <p><strong>Fecha de alerta:</strong> {new Date(alert.alert_date).toLocaleString()}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
+                <div className="d-flex justify-content-center mb-3">
+                    <button
+                        onClick={() => navigate(`/menu/${perfilId}/vacunas/agregar`)} // ✅ Redirige a formulario
+                        className="btn btn-success"
+                    >
+                        Agregar Vacuna
+                    </button>
+                </div>
+
+
+
             </div>
 
             {/* Footer */}

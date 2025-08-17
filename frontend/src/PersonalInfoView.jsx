@@ -29,7 +29,7 @@ export default function PersonalInfoView() {
         setLoading(false);
         return;
       }
-
+  
       try {
         // Obtener datos del perfil
         const perfilRes = await axios.get(
@@ -37,12 +37,18 @@ export default function PersonalInfoView() {
           { headers: { Authorization: `Token ${token}` } }
         );
         const perfilData = perfilRes.data;
+<<<<<<< HEAD
 
         // Obtener datos personales
+=======
+  
+        // Obtener datos del usuario/personal
+>>>>>>> origin/feature/joss
         const personalRes = await axios.get(
           `http://127.0.0.1:8000/accounts/personal-data/?perfil=${perfilId}`,
           { headers: { Authorization: `Token ${token}` } }
         );
+<<<<<<< HEAD
         const personalData = personalRes.data.length > 0 ? personalRes.data[0] : {};
 
         // Obtener datos del usuario jefe (para foto y otros campos)
@@ -75,12 +81,59 @@ export default function PersonalInfoView() {
 
       } catch (error) {
         // Puedes mostrar un mensaje de error si lo deseas
+=======
+        
+        console.log('Respuesta personalRes.data:', personalRes.data);
+        
+  
+        // Extraer personal_data del UserSerializer
+        const personalData = personalRes.data.personal_data || {};
+  
+        // Ajustar los campos para setFormData
+        setFormData({
+          nombre: `${personalRes.data.name || ''} ${personalRes.data.apellido_paterno || ''} ${personalRes.data.apellido_materno || ''}`.trim(),
+          fechaNacimiento: personalData.fecha_nacimiento || perfilData.fecha_nacimiento || '',
+          genero: personalData.genero || '',
+          grupoRH: personalData.grupoRH || '',
+          contactoEmergencia: personalRes.data.phone || '',
+          nombreContactoEmergencia: `${personalRes.data.name || ''} ${personalRes.data.apellido_paterno || ''} ${personalRes.data.apellido_materno || ''}`.trim(),
+          photoUser: personalRes.data.photoUser || null,
+        });
+  
+        // Foto para preview
+        setPhotoPreview(personalRes.data.photoUser || null);
+  
+      } catch (error) {
+        console.error('Error cargando datos:', error);
+>>>>>>> origin/feature/joss
       } finally {
         setLoading(false);
       }
     }
+<<<<<<< HEAD
+=======
+  
+>>>>>>> origin/feature/joss
     fetchData();
   }, [perfilId, token]);
+  
+  
+  
+  
+  
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/');
+  };
+
+  const handleEdit = () => {
+    navigate(`/menu/${perfilId}/datos-personales/editar`);
+  };
+
+  if (loading) {
+    return <div className="text-center py-5">Cargando datos...</div>;
+  }
 
   const handleLogout = () => {
     localStorage.removeItem('token');

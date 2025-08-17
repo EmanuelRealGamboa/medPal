@@ -16,6 +16,7 @@ import PersonalInfoEdit from './EditPersonalInfo.jsx';
 import ResumenAntecedentes from './ResumenAntecedentes.jsx';
 import OphthalmologyView from './OphthalmologyView.jsx';
 import OphthalmologyForm from './OphthalmologyForm.jsx';
+import OphthalmologyDetail from "./OphthalmologyDetail.jsx";
 import FormAlergias from './FormAlergias.jsx';
 import FormHeredoFamiliares from './FormHeredoFamiliares.jsx';
 import FormIntolerancias from './FormIntolerancias.jsx';
@@ -55,6 +56,10 @@ import EmbarazoView from './EmbarazoView.jsx';
 import ConsultaEmbarazoView from './ConsultaEmbarazoView.jsx';
 import ChronicList from './ChronicConditionList.jsx';
 import ChronicConditionForm from './ChronicConditionForm.jsx';
+import EstudioGabineteForm from './FormGabinete.jsx';
+import EstudioLaboratorioForm from './FormLaboratorio.jsx';
+import EstudioFuncionalForm from './FormFuncional.jsx';
+import EstudioView from './EstudioView.jsx';
 
 
 // Wrappers para pasar ID como prop si el componente no usa useParams()
@@ -83,6 +88,7 @@ export default function App() {
       <Route path="/personalinform" element={<PersonalInfoForm />} />
 
 
+    
 
 
       {/* Verificación protegida */}
@@ -107,14 +113,66 @@ export default function App() {
       {/* Datos personales */}
       <Route path="/menu/:perfilId/datos-personales" element={<ProtectedRoute><PersonalInfoView /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/datos-personales/agregar" element={<ProtectedRoute><PersonalInfoForm /></ProtectedRoute>} />
-      <Route path="/menu/:perfilId/datos-personales/editar" element={<ProtectedRoute><PersonalInfoEdit /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/datos-personales/editar" element={<ProtectedRoute><PersonalInfoForm /></ProtectedRoute>} />
+
+
 
 
       {/* Antecedentes médicos - Resumen */}
       <Route path="/menu/:perfilId/antecedentes-medicos" element={<ProtectedRoute><ResumenAntecedentes /></ProtectedRoute>} />
 
+
       {/* Estudios */}
       <Route path="/menu/:perfilId/estudios" element={<ProtectedRoute><EstudioView /></ProtectedRoute>} />
+        <Route path="/menu/:perfilId/estudios" element={
+        <ProtectedRoute>
+          <EstudioView />
+        </ProtectedRoute>
+      } />
+
+      {/* Rutas para formularios de estudios */}
+      <Route path="/menu/:perfilId/estudios/gabinete" element={
+        <ProtectedRoute>
+          <EstudioGabineteForm />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/menu/:perfilId/estudios/laboratorio" element={
+        <ProtectedRoute>
+          <EstudioLaboratorioForm />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/menu/:perfilId/estudios/funcional" element={
+        <ProtectedRoute>
+          <EstudioFuncionalForm />
+        </ProtectedRoute>
+      } />
+  <Route path="/menu/:perfilId/estudios" element={
+        <ProtectedRoute>
+          <EstudioView />
+        </ProtectedRoute>
+      } />
+
+      {/* Rutas para formularios de estudios */}
+      <Route path="/menu/:perfilId/estudios/gabinete" element={
+        <ProtectedRoute>
+          <EstudioGabineteForm />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/menu/:perfilId/estudios/laboratorio" element={
+        <ProtectedRoute>
+          <EstudioLaboratorioForm />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/menu/:perfilId/estudios/funcional" element={
+        <ProtectedRoute>
+          <EstudioFuncionalForm />
+        </ProtectedRoute>
+      } />
+
 
 
 
@@ -142,11 +200,20 @@ export default function App() {
       <Route path="/menu/:perfilId/oftalmologia" element={<ProtectedRoute><OphthalmologyView /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/oftalmologia/agregar" element={<ProtectedRoute><OphthalmologyForm /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/oftalmologia/editar/:diagnosticoId" element={<ProtectedRoute><OphthalmologyForm editMode /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/oftalmologia/detalle/:diagnosticoId"element={<OphthalmologyDetail />}/>
+
 
       {/* Rutas para formularios de estudios */}
       <Route path="/menu/:perfilId/estudios/gabinete" element={<ProtectedRoute><FormGabinete /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/estudios/laboratorio" element={<ProtectedRoute><FormLaboratorio /></ProtectedRoute>} />
       <Route path="/menu/:perfilId/estudios/funcional" element={<ProtectedRoute><FormFuncional /></ProtectedRoute>} />
+
+      {/* Prescripciones */}
+      <Route path="/menu/:perfilId/prescriptions" element={<ProtectedRoute><PrescriptionList /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/prescriptions/nuevo" element={<ProtectedRoute><PrescriptionForm /></ProtectedRoute>} />
+      <Route path="/menu/:perfilId/prescriptions/editar/:id" element={<ProtectedRoute><PrescriptionFormWrapper /></ProtectedRoute>} />
+
+
 
       {/* Edición/Eliminación específicas de Estudios */}
       <Route path="/menu/:perfilId/estudios/laboratorio/editar-eliminar/:id" element={<ProtectedRoute><EditDeletLaboratorio /></ProtectedRoute>} />
@@ -188,5 +255,15 @@ export default function App() {
   );
 }
 
+
+function VaccinesViewWrapper() {
+  const { id } = useParams();
+  return <VaccinesView perfilId={id} />;
+}
+
+function VaccinesFormWrapper() {
+  const { id, vacunaId } = useParams();
+  return <VaccinesForm perfilId={id} vacunaId={vacunaId} />;
+}
 
 

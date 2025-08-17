@@ -8,3 +8,17 @@ router.register(r'diagnoses', OphthalmologyDiagnosisViewSet, basename='ophthalmo
 urlpatterns = [
     path('', include(router.urls)),
 ]
+INSTALLED_APPS = [
+    ...,
+    'corsheaders',
+]
+
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    ...,
+]
+
+# Permitir solo tu frontend
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5176",
+]
