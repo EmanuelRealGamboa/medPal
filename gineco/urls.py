@@ -5,7 +5,10 @@ from .views import (
     PregnancyViewSet,
     PregnancyCheckViewSet,
     ClinicalNoteViewSet,
-    prediccion_por_perfil  # 👈 Importamos la vista personalizada
+    prediccion_por_perfil,
+    embarazos_por_perfil,
+    checks_por_perfil,
+    notes_por_perfil
 )
 
 # Rutas automáticas para los ViewSet
@@ -18,5 +21,8 @@ router.register(r'notes', ClinicalNoteViewSet)
 # Rutas finales
 urlpatterns = [
     path('', include(router.urls)),
-    path('menstrual/<int:perfilId>/prediccion/', prediccion_por_perfil),  # 👈 Ruta personalizada
+    path('menstrual/<int:perfilId>/prediccion/', prediccion_por_perfil),  
+    path('pregnancies/<int:perfilId>/', embarazos_por_perfil),
+    path('checks/<int:perfilId>/', checks_por_perfil),  
+    path('notes/<int:perfilId>/', notes_por_perfil),
 ]

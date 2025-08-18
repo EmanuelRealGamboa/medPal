@@ -2,6 +2,39 @@
 html, body, #root { height: 100%; }
 body { margin: 0; }
 
+
+/* Fechas del ciclo con degradado elegante */
+.highlight {
+  background: linear-gradient(135deg, #ffd6e0 0%, #ff94b6 100%);
+  color: #333 !important;
+  border-radius: 50% !important;
+}
+
+/* Día actual (opcional) */
+.react-calendar__tile--now {
+  background-color: #ff94b6 !important;
+  color: white !important;
+  border-radius: 50% !important;
+}
+
+/* Hover suave */
+.react-calendar__tile:enabled:hover {
+  background-color: #ffe4ec !important;
+}
+
+/* Estilo general del calendario */
+.react-calendar {
+  border: none;
+  font-family: 'Arial', sans-serif;
+}
+
+.react-calendar__tile {
+  height: 50px;
+  width: 50px;
+  margin: 2px;
+}
+
+
 /* Paleta base ya usada en la pantalla anterior */
 :root{
   --mp-mint:#A7D0C8;   /* barra superior */
