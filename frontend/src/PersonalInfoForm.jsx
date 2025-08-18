@@ -23,76 +23,50 @@ export default function PersonalInfoForm() {
   const [photoPreview, setPhotoPreview] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Carga datos del perfil, personal-data y user para prellenar formulario
   useEffect(() => {
     async function fetchData() {
-      if (!token || !perfilId) {
-        toast.error('Falta token o perfilId');
-        setLoading(false);
-        return;
-      }
+      if (!token || !perfilId) return;
 
       try {
-        // Obtener datos del perfil
         const perfilRes = await axios.get(
           `http://127.0.0.1:8000/accounts/perfiles/${perfilId}/`,
           { headers: { Authorization: `Token ${token}` } }
         );
-        const perfilData = perfilRes.data;
 
-        // Obtener datos personales
         const personalRes = await axios.get(
           `http://127.0.0.1:8000/accounts/personal-data/?perfil=${perfilId}`,
           { headers: { Authorization: `Token ${token}` } }
         );
-        const personalData = personalRes.data.length > 0 ? personalRes.data[0] : {};
 
-        // Obtener datos del usuario jefe (para foto y otros campos)
-        let userData = {};
-        if (perfilData.jefe) {
-          const userRes = await axios.get(
-            `http://127.0.0.1:8000/accounts/users/${perfilData.jefe}/`,
-            { headers: { Authorization: `Token ${token}` } }
-          );
-          userData = userRes.data;
-        }
+        const personalData = personalRes.data.personal_data || personalRes.data[0]?.personal_data || {};
 
         setFormData({
-          nombre: perfilData.nombre || '',
-          fechaNacimiento: perfilData.fecha_nacimiento || '',
+          nombre: `${personalRes.data.name || ''} ${personalRes.data.apellido_paterno || ''} ${personalRes.data.apellido_materno || ''}`.trim(),
+          fechaNacimiento: personalData.fecha_nacimiento || perfilRes.data.fecha_nacimiento || '',
           genero: personalData.genero || '',
           grupoRH: personalData.grupoRH || '',
-          contactoEmergencia: personalData.contactoEmergencia || userData.contactoEmergencia || '',
-          nombreContactoEmergencia: personalData.nombre_contacto_emergencia || userData.nombreContactoEmergencia || '',
-          photoUser: null,
+          contactoEmergencia: personalRes.data.phone || personalData.contactoEmergencia || '',
+          nombreContactoEmergencia: `${personalRes.data.name || ''} ${personalRes.data.apellido_paterno || ''} ${personalRes.data.apellido_materno || ''}`.trim(),
+          photoUser: personalRes.data.photoUser || null,
         });
 
-        if (personalData.photoUser) {
-          setPhotoPreview(personalData.photoUser);
-        } else if (userData.photoUser) {
-          setPhotoPreview(userData.photoUser);
-        } else {
-          setPhotoPreview(null);
-        }
-
+        setPhotoPreview(personalRes.data.photoUser || null);
       } catch (error) {
-        console.error('Error cargando datos:', error);
-        toast.error('Error al cargar los datos para editar');
+        console.error(error);
       } finally {
         setLoading(false);
       }
     }
+
     fetchData();
   }, [perfilId, token]);
 
   const handleInputChange = e => {
     const { name, value } = e.target;
-
     if (name === 'nombreContactoEmergencia') {
       const nombreRegex = /^[A-Za-záéíóúÁÉÍÓÚñÑ\s]*$/;
       if (!nombreRegex.test(value)) return;
     }
-
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
@@ -112,15 +86,7 @@ export default function PersonalInfoForm() {
   const handleSubmit = async e => {
     e.preventDefault();
 
-    const nombreRegex = /^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$/;
-    if (!nombreRegex.test(formData.nombreContactoEmergencia)) {
-      toast.error('El nombre del contacto de emergencia solo puede contener letras y espacios.');
-      return;
-    }
-
     const dataToSend = new FormData();
-    dataToSend.append('perfil', perfilId);
-    dataToSend.append('nombre', formData.nombre);
     dataToSend.append('fecha_nacimiento', formData.fechaNacimiento);
     dataToSend.append('genero', formData.genero);
     dataToSend.append('grupoRH', formData.grupoRH);
@@ -132,23 +98,20 @@ export default function PersonalInfoForm() {
     }
 
     try {
-      // Consulta si ya existe personalData para perfilId (para PUT o POST)
       const existingRes = await axios.get(
         `http://127.0.0.1:8000/accounts/personal-data/?perfil=${perfilId}`,
         { headers: { Authorization: `Token ${token}` } }
       );
 
       if (existingRes.data.length > 0) {
-        // Actualizar (PUT) el primer registro que encontró
         const id = existingRes.data[0].id;
-        await axios.put(
+        await axios.patch(
           `http://127.0.0.1:8000/accounts/personal-data/${id}/`,
           dataToSend,
           { headers: { Authorization: `Token ${token}`, 'Content-Type': 'multipart/form-data' } }
         );
         toast.success('Datos actualizados correctamente');
       } else {
-        // Crear nuevo (POST)
         await axios.post(
           'http://127.0.0.1:8000/accounts/personal-data/',
           dataToSend,
@@ -157,11 +120,9 @@ export default function PersonalInfoForm() {
         toast.success('Datos guardados correctamente');
       }
 
-      setTimeout(() => {
-        navigate(`/menu/${perfilId}/datos-personales`);
-      }, 1500);
+      setTimeout(() => navigate(`/menu/${perfilId}/datos-personales`), 1500);
     } catch (error) {
-      console.error('Error guardando datos:', error);
+      console.error('Error guardando datos:', error.response?.data || error);
       toast.error('Error al guardar los datos');
     }
   };
@@ -177,7 +138,6 @@ export default function PersonalInfoForm() {
 
   return (
     <div className="main-layout">
-      {/* Navbar */}
       <nav className="custom-navbar d-flex justify-content-between align-items-center px-4 py-2">
         <h4 className="text-light m-0">
           <i className="bi bi-person-circle me-2"></i>MedPal
@@ -185,69 +145,37 @@ export default function PersonalInfoForm() {
         <button onClick={handleLogout} className="btn btn-outline-light">Logout</button>
       </nav>
 
-
-      {/* Formulario */}
-
-
       <main className="form-section d-flex justify-content-center align-items-center py-4">
         <div className="form-card p-4 rounded shadow-sm custom-width">
           <h3 className="text-center mb-4">Editar Datos Personales</h3>
           <form onSubmit={handleSubmit} encType="multipart/form-data">
             <div className="row mb-3">
-              {/* Foto */}
               <div className="col-md-4 mb-3">
                 <label className="form-label">Foto de Perfil</label>
                 <div className="photo-placeholder border rounded bg-light d-flex justify-content-center align-items-center flex-column">
                   {photoPreview ? (
-                    <img
-                      src={photoPreview}
-                      alt="Preview"
-                      className="img-fluid rounded"
-                      style={{ maxHeight: '120px', objectFit: 'cover' }}
-                    />
+                    <img src={photoPreview} alt="Preview" className="img-fluid rounded" style={{ maxHeight: '120px', objectFit: 'cover' }} />
                   ) : (
                     <i className="bi bi-person-circle fs-1 text-secondary"></i>
                   )}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="form-control mt-2"
-                    onChange={handleFileChange}
-                  />
+                  <input type="file" accept="image/*" className="form-control mt-2" onChange={handleFileChange} />
                 </div>
               </div>
 
               <div className="col-md-8">
                 <div className="mb-3">
                   <label className="form-label">Nombre Completo</label>
-                  <input
-                    type="text"
-                    name="nombre"
-                    value={formData.nombre}
-                    onChange={handleInputChange}
-                    className="form-control bg-light"
-                  />
+                  <input type="text" name="nombre" value={formData.nombre} onChange={handleInputChange} className="form-control bg-light" disabled />
                 </div>
 
                 <div className="row gx-5">
                   <div className="col-md-6 mb-3">
                     <label className="form-label">Fecha de nacimiento</label>
-                    <input
-                      type="date"
-                      name="fechaNacimiento"
-                      value={formData.fechaNacimiento}
-                      onChange={handleInputChange}
-                      className="form-control bg-light"
-                    />
+                    <input type="date" name="fechaNacimiento" value={formData.fechaNacimiento} onChange={handleInputChange} className="form-control bg-light" />
                   </div>
                   <div className="col-md-6 mb-3">
                     <label className="form-label">Género</label>
-                    <select
-                      name="genero"
-                      value={formData.genero}
-                      onChange={handleInputChange}
-                      className="form-select bg-light"
-                    >
+                    <select name="genero" value={formData.genero} onChange={handleInputChange} className="form-select bg-light">
                       <option value="">Selecciona</option>
                       <option value="Masculino">Masculino</option>
                       <option value="Femenino">Femenino</option>
@@ -261,12 +189,7 @@ export default function PersonalInfoForm() {
             <div className="row mb-3">
               <div className="col-md-6">
                 <label className="form-label">Grupo RH</label>
-                <select
-                  name="grupoRH"
-                  value={formData.grupoRH}
-                  onChange={handleInputChange}
-                  className="form-select bg-light"
-                >
+                <select name="grupoRH" value={formData.grupoRH} onChange={handleInputChange} className="form-select bg-light">
                   <option value="">Selecciona</option>
                   <option value="O+">O+</option>
                   <option value="O-">O-</option>
@@ -280,25 +203,13 @@ export default function PersonalInfoForm() {
 
                 <div className="mt-3">
                   <label className="form-label">Teléfono</label>
-                  <input
-                    type="text"
-                    name="contactoEmergencia"
-                    value={formData.contactoEmergencia}
-                    onChange={handleInputChange}
-                    className="form-control bg-light"
-                  />
+                  <input type="text" name="contactoEmergencia" value={formData.contactoEmergencia} onChange={handleInputChange} className="form-control bg-light" />
                 </div>
               </div>
 
               <div className="col-md-6">
                 <label className="form-label">Contacto de Emergencia</label>
-                <input
-                  type="text"
-                  name="nombreContactoEmergencia"
-                  value={formData.nombreContactoEmergencia}
-                  onChange={handleInputChange}
-                  className="form-control bg-light"
-                />
+                <input type="text" name="nombreContactoEmergencia" value={formData.nombreContactoEmergencia} onChange={handleInputChange} className="form-control bg-light" />
               </div>
             </div>
 

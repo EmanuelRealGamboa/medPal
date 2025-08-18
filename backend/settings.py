@@ -194,11 +194,11 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 #Cors Autenthications (React)
 CORS_ALLOWED_ORIGINS = [
-
     'http://localhost:5173',
-
-    
+    'http://localhost:5174',
+    'http://localhost:5176',
 ]
+
 
  
 REST_FRAMEWORK = {
@@ -226,4 +226,3 @@ CSRF_TRUSTED_ORIGINS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-

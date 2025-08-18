@@ -1,3 +1,4 @@
+# serializers.py
 from rest_framework import serializers
 from .models import ChronicCondition, Symptom, Complication
 
@@ -18,7 +19,7 @@ class ChronicConditionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChronicCondition
         fields = (
-            'id', 'patient_user', 'disease_name', 'diagnosis_date', 'age_at_diagnosis',
+            'id', 'perfil', 'disease_name', 'diagnosis_date', 'age_at_diagnosis',
             'diagnosing_institution', 'diagnosing_physician',
             'current_status', 'classification_system', 'classification_level',
             'is_active', 'created_at', 'updated_at',
@@ -27,7 +28,6 @@ class ChronicConditionSerializer(serializers.ModelSerializer):
         read_only_fields = ('created_at', 'updated_at')
 
     def validate(self, attrs):
-        # Si viene un nivel de clasificación, debe venir el sistema que lo define.
         lvl = attrs.get('classification_level')
         sys = attrs.get('classification_system')
         if lvl and not sys:
@@ -54,7 +54,6 @@ class ChronicConditionSerializer(serializers.ModelSerializer):
             setattr(instance, attr, val)
         instance.save()
 
-        # Reemplazo completo de colecciones si vienen en el payload
         if symptoms_data is not None:
             instance.symptoms.all().delete()
             for s in symptoms_data:

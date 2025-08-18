@@ -4,9 +4,9 @@ import axios from 'axios';
 import './OphthalmologyForm.css';
 
 const Ophthalmology = () => {
-  const [loadingPatients, setLoadingPatients] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
-    perfil: '',          // Aquí usamos perfil (id) para enviar al backend
+    perfil: '',
     exam_date: '',
     attention_type: '',
     diagnosis: '',
@@ -14,37 +14,12 @@ const Ophthalmology = () => {
     document: null,
   });
 
-  const [patientName, setPatientName] = useState(''); // Para mostrar nombre paciente
+  const [patientName, setPatientName] = useState('');
   const [errors, setErrors] = useState({});
   const [previewFileName, setPreviewFileName] = useState('');
   const navigate = useNavigate();
-  const { perfilId } = useParams();
+  const { perfilId, diagnosticoId } = useParams();
   const token = localStorage.getItem('token');
-
-  useEffect(() => {
-    const fetchPerfil = async () => {
-      try {
-        const res = await axios.get(`http://127.0.0.1:8000/accounts/perfiles/${perfilId}/`, {
-          headers: { Authorization: `Token ${token}` },
-        });
-
-        const perfilData = res.data;
-        // Ajusta según el campo que tengas para el nombre completo
-        setPatientName(perfilData.nombre || 'Paciente');
-        setFormData(prev => ({ ...prev, perfil: perfilId }));
-      } catch (error) {
-        console.error('Error fetching perfil:', error);
-        setPatientName('Paciente');
-        setFormData(prev => ({ ...prev, perfil: perfilId }));
-      } finally {
-        setLoadingPatients(false);
-      }
-    };
-
-    if (perfilId) {
-      fetchPerfil();
-    }
-  }, [perfilId, token]);
 
   const attentionTypes = [
     { value: 'routine', label: 'Routine Check-up' },
@@ -52,6 +27,42 @@ const Ophthalmology = () => {
     { value: 'postop', label: 'Postoperative' },
     { value: 'preventive', label: 'Preventive Screening' },
   ];
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        // Traer datos del perfil (nombre del paciente)
+        const perfilRes = await axios.get(
+          `http://127.0.0.1:8000/accounts/perfiles/${perfilId}/`,
+          { headers: { Authorization: `Token ${token}` } }
+        );
+        setPatientName(perfilRes.data.nombre || 'Paciente');
+        setFormData(prev => ({ ...prev, perfil: perfilId }));
+
+        // Si hay diagnosticoId, es edición => cargar datos
+        if (diagnosticoId) {
+          const diagRes = await axios.get(
+            `http://127.0.0.1:8000/ophthalmology/diagnoses/${diagnosticoId}/`,
+            { headers: { Authorization: `Token ${token}` } }
+          );
+          setFormData({
+            perfil: perfilId,
+            exam_date: diagRes.data.exam_date || '',
+            attention_type: diagRes.data.attention_type || '',
+            diagnosis: diagRes.data.diagnosis || '',
+            notes: diagRes.data.notes || '',
+            document: null, // No se carga archivo existente
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (perfilId) fetchData();
+  }, [perfilId, diagnosticoId, token]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -82,9 +93,8 @@ const Ophthalmology = () => {
     e.preventDefault();
     setErrors({});
     const form = new FormData();
-
     form.append('perfil', perfilId);
-    form.append('patient_name', patientName); // Usa el nombre correcto
+    form.append('patient_name', patientName);
     form.append('exam_date', formData.exam_date);
     form.append('attention_type', formData.attention_type);
     form.append('diagnosis', formData.diagnosis);
@@ -94,27 +104,24 @@ const Ophthalmology = () => {
     }
 
     try {
-      await axios.post(
-        'http://127.0.0.1:8000/ophthalmology/diagnoses/',
-        form,
-        {
-          headers: {
-            Authorization: `Token ${token}`,
-            // No pongas 'Content-Type': 'application/json'
-          }
-        }
-      );
-      alert('Diagnosis submitted successfully!');
-
-      setFormData({
-        perfil: perfilId,
-        exam_date: '',
-        attention_type: '',
-        diagnosis: '',
-        notes: '',
-        document: null,
-      });
-      setPreviewFileName('');
+      if (diagnosticoId) {
+        // Edición
+        await axios.put(
+          `http://127.0.0.1:8000/ophthalmology/diagnoses/${diagnosticoId}/`,
+          form,
+          { headers: { Authorization: `Token ${token}` } }
+        );
+        alert('Diagnóstico actualizado correctamente');
+      } else {
+        // Creación
+        await axios.post(
+          'http://127.0.0.1:8000/ophthalmology/diagnoses/',
+          form,
+          { headers: { Authorization: `Token ${token}` } }
+        );
+        alert('Diagnóstico registrado correctamente');
+      }
+      navigate(`/menu/${perfilId}/oftalmologia`);
     } catch (error) {
       console.error('Submission error:', error);
       if (error.response?.data) {
@@ -132,13 +139,12 @@ const Ophthalmology = () => {
     }
   };
 
-  if (loadingPatients) {
-    return <p style={{ textAlign: 'center', marginTop: '2rem' }}>Loading patient info...</p>;
+  if (loading) {
+    return <p style={{ textAlign: 'center', marginTop: '2rem' }}>Cargando información...</p>;
   }
 
   return (
     <div className="main-layout">
-      {/* Navbar */}
       <nav className="custom-navbar d-flex justify-content-between align-items-center px-4 py-2">
         <h4 className="text-light m-0">
           <i className="bi bi-person-circle me-2"></i>MedPal
@@ -148,26 +154,20 @@ const Ophthalmology = () => {
         </button>
       </nav>
 
-      {/* Formulario centrado */}
       <main className="form-section d-flex justify-content-center align-items-center py-4">
         <div className="form-card p-4 rounded shadow-sm custom-width">
-          <h2 className="form-ophthalmology text-center mb-4">Ophthalmology Diagnosis</h2>
+          <h2 className="form-ophthalmology text-center mb-4">
+            {diagnosticoId ? 'Editar diagnóstico oftalmológico' : 'Nuevo diagnóstico oftalmológico'}
+          </h2>
 
           {errors.form && <p className="form-error">{errors.form}</p>}
 
           <form onSubmit={handleSubmit} className="ophthalmology-form">
             <div className="row">
-              {/* Columna izquierda */}
               <div className="col-md-6">
                 <div className="form-group mb-3">
                   <label>Nombre completo:</label>
-                  <input
-                    type="text"
-                    name="patientName"
-                    value={patientName}
-                    disabled
-                    className="form-control"
-                  />
+                  <input type="text" value={patientName} disabled className="form-control" />
                 </div>
 
                 <div className="form-group mb-3">
@@ -193,14 +193,15 @@ const Ophthalmology = () => {
                   >
                     <option value="">Select type</option>
                     {attentionTypes.map((type) => (
-                      <option key={type.value} value={type.value}>{type.label}</option>
+                      <option key={type.value} value={type.value}>
+                        {type.label}
+                      </option>
                     ))}
                   </select>
                   {errors.attention_type && <p className="form-error">{errors.attention_type}</p>}
                 </div>
               </div>
 
-              {/* Columna derecha */}
               <div className="col-md-6">
                 <div className="form-group mb-3">
                   <label htmlFor="diagnosis">Diagnosis:</label>
@@ -232,7 +233,6 @@ const Ophthalmology = () => {
                     name="document"
                     accept=".jpg,.jpeg,.png,.pdf"
                     onChange={handleChange}
-                    required
                     className="form-control"
                   />
                   {previewFileName && <p className="preview-filename">Selected file: {previewFileName}</p>}
@@ -245,19 +245,18 @@ const Ophthalmology = () => {
               <button
                 type="button"
                 className="btn-save"
-                onClick={() => navigate(`/menu/${perfilId}`)}
+                onClick={() => navigate(`/menu/${perfilId}/oftalmologia`)}
               >
-                Volver a módulos
+                Cancelar
               </button>
               <button type="submit" className="btn-save">
-                Guardar
+                {diagnosticoId ? 'Actualizar' : 'Guardar'}
               </button>
             </div>
           </form>
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="custom-footer text-center text-light py-2">
         © 2025 MedPal
       </footer>

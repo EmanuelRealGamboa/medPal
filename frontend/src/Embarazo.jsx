@@ -6,7 +6,8 @@ import "./Embarazo.css";
 export default function EmbarazoForm({ editMode = false }) {
   const { perfilId, embarazoId } = useParams();
   const navigate = useNavigate();
-  const API_URL = "http://127.0.0.1:8000/api/embarazo/";
+  const API_URL = "http://127.0.0.1:8000/menstrual/";         // Para Menstrual si lo necesitas
+  const API_URL_PREG = "http://127.0.0.1:8000/pregnancies/";  // Para Pregnancy
 
   const [formData, setFormData] = useState({
     fum: "",
@@ -19,7 +20,7 @@ export default function EmbarazoForm({ editMode = false }) {
     if (editMode && embarazoId) {
       const token = localStorage.getItem("token");
       axios
-        .get(`${API_URL}${embarazoId}/`, { headers: { Authorization: `Token ${token}` } })
+        .get(`${API_URL_PREG}${embarazoId}/`, { headers: { Authorization: `Token ${token}` } })
         .then((res) => setFormData(res.data))
         .catch((err) => console.error(err));
     }
@@ -37,10 +38,10 @@ export default function EmbarazoForm({ editMode = false }) {
     const token = localStorage.getItem("token");
     try {
       if (editMode && embarazoId) {
-        await axios.put(`${API_URL}${embarazoId}/`, formData, { headers: { Authorization: `Token ${token}` } });
+        await axios.put(`${API_URL_PREG}${embarazoId}/`, formData, { headers: { Authorization: `Token ${token}` } });
         alert("Datos de embarazo actualizados");
       } else {
-        await axios.post(API_URL, { ...formData, perfil: perfilId }, { headers: { Authorization: `Token ${token}` } });
+        await axios.post(API_URL_PREG, { ...formData, perfil: perfilId }, { headers: { Authorization: `Token ${token}` } });
         alert("Datos de embarazo guardados");
       }
       navigate(`/menu/${perfilId}/gineco/Modulos_Embarazo`);
@@ -57,7 +58,7 @@ export default function EmbarazoForm({ editMode = false }) {
 
     const token = localStorage.getItem("token");
     try {
-      await axios.delete(`${API_URL}${embarazoId}/`, { headers: { Authorization: `Token ${token}` } });
+      await axios.delete(`${API_URL_PREG}${embarazoId}/`, { headers: { Authorization: `Token ${token}` } });
       alert("Registro eliminado");
       navigate(`/menu/${perfilId}/gineco/Modulos_Embarazo`);
     } catch (error) {
