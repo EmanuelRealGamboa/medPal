@@ -6,7 +6,7 @@ from django.urls import path
 from .views import SignupView, VerifyCodeView, SigninView, LogoutView
 from .views import RequestPasswordResetView, ResetPasswordView,UserListCreateAPIView
 from django.urls import path
-
+from .views import CurrentUserView
 from django.urls import path
 
 from .views import (
@@ -61,4 +61,8 @@ urlpatterns = [
 
 
 
+]
+
+urlpatterns += [
+    path('user/me/', CurrentUserView.as_view(), name='user-me'),
 ]

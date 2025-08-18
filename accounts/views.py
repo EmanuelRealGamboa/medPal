@@ -1,21 +1,28 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, generics, permissions
+from rest_framework import status
+from .serializers import SignupSerializer, VerifyCodeSerializer, SigninSerializer, RequestPasswordResetSerializer, ResetPasswordSerializer
 from rest_framework.authtoken.models import Token
-from rest_framework.authentication import TokenAuthentication
-from django.contrib.auth import get_user_model, logout
+from django.contrib.auth import logout
+from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.core.mail import send_mail
 from django.utils import timezone
-from django.shortcuts import get_object_or_404
 import random
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
-from .serializers import (
-    SignupSerializer, VerifyCodeSerializer, SigninSerializer,
-    RequestPasswordResetSerializer, ResetPasswordSerializer,
-    UserSerializer, PerfilSerializer, PersonalDataSerializer
-)
-from .models import Perfil, PersonalData
+from .serializers import UserSerializer
+
+from rest_framework import generics, permissions
+from rest_framework.response import Response
+from .serializers import PerfilSerializer
+from .models import Perfil
+from django.shortcuts import get_object_or_404
+from rest_framework import generics, permissions
+from .serializers import PersonalDataSerializer
+from .models import PersonalData
+
 
 # Modelo de usuario
 User = get_user_model()
@@ -24,6 +31,21 @@ User = get_user_model()
 # ===========================
 # Auth Views
 # ===========================
+
+
+
+#Definimos que User sera nuestro modelo que hemos hecho en models.py (Modelo editado)
+User = get_user_model()
+
+
+class CurrentUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
+
+
 
 class SignupView(APIView):
     def post(self, request):
