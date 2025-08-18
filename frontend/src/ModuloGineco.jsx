@@ -15,7 +15,7 @@ const ModuloGineco = () => {
   }, [navigate]);
 
   const sections = [
-    { label: "Registro Menstrual", color: "#FF5CA2", path: `/menu/${perfilId}/gineco/registro-menstrual`  },
+    { label: "Registro Menstrual", color: "#FF5CA2", path: `/menu/${perfilId}/gineco/prediccion-ciclo`  },
     { label: "Seguimiento de Embarazos", color: "#E3B4EC", path: `/menu/${perfilId}/gineco/Modulos_Embarazo` }
   ];
 

@@ -26,11 +26,16 @@ from .models import PersonalData
 
 
 
-
 #Definimos que User sera nuestro modelo que hemos hecho en models.py (Modelo editado)
 User = get_user_model()
 
 
+class CurrentUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
 
 
 class SignupView(APIView):

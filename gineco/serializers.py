@@ -1,10 +1,13 @@
 from rest_framework import serializers
 from .models import MenstrualRecord, Pregnancy, PregnancyCheck, ClinicalNote
 
+
 class MenstrualRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = MenstrualRecord
         fields = '__all__'
+        read_only_fields = ['user']   
+
 
 class PregnancySerializer(serializers.ModelSerializer):
     class Meta:

@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";import axios from "axios";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "./CalculadoraMenstrual.css";
 
 export default function CalculadoraMenstrual() {
   const { perfilId } = useParams();
-  const navigate = useNavigate();
   const location = useLocation();
   const registroId = new URLSearchParams(location.search).get("registroId");
+  const navigate = useNavigate();
 
+  const token = localStorage.getItem("token");
+
+  const [loading, setLoading] = useState(true);
+  const [patientName, setPatientName] = useState("Paciente");
   const [formData, setFormData] = useState({
+    perfil: 5,
     fecha_ultima_menstruacion: "",
     duracion_promedio_ciclo: "",
     duracion_promedio_sangrado: "",
@@ -18,71 +22,93 @@ export default function CalculadoraMenstrual() {
     observaciones: "",
     medicacion_hormonal: "",
   });
+  const [errors, setErrors] = useState({});
 
-  // Si viene registroId, cargar datos del backend
+  // Cargar datos de perfil y del registro (si existe)
   useEffect(() => {
-    if (registroId) {
-      const fetchData = async () => {
-        try {
-          const token = localStorage.getItem("token");
-          const response = await axios.get(
+    async function fetchData() {
+      try {
+        // Traer datos del perfil (ej: nombre del paciente)
+        const perfilRes = await axios.get(
+          `http://127.0.0.1:8000/accounts/perfiles/${perfilId}/`,
+          { headers: { Authorization: `Token ${token}` } }
+        );
+        setPatientName(perfilRes.data.nombre || "Paciente");
+
+        // Si es edición, traer registro existente
+        if (registroId) {
+          const regRes = await axios.get(
             `http://127.0.0.1:8000/gineco/menstrual/${registroId}/`,
             { headers: { Authorization: `Token ${token}` } }
           );
-          const data = response.data;
           setFormData({
-            fecha_ultima_menstruacion: data.fecha_ultima_menstruacion || "",
-            duracion_promedio_ciclo: data.duracion_promedio_ciclo || "",
-            duracion_promedio_sangrado: data.duracion_promedio_sangrado || "",
-            es_regular: data.es_regular !== null ? data.es_regular : "",
-            sintomas: data.sintomas || "",
-            observaciones: data.observaciones || "",
-            medicacion_hormonal: data.medicacion_hormonal || "",
+            perfil: perfilId,
+            fecha_ultima_menstruacion: regRes.data.fecha_ultima_menstruacion || "",
+            duracion_promedio_ciclo: regRes.data.duracion_promedio_ciclo || "",
+            duracion_promedio_sangrado: regRes.data.duracion_promedio_sangrado || "",
+            es_regular: regRes.data.es_regular !== null ? regRes.data.es_regular : "",
+            sintomas: regRes.data.sintomas || "",
+            observaciones: regRes.data.observaciones || "",
+            medicacion_hormonal: regRes.data.medicacion_hormonal || "",
           });
-        } catch (error) {
-          console.error(error);
-          alert("Error al cargar registro menstrual");
         }
-      };
-      fetchData();
+      } catch (error) {
+        console.error("Error cargando datos:", error);
+      } finally {
+        setLoading(false);
+      }
     }
-  }, [registroId]);
+
+    if (perfilId) fetchData();
+  }, [perfilId, registroId, token]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: type === "checkbox" ? checked : value,
-    });
+    }));
   };
 
-  const handleSubmit = async () => {
-    if (!perfilId) return alert("ID de perfil no válido");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrors({});
     try {
-      const token = localStorage.getItem("token");
+      const payload = {
+        ...formData,
+        es_regular: formData.es_regular === "true" || formData.es_regular === true,
+      };
+
       if (registroId) {
-        // PUT
+        // Modo edición
         await axios.put(
           `http://127.0.0.1:8000/gineco/menstrual/${registroId}/`,
-          { ...formData, user: perfilId },
+          payload,
           { headers: { Authorization: `Token ${token}` } }
         );
-        alert("Registro menstrual actualizado");
+        alert("Registro menstrual actualizado correctamente");
       } else {
-        // POST
-        await axios.post(
-          `http://127.0.0.1:8000/gineco/menstrual/`,
-          { ...formData, user: perfilId },
-          { headers: { Authorization: `Token ${token}` } }
-        );
-        alert("Registro menstrual guardado");
+        // Modo creación
+        await axios.post(`http://127.0.0.1:8000/gineco/menstrual/`, payload, {
+          headers: { Authorization: `Token ${token}` },
+        });
+        alert("Registro menstrual guardado correctamente");
       }
+
       navigate(`/menu/${perfilId}/gineco/prediccion-ciclo`);
     } catch (error) {
-      console.error(error);
-      alert("Error al guardar el registro menstrual");
+      console.error("Error guardando:", error.response?.data || error);
+      if (error.response?.data) {
+        setErrors(error.response.data);
+      } else {
+        setErrors({ form: "Error inesperado al guardar" });
+      }
     }
   };
+
+  if (loading) {
+    return <p style={{ textAlign: "center", marginTop: "2rem" }}>Cargando información...</p>;
+  }
 
   return (
     <div className="calculadora-container">
@@ -91,30 +117,18 @@ export default function CalculadoraMenstrual() {
           <span className="logo-med">Med</span>
           <span className="logo-pal">Pal</span>
         </div>
-        <div className="navbar-user-icon">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.8"
-            stroke="currentColor"
-            className="user-icon"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 20.25a8.25 8.25 0 1 1 15 0v.75H4.5v-.75Z"
-            />
-          </svg>
-        </div>
       </nav>
 
       <main className="main-panel">
         <div className="panel-card">
           <h1 className="panel-title">Calculadora menstrual</h1>
-          <p style={{ fontSize: "0.9rem", color: "#555" }}>Perfil activo: {perfilId}</p>
+          <p style={{ fontSize: "0.9rem", color: "#555" }}>
+            Perfil activo: {patientName} (ID {perfilId})
+          </p>
 
-          <form className="form-grid">
+          {errors.form && <p className="form-error">{errors.form}</p>}
+
+          <form className="form-grid" onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="fecha_ultima_menstruacion">Fecha del último período</label>
               <input
@@ -198,7 +212,7 @@ export default function CalculadoraMenstrual() {
             </div>
 
             <div className="form-button">
-              <button type="button" onClick={handleSubmit}>
+              <button type="submit">
                 {registroId ? "Actualizar registro" : "Guardar registro"}
               </button>
             </div>
