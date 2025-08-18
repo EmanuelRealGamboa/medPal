@@ -7,7 +7,10 @@ export default function ChronicConditionList() {
   const [conditions, setConditions] = useState([]);
   const { perfilId } = useParams();
   const navigate = useNavigate();
-  const API_URL = `http://127.0.0.1:8000/chronic-conditions/?perfil=${perfilId}`;
+  const API_URL = `http://127.0.0.1:8000/api/chronic/chronic-conditions/?perfil=${perfilId}`;
+
+  const token = localStorage.getItem("token");
+  const headers = { Authorization: `Token ${token}` };
 
   useEffect(() => {
     fetchConditions();
@@ -15,21 +18,39 @@ export default function ChronicConditionList() {
 
   const fetchConditions = async () => {
     try {
-      const res = await axios.get(API_URL);
+      const res = await axios.get(API_URL, { headers });
       setConditions(res.data);
     } catch (err) {
-      console.error("Error al obtener condiciones:", err);
+      console.error("Error al obtener condiciones:", err.response?.data || err);
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("¿Seguro que deseas eliminar este registro?")) {
-      try {
-        await axios.delete(`http://127.0.0.1:8000/chronic-conditions/${id}/`);
-        fetchConditions(); // recargar después de eliminar
-      } catch (err) {
-        console.error("Error al eliminar:", err);
-      }
+    if (!window.confirm("¿Seguro que deseas eliminar este registro?")) return;
+    try {
+      await axios.delete(
+        `http://127.0.0.1:8000/api/chronic/chronic-conditions/${id}/`,
+        { headers }
+      );
+      fetchConditions();
+    } catch (err) {
+      console.error("Error al eliminar:", err.response?.data || err);
+    }
+  };
+
+  // Función para asignar color según estado
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case "CONTROLLED":
+        return <span className="badge bg-success">Controlado</span>;
+      case "POORLY_CONTROLLED":
+        return <span className="badge bg-danger">Mal controlado</span>;
+      case "REMISSION":
+        return <span className="badge bg-primary">En remisión</span>;
+      case "PROGRESSIVE":
+        return <span className="badge bg-warning text-dark">Progresivo</span>;
+      default:
+        return <span className="badge bg-secondary">{status}</span>;
     }
   };
 
@@ -73,6 +94,12 @@ export default function ChronicConditionList() {
             <th>Enfermedad</th>
             <th>Estado actual</th>
             <th>Fecha diagnóstico</th>
+            <th>Edad al diagnóstico</th>
+            <th>Institución</th>
+            <th>Doctor</th>
+            <th>Sistema clasificación</th>
+            <th>Nivel clasificación</th>
+            <th>Activo</th>
             <th className="text-center">Acciones</th>
           </tr>
         </thead>
@@ -81,8 +108,14 @@ export default function ChronicConditionList() {
             conditions.map((c) => (
               <tr key={c.id}>
                 <td>{c.disease_name}</td>
-                <td>{c.current_status}</td>
+                <td>{getStatusBadge(c.current_status)}</td>
                 <td>{c.diagnosis_date}</td>
+                <td>{c.age_at_diagnosis}</td>
+                <td>{c.diagnosing_institution || '-'}</td>
+                <td>{c.diagnosing_physician || '-'}</td>
+                <td>{c.classification_system || '-'}</td>
+                <td>{c.classification_level || '-'}</td>
+                <td>{c.is_active ? 'Sí' : 'No'}</td>
                 <td className="text-center">
                   <button
                     className="btn btn-warning btn-sm me-2"
@@ -105,7 +138,7 @@ export default function ChronicConditionList() {
             ))
           ) : (
             <tr>
-              <td colSpan="4" className="text-center text-muted">
+              <td colSpan="10" className="text-center text-muted">
                 No hay registros
               </td>
             </tr>

@@ -6,7 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 export default function ChronicConditionForm() {
   const { id, perfilId } = useParams();
   const navigate = useNavigate();
-  const API_URL = "http://127.0.0.1:8000/chronic-conditions/";
+  const API_URL = "http://127.0.0.1:8000/api/chronic/chronic-conditions/";
 
   const [form, setForm] = useState({
     disease_name: "",
@@ -18,15 +18,24 @@ export default function ChronicConditionForm() {
     classification_system: "",
     classification_level: "",
     is_active: true,
+    perfil: perfilId, // aseguramos que se envíe el perfil
   });
+
+  const token = localStorage.getItem("token");
+  const headers = {
+    Authorization: `Token ${token}`,
+    "Content-Type": "application/json",
+  };
 
   // Cargar datos si es edición
   useEffect(() => {
     if (id) {
       axios
-        .get(`${API_URL}${id}/`)
+        .get(`${API_URL}${id}/`, { headers })
         .then((res) => setForm(res.data))
-        .catch((err) => console.error("Error cargando condición:", err));
+        .catch((err) =>
+          console.error("Error cargando condición:", err.response?.data || err)
+        );
     }
   }, [id]);
 
@@ -37,15 +46,19 @@ export default function ChronicConditionForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       if (id) {
-        await axios.put(`${API_URL}${id}/`, { ...form, perfil: perfilId });
+        await axios.put(`${API_URL}${id}/`, form, { headers });
       } else {
-        await axios.post(API_URL, { ...form, perfil: perfilId });
+        await axios.post(API_URL, form, { headers });
       }
       navigate(`/menu/${perfilId}/Enfermedades_Cronicas`);
     } catch (err) {
-      console.error("Error al guardar:", err);
+      console.error("Error al guardar:", err.response?.data || err);
+      alert(
+        "Ocurrió un error al guardar la condición. Revisa los campos requeridos."
+      );
     }
   };
 
