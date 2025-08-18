@@ -11,28 +11,22 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import cloudinary
+from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+load_dotenv()
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-@%^9rhx$j4jf5j!9@b43z$_@vp_k5yax7vo#7o2u61x2azbwi&'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
-# Application definition
-
 INSTALLED_APPS = [
-    'antecedentesMedicos',  
+    'antecedentesMedicos',
     'colorfield',
     'admin_interface',
     'django.contrib.admin',
@@ -56,9 +50,6 @@ INSTALLED_APPS = [
     'chronic',
 ]
 
-
-
-
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
@@ -73,8 +64,6 @@ REST_FRAMEWORK = {
         "user": "2000/day"
     }
 }
-
-#pip install django-material --break-system-packages
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -107,19 +96,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-
-import os
-import cloudinary
-from dotenv import load_dotenv
-from pathlib import Path
-load_dotenv()
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
 DATABASES = {
     'default': {
         'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.mysql'),
@@ -136,30 +112,15 @@ CLOUDINARY_STORAGE = {
     'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
     'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
 }
+
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
 
 LANGUAGE_CODE = 'es'
 
@@ -169,19 +130,10 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
 STATIC_URL = 'static/'
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-#Settings of the email send 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -189,40 +141,22 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'ramses.devn@gmail.com'
 EMAIL_HOST_PASSWORD = 'cmfabltprahohbup'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-#PASSWORD_RESET_TIMEOUT=14400
 
-
-#Cors Autenthications (React)
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'http://localhost:5174',
     'http://localhost:5176',
+    'http://localhost:5175',
 ]
 
-
- 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-    ],
-}
-
-
-##Modelo para que se Use el User personalizado
 AUTH_USER_MODEL = 'accounts.User'
 
-# Clave de encriptación para códigos de verificación
 VERIFICATION_CODE_ENCRYPTION_KEY = 'your-32-byte-base64-encoded-key-here-change-in-production'
 
-
-
-
-# MEDIA_URL = '/media/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',
+    'http://localhost:5175',
 ]
-
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

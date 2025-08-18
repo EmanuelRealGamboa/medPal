@@ -40,8 +40,8 @@ export default function PrescriptionForm() {
       console.error("Error leyendo el usuario de localStorage:", err);
     }
   }, []);
-  
-  
+
+
 
   // Cargar receta si es edición
   useEffect(() => {
