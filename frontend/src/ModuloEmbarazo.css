@@ -1,0 +1,95 @@
+/* ModuloEmbarazo.css */
+
+.modulo-medpal {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f8fdf8; /* fondo general */
+}
+
+.custom-navbar {
+  background-color: #a6c5b8; /* color de header */
+  height: 60px;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+}
+
+.custom-navbar .logo-text {
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+.modulo-embarazo-body {
+  flex: 1;
+  padding: 3rem 1rem;
+}
+
+.embarazo-card {
+  width: 180px;
+  height: 120px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.embarazo-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.embarazo-card.pink {
+  background-color: #ff69b4;
+}
+
+.embarazo-card.purple {
+  background-color: #d8b4f5;
+}
+
+.embarazo-card.yellow {
+  background-color: #fce536;
+  color: #333;
+}
+
+.embarazo-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.embarazo-label {
+  margin-top: 0.5rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.back-button-container {
+  margin-top: 2rem;
+}
+
+.footer-bar {
+  background-color: #a6c5b8;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+  color: #fff;
+  font-weight: 500;
+}
+.embarazo-label {
+  font-weight: 500;
+  text-align: center;
+  margin-top: 0.5rem;
+}

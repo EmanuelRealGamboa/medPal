@@ -1,8 +1,10 @@
+// Signin.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './signin.css';
 
-function Signin() {
+
+  function Signin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -12,23 +14,45 @@ function Signin() {
     setShowPassword(prev => !prev);
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await fetch('http://127.0.0.1:8000/accounts/signin/', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({ email, password })
       });
-      if (!response.ok) throw new Error('Error en el inicio de sesión');
+  
+      if (!response.ok) {
+        throw new Error('Error en el inicio de sesión');
+      }
+  
       const data = await response.json();
-      localStorage.setItem('token', data.token);
-      navigate('/index');
+  
+      // ✅ Guarda el token
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      
+        // Guardar también el usuario
+        localStorage.setItem('user', JSON.stringify({
+          username: data.username,
+          email: data.email
+        }));
+        
+      
+        navigate('/perfiles');
+      }
+      
+      
+      
+  
     } catch (err) {
       alert(err.message);
     }
   };
-
+  
   return (
     <div className="auth-wrapper">
       <div className="auth-left">
@@ -66,6 +90,8 @@ function Signin() {
           </div>
 
           <button type="submit" className="btn btn-custom w-100">Iniciar Sesión</button>
+
+         
         </form>
       </div>
       <div className="auth-right">

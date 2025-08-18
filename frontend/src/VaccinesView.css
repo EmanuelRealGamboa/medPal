@@ -1,0 +1,219 @@
+/* Navbar fija */
+.perfil-bg {
+  background-color: #f4f8fb;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-navbar {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+}
+
+.main-layout {
+  flex: 1;
+  padding: 2rem;
+}
+
+.main-layout h3 {
+  margin-top: 60px;
+  /* o lo que necesites */
+}
+
+
+
+
+.custom-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: #a7d0c3;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.custom-navbar h4 {
+  color: #204e40;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Contenido */
+.content-section {
+  padding: 90px 20px 60px;
+  max-width: 600px;
+  margin: 0 auto;
+  color: #204e40;
+}
+
+/* Card */
+.card {
+  background-color: #f9fdfb;
+  border-radius: 12px;
+  padding: 25px 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Campos */
+.data-field {
+  margin-bottom: 14px;
+}
+
+.data-label {
+  font-weight: 600;
+  color: #307060;
+}
+
+.data-value {
+  margin-left: 10px;
+  font-weight: 500;
+  color: #204e40;
+}
+
+/* Botones */
+.btn-container {
+  margin-top: 30px;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.btn-primary {
+  background-color: #307060;
+  color: white;
+  border: none;
+  padding: 10px 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #204e40;
+}
+
+.btn-secondary {
+  background-color: #e04040;
+  color: white;
+  border: none;
+  padding: 10px 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #b03030;
+}
+
+/* Footer fijo */
+.footer-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 35px;
+  background-color: #a7d0c3;
+  color: #204e40;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+
+.vaccine-list-container {
+  padding: 2rem;
+  background-color: #f8f9fa;
+}
+
+.vaccine-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.vaccine-list-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.vaccine-add-btn {
+  background-color: #28a745;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.vaccine-add-btn:hover {
+  background-color: #218838;
+}
+
+.vaccine-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background-color: white;
+}
+
+.vaccine-table th,
+.vaccine-table td {
+  border: 1px solid #dee2e6;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.vaccine-table thead {
+  background-color: #e9ecef;
+}
+
+.vaccine-actions button {
+  margin-right: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-edit {
+  background-color: #ffc107;
+  color: black;
+}
+
+.btn-edit:hover {
+  background-color: #e0a800;
+}
+
+.btn-delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: #c82333;
+}
+
+.vaccine-alerts {
+  margin-top: 3rem;
+}
+
+.vaccine-alerts h2 {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}

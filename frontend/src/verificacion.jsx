@@ -116,7 +116,7 @@ export default function Verificacion() {
       <div className="login-card">
         <h2>Verifica tu cuenta</h2>
         <p className="subtitle">Introduce el código que enviamos a tu correo.</p>
-        <p className="email-visualizado">✉️ <strong>{email}</strong></p>
+        
 
         {mensajeTemporal && (
           <div className="status-message status-success">{mensajeTemporal}</div>

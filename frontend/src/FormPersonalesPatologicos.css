@@ -1,0 +1,49 @@
+
+.form-titulo {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+/* FORMULARIO EN 4 COLUMNAS */
+.grid-form-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px 20px;
+    padding: 25px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Cada campo */
+.form-item {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Etiquetas */
+.form-item label {
+    font-weight: bold;
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+/* Inputs y selects */
+.form-control,
+.form-select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+
+}
+
+/* Botones alineados a la derecha */
+.form-buttons {
+    grid-column: span 4;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+

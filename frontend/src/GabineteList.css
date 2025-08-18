@@ -1,0 +1,11 @@
+.titulo-gabinete {
+  margin-top: 5px; /* Baja el título 160px */
+  letter-spacing: 1px;
+}
+
+.boton-regresar {
+  margin-top: -20px;      /* Menos espacio arriba */
+  display: flex;         /* Para poder moverlo fácilmente */
+  justify-content: flex-end; /* Lo empuja a la derecha */
+  margin-right: -100px;
+}

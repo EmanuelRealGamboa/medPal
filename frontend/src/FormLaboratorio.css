@@ -1,0 +1,97 @@
+.laboratorio-form {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1.5rem 2rem;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+}
+
+.laboratorio-form h2 {
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #2c3e50;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px 15px;
+    /* filas y columnas */
+}
+
+.grid-container input,
+.grid-container textarea,
+.grid-container label {
+    width: 100%;
+    font-size: 0.9rem;
+}
+
+.grid-container input,
+.grid-container textarea {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px 10px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.grid-container textarea {
+    min-height: 60px;
+}
+
+.grid-container label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 600;
+    color: #444;
+}
+
+.accion-medica {
+    grid-column: span 3;
+    /* El textarea de acción médica ocupa las 3 columnas */
+    min-height: 80px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end !important;
+  gap: 1rem; /* espacio entre botones */
+  margin-top: 1rem;
+}
+
+
+.submit-btn {
+    background-color: #28a745 !important;
+    border: none !important;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    justify-content: flex-end;
+}
+
+.submit-btn:hover {
+    background-color: #218838;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border: none;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* Navbar y footer */
+

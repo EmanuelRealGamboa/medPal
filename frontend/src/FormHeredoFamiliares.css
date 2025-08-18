@@ -1,0 +1,52 @@
+.form-heredo {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+/* Estilo exclusivo para este formulario */
+.form-heredo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 800px;
+    /* Más ancho que antes */
+    background-color: #fff;
+    /* Fondo blanco */
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Cada fila con dos columnas */
+.form-heredo-form .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    /* Más espacio entre columnas */
+}
+
+/* Última fila con solo un input ocupa todo el ancho */
+.form-heredo-form .form-row:last-child {
+    grid-template-columns: 1fr;
+}
+
+/* Inputs y textarea ocupan todo el ancho disponible */
+.form-heredo-form .form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+
+/* Mensajes de error o info */
+.alert {
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    text-align: center;
+}

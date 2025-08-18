@@ -1,7 +1,11 @@
 # accounts/serializers.py
 from rest_framework import serializers
 from .models import User
-
+from rest_framework import serializers
+from .models import Perfil
+from rest_framework import serializers
+from .models import PersonalData
+from datetime import date
 
 # Leeme
 """
@@ -11,7 +15,7 @@ y convertirlos a objetos de Python, y viceversa.
 """
 
 
-# SignUp Serializer (para registro)
+# Serializer para registro (Signup)
 class SignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
@@ -29,13 +33,13 @@ class SignupSerializer(serializers.ModelSerializer):
         validated_data.pop('password2')
         password = validated_data.pop('password')
         user = User(**validated_data)
-        user.set_password(password)  # Encripta la contraseña
-        user.is_active = False  # Se activa cuando verifique el código
+        user.set_password(password)  # Encriptar contraseña
+        user.is_active = False  # Se activa tras verificación
         user.save()
         return user
 
 
-# Verification Code Serializer (para verificar el código enviado por correo)
+# Serializer para verificación de código enviado por email
 class VerifyCodeSerializer(serializers.Serializer):
     email = serializers.EmailField()
     code = serializers.CharField(max_length=6)
@@ -54,7 +58,7 @@ class VerifyCodeSerializer(serializers.Serializer):
         user.save()
 
 
-# Signin Serializer (para iniciar sesión)
+# Serializer para inicio de sesión
 class SigninSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
@@ -68,34 +72,133 @@ class SigninSerializer(serializers.Serializer):
             raise serializers.ValidationError("Verifica tu correo electrónico antes de iniciar sesión.")
         data['user'] = user
         return data
+
+
+# Serializer para solicitud de cambio de contraseña
+class RequestPasswordResetSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        try:
+            user = User.objects.get(email=value, is_active=True)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("No existe un usuario activo con este correo electrónico.")
+        return value
+
+
+# Serializer para resetear contraseña
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    code = serializers.CharField(max_length=6)
+    new_password = serializers.CharField(min_length=8)
+    new_password2 = serializers.CharField(min_length=8)
+
+    def validate(self, data):
+        if data['new_password'] != data['new_password2']:
+            raise serializers.ValidationError("Las contraseñas no coinciden.")
+
+        try:
+            user = User.objects.get(email=data['email'])
+            if not user.verification_code:
+                raise serializers.ValidationError("No hay código de verificación activo.")
+            if user.verification_code != data['code']:
+                raise serializers.ValidationError("Código de verificación incorrecto.")
+            if user.is_verification_code_expired():
+                raise serializers.ValidationError("El código de verificación ha expirado. Solicita uno nuevo.")
+        except User.DoesNotExist:
+            raise serializers.ValidationError("Usuario no encontrado.")
+        return data
+
+    def save(self):
+        user = User.objects.get(email=self.validated_data['email'])
+        user.set_password(self.validated_data['new_password'])
+
+        user.clear_verification_code()
+        user.save()
+        return user
+
+
+# Serializer para Perfil
+        user.clear_verification_code()  # Limpiar el código después de usarlo
+        return user
     
 
 
 
 
+class PerfilSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Perfil
+        fields = ['id', 'nombre', 'fecha_nacimiento', 'relacion']
 
 
 
+# Serializer para datos personales relacionados a un usuario
+class PersonalDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PersonalData
+        fields = ['fecha_nacimiento', 'direccion', 'genero', 'grupoRH']
+
+    def validate_fecha_nacimiento(self, value):
+        if value > date.today():
+            raise serializers.ValidationError("La fecha de nacimiento no puede ser en el futuro.")
+        return value
+
+    def validate_genero(self, value):
+        opciones_validas = ['Masculino', 'Femenino', 'Otro']
+        if value not in opciones_validas:
+            raise serializers.ValidationError(f"Género debe ser uno de: {', '.join(opciones_validas)}.")
+        return value
+
+    def validate_grupoRH(self, value):
+        grupos_validos = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
+        if value not in grupos_validos:
+            raise serializers.ValidationError(f"Grupo RH debe ser uno de: {', '.join(grupos_validos)}.")
+        return value
 
 
+# Serializer principal para Usuario, incluye datos personales anidados
+class UserSerializer(serializers.ModelSerializer):
+    personal_data = PersonalDataSerializer(required=False)
+    photoUser = serializers.ImageField(required=False, allow_null=True)
 
+    class Meta:
+        model = User
+        fields = [
+            'id', 'name', 'apellido_paterno', 'apellido_materno',
+            'phone', 'contactoEmergencia', 'photoUser', 'email',
+            'personal_data',
+        ]
 
-class RequestPasswordResetSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-
-
-
-
-
-
-
-class ResetPasswordSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    code = serializers.CharField(max_length=6)
-    new_password = serializers.CharField()
-    new_password2 = serializers.CharField()
-
-    def validate(self, data):
-        if data['new_password'] != data['new_password2']:
-            raise serializers.ValidationError("Las contraseñas no coinciden.")
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = self.context.get('request')
+        if instance.photoUser and request:
+            data['photoUser'] = request.build_absolute_uri(instance.photoUser.url)
         return data
+
+    def update(self, instance, validated_data):
+        personal_data_data = validated_data.pop('personal_data', None)
+
+        # Actualizar campos del usuario
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        # Actualizar o crear datos personales relacionados
+        if personal_data_data:
+            personal_data, created = PersonalData.objects.get_or_create(user=instance)
+            personal_serializer = PersonalDataSerializer(personal_data, data=personal_data_data, partial=True)
+            personal_serializer.is_valid(raise_exception=True)
+            personal_serializer.save()
+
+        return instance
+
+
+
+
+class PersonalDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = PersonalData
+        fields = ['fecha_nacimiento', 'direccion', 'genero']
+

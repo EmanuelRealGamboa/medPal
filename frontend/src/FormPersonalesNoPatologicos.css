@@ -1,0 +1,16 @@
+
+.form-title {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 20px;
+}
+/* GRID DE 3 COLUMNAS */
+.grid-form-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px 25px;
+    padding: 25px;
+    background: #fff;
+    border-radius: 12px;
+ 
+}

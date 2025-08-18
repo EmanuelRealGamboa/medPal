@@ -1,0 +1,58 @@
+.form-alergias {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+
+/* Contenedor del formulario */
+.form-alergia {
+    background-color: #ffffff;
+    /* Fondo blanco */
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    /* Ancho máximo */
+    width: 100%;
+    /* Ocupa todo el ancho disponible */
+    margin: 2rem auto;
+    /* Centrado horizontal */
+    display: flex;
+    flex-direction: column;
+    /* Una sola columna */
+    align-items: stretch;
+}
+
+/* Inputs y textareas */
+.form-alergia .form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-alergia .form-control:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
+    outline: none;
+}
+
+/* Botón */
+.form-alergia .btn-success {
+    padding: 0.6rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    align-self: flex-end;
+    /* Alinea el botón a la derecha */
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.form-alergia .btn-success:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+}

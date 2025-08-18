@@ -1,0 +1,186 @@
+/* Reset mínimo para evitar márgenes del body que hagan ver "angosto" */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+/* Paleta */
+:root {
+  --mp-mint: #a7d0c8;
+  --mp-card: #cfe6c5;
+  --mp-border: #8ab9a8;
+  --mp-text: #2f7b66;
+  --mp-btn: #2d8166;
+  --mp-btnH: #256b55;
+  --mp-field: #ffffff;
+}
+
+/* Contenedor general: ocupa todo el ancho y alto */
+.calculadora-container {
+  min-height: 100svh;
+  /* mejor que 100vh en móviles */
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navbar */
+.navbar {
+  background: var(--mp-mint);
+  height: 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-inline: clamp(16px, 4vw, 32px);
+  border-bottom-left-radius: clamp(16px, 24px, 28px);
+  border-bottom-right-radius: clamp(16px, 24px, 28px);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .05);
+}
+
+/* Logo */
+.navbar-logo {
+  font-size: clamp(22px, 2.6vw, 32px);
+  font-weight: 800;
+  letter-spacing: .2px;
+}
+
+.logo-med {
+  color: #ffffff;
+}
+
+.logo-pal {
+  color: var(--mp-text);
+}
+
+/* Icono usuario */
+.navbar-user-icon {
+  width: 40px;
+  height: 40px;
+  background: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--mp-text);
+}
+
+/* Contenido principal centrado y ancho fluido */
+.main-panel {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: clamp(16px, 3vw, 40px) clamp(12px, 3vw, 32px);
+}
+
+/* Card principal: ancho al 100% con un max-width alto */
+.panel-card {
+  width: 100%;
+  max-width: 1280px;
+  /* súbelo o quítalo si quieres que ocupe 100% real */
+  background: var(--mp-card);
+  border-radius: clamp(18px, 3vw, 28px);
+  padding: clamp(20px, 3.6vw, 40px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Título prominente y fluido */
+.panel-title {
+  text-align: center;
+  color: var(--mp-text);
+  font-weight: 700;
+  font-size: clamp(24px, 3.2vw, 40px);
+  /* ~text-4xl en desktop */
+  margin: 0 0 clamp(18px, 2.5vw, 28px) 0;
+}
+
+/* Grilla fluida: auto-fit reparte columnas según espacio */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+
+}
+
+/* Grupos y labels */
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  color: var(--mp-text);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+/* Campos */
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background: var(--mp-field);
+  border: 2px solid var(--mp-border);
+  /* borde notorio como el pantallazo */
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 15px;
+  outline: none;
+  transition: box-shadow .15s ease, border-color .15s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--mp-btn);
+  box-shadow: 0 0 0 3px rgba(45, 129, 102, 0.22);
+}
+
+/* Observaciones ocupa todo el ancho de la grilla */
+.full-width {
+  grid-column: span 3;
+
+}
+
+/* Botón centrado y grande */
+.form-button {
+  grid-column: span 3;
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  text-align: center;
+
+
+}
+
+.form-button button {
+  background: var(--mp-btn);
+  color: #fff;
+  font-weight: 700;
+  height: 56px;
+  /* ~56px como pediste */
+  padding: 0 clamp(28px, 4vw, 56px);
+  border: none;
+  border-radius: 9999px;
+  /* rounded-full */
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, .08);
+  transition: background-color .15s ease, transform .06s ease;
+}
+
+.form-button button:hover {
+  background: var(--mp-btnH);
+}
+
+.form-button button:active {
+  transform: translateY(1px);
+}
