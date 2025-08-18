@@ -11,7 +11,7 @@ export default function PrediccionCiclo() {
   const [ultimoRegistro, setUltimoRegistro] = useState(null);
 
   useEffect(() => {
-    const fetchPrediccion = async () => {
+    async function fetchPrediccion() {
       try {
         const token = localStorage.getItem("token");
         const res = await axios.get(
@@ -19,11 +19,12 @@ export default function PrediccionCiclo() {
           { headers: { Authorization: `Token ${token}` } }
         );
         setPrediccion(res.data.prediccion);
-        setUltimoRegistro(res.data.ultimo_registro); // aquí asumo que el backend devuelve { prediccion, ultimo_registro }
+        setUltimoRegistro(res.data.ultimo_registro);
       } catch (error) {
         console.error("Error al obtener la predicción:", error);
       }
-    };
+    }
+
     fetchPrediccion();
   }, [perfilId]);
 
@@ -35,14 +36,16 @@ export default function PrediccionCiclo() {
       <p>Fecha estimada de inicio: {prediccion.fecha_inicio}</p>
       <p>Fecha estimada de fin: {prediccion.fecha_fin}</p>
 
-      <button
-        className="btn btn-primary"
-        onClick={() =>
-          navigate(`/calculadora-menstrual/${perfilId}?registroId=${ultimoRegistro?.id || ""}`)
-        }
-      >
-        Volver a calcular
-      </button>
+      {ultimoRegistro && (
+        <button
+          className="btn btn-warning"
+          onClick={() =>
+            navigate(`/menu/${perfilId}/gineco/registro-menstrual?registroId=${ultimoRegistro.id}`)
+          }
+        >
+          Editar registro menstrual
+        </button>
+      )}
     </div>
   );
 }

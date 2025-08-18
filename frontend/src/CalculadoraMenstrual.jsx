@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";import axios from "axios";
+import React, { useState, useEffect } from "react"; import axios from "axios";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "./CalculadoraMenstrual.css";
 
@@ -73,13 +73,26 @@ export default function CalculadoraMenstrual() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
-    try {
-      const payload = {
-        ...formData,
-        es_regular: formData.es_regular === "true" || formData.es_regular === true,
-      };
 
+    const payload = {
+      ...formData,
+      es_regular: formData.es_regular === "true" || formData.es_regular === true,
+    };
+
+    try {
       if (registroId) {
+        // Validar que el registro existe antes de hacer PUT
+        try {
+          await axios.get(
+            `http://127.0.0.1:8000/gineco/menstrual/${registroId}/`,
+            { headers: { Authorization: `Token ${token}` } }
+          );
+        } catch (error) {
+          alert("El registro menstrual no existe o fue eliminado.");
+          navigate(`/menu/${perfilId}/gineco/registro-menstrual`);
+          return;
+        }
+
         // Modo edición
         await axios.put(
           `http://127.0.0.1:8000/gineco/menstrual/${registroId}/`,
@@ -88,11 +101,14 @@ export default function CalculadoraMenstrual() {
         );
         alert("Registro menstrual actualizado correctamente");
       } else {
-        // Modo creación
-        await axios.post(`http://127.0.0.1:8000/gineco/menstrual/`, payload, {
+        const res = await axios.post(`http://127.0.0.1:8000/gineco/menstrual/`, payload, {
           headers: { Authorization: `Token ${token}` },
         });
+        const nuevoRegistroId = res.data.id;
         alert("Registro menstrual guardado correctamente");
+
+        // Redirige pasando el nuevo ID como parámetro
+        navigate(`/menu/${perfilId}/gineco/prediccion-ciclo`);
       }
 
       navigate(`/menu/${perfilId}/gineco/prediccion-ciclo`);

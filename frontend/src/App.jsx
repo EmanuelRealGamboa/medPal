@@ -173,9 +173,11 @@ export default function App() {
       {/* Calculadora menstrual */}
       <Route path="/menu/:perfilId/gineco/registro-menstrual" element={<ProtectedRoute><CalculadoraMenstrual /></ProtectedRoute>}/>
       <Route path="/menu/:perfilId/gineco/prediccion-ciclo" element={<ProtectedRoute><PrediccionCiclo /></ProtectedRoute>} /> 
+
       {/* Ruta fallback */}
       <Route path="*" element={<Navigate to="/" />} />
-    </Routes>
+      </Routes>
+
   );
 }
 
